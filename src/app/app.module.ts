@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DragulaModule } from 'ng2-dragula';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { FileValueAccessor } from './direcives/file-value-accessor.directive';
   imports: [
     AppRoutingModule,
     BrowserModule,
+    DragulaModule,
     ReactiveFormsModule,
     NgbModule,
   ],

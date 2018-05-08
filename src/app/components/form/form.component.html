@@ -10,22 +10,12 @@
         <label for="file-input" class="sr-only">
           File Input
         </label>
-        <input
-          type="file"
-          class="sr-only"
-          id="file-input"
-          [formControl]="form.get('file.files')"
-          #inputfile>
+        <input type="file" class="sr-only" id="file-input" [formControl]="form.get('file.files')" #inputfile>
 
         <label for="file-name" class="sr-only">
           File Name
         </label>
-        <input
-          class="form-control cursor-pointer"
-          placeholder="Select a file"
-          id="file-name"
-          [readonly]="true"
-          [formControl]="form.get('file.filename')">
+        <input class="form-control cursor-pointer" placeholder="Select a file" id="file-name" [readonly]="true" [formControl]="form.get('file.filename')">
 
         <div class="input-group-append">
           <button class="btn btn-primary">
@@ -48,164 +38,108 @@
         <small class="text-muted font-weight-bold">(drag to reorder)</small>
       </h3>
 
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center flex-wrap"
-        *ngFor="let field of form.get('author.fields')['controls']">
-        <div>
-          <label
-            class="sr-only"
-            [attr.for]="field.value.name + '-' + field.value.column">
-            {{ field.value.name }} is mapped to the {{ field.value.column }} column
-          </label>
-          <select
-            class="form-control form-control-sm"
-            [attr.id]="field.value.name + '-' + field.value.column"
-            [formControl]="field.controls.column">
-            <option
-              *ngFor="let column of getColumns()"
-              [value]="column">
-              {{ field.value.name }} → {{ column }}
-            </option>
-          </select>
-        </div>
+      <div [dragula]>
 
-        <div class="d-flex flex-wrap small">
-          <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
-            <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
-          </label>
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center flex-wrap" *ngFor="let field of form.get('author.fields')['controls']"
+          [attr.data-name]="field.value.name">
+          <div>
+            <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
+              {{ field.value.name }} is mapped to the {{ field.value.column }} column
+            </label>
+            <select
+              class="form-control form-control-sm"
+              [attr.id]="field.value.name + '-' + field.value.column"
+              [formControl]="field.controls.column">
+              <option *ngFor="let column of getColumns()"
+                [value]="column"
+                [selected]="field.value.column == column"
+              >
+                {{ field.value.name }} &larr; {{ column }}
+              </option>
+            </select>
+          </div>
 
-          <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
-            <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma">Add Comma
-          </label>
+          <div class="d-flex flex-wrap small">
+            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
+              <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
+            </label>
 
-          <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
-            <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod">Add Period
-          </label>
+            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
+              <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma">Add Comma
+            </label>
 
-        </div>
-      </a>
+            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
+              <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod">Add Period
+            </label>
+          </div>
+        </a>
+
+      </div>
+
 
 
       <h3 style="font-size: 1rem;" class="mt-4">Author Separator</h3>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="author-separator-comma"
-          name="author-separator"
-          class="form-check-input"
-          [formControl]="form.get('author.separator')"
+        <input type="radio" id="author-separator-comma" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
           value="comma">
-        <label
-          class="form-check-label"
-          for="author-separator-comma">
+        <label class="form-check-label" for="author-separator-comma">
           Comma
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="author-separator-newline"
-          name="author-separator"
-          class="form-check-input"
-          [formControl]="form.get('author.separator')"
+        <input type="radio" id="author-separator-newline" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
           value="newline">
-        <label
-          class="form-check-label"
-          for="author-separator-newline">
+        <label class="form-check-label" for="author-separator-newline">
           Newline
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="author-separator-semicolon"
-          name="author-separator"
-          class="form-check-input"
-          [formControl]="form.get('author.separator')"
+        <input type="radio" id="author-separator-semicolon" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
           value="semicolon">
-        <label
-          class="form-check-label"
-          for="author-separator-semicolon">
+        <label class="form-check-label" for="author-separator-semicolon">
           Semicolon
         </label>
       </div>
 
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="author-separator-other"
-          name="author-separator"
-          class="form-check-input"
-          [formControl]="form.get('author.separator')"
+        <input type="radio" id="author-separator-other" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
           value="other">
-        <label
-          class="sr-only"
-          for="author-separator-other">
+        <label class="sr-only" for="author-separator-other">
           Other Separator
         </label>
 
-        <input
-          id="author-separator-other-input"
-          placeholder="Other"
-          class="form-control form-control-sm"
-          size="1" maxlength="2"
-          style="width: 60px;"
-          (click)="form.get('author.separator').setValue('other')"
-          [formControl]="form.get('author.customSeparator')">
-        <label
-          class="sr-only"
-          for="author-separator-other-input">
+        <input id="author-separator-other-input" placeholder="Other" class="form-control form-control-sm" size="1" maxlength="2"
+          style="width: 60px;" (click)="form.get('author.separator').setValue('other')" [formControl]="form.get('author.customSeparator')">
+        <label class="sr-only" for="author-separator-other-input">
           Other Separator Input
         </label>
       </div>
 
       <h3 style="font-size: 1rem;" class="mt-4">Author Affiliation</h3>
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="author-label-position"
-          id="author-label-position-superscript"
-          value="superscript"
+        <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-superscript" value="superscript"
           [formControl]="form.get('author.labelPosition')">
-        <label
-          class="form-check-label"
-          for="author-label-position-superscript">
+        <label class="form-check-label" for="author-label-position-superscript">
           Superscript
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="author-label-position"
-          id="author-label-position-inline"
-          value="inline"
+        <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-inline" value="inline"
           [formControl]="form.get('author.labelPosition')">
-        <label
-          class="form-check-label"
-          for="author-label-position-inline">
+        <label class="form-check-label" for="author-label-position-inline">
           Inline
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="author-label-position"
-          id="author-label-position-subscript"
-          value="subscript"
+        <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-subscript" value="subscript"
           [formControl]="form.get('author.labelPosition')">
-        <label
-          class="form-check-label"
-          for="author-label-position-subscript">
+        <label class="form-check-label" for="author-label-position-subscript">
           Subscript
         </label>
       </div>
@@ -220,75 +154,39 @@
 
       <h3 style="font-size: 1rem;" class="">Affiliation Separator</h3>
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="affiliation-separator-comma"
-          name="affiliation-separator"
-          class="form-check-input"
-          [formControl]="form.get('affiliation.separator')"
+        <input type="radio" id="affiliation-separator-comma" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
           value="comma">
-        <label
-          class="form-check-label"
-          for="affiliation-separator-comma">
+        <label class="form-check-label" for="affiliation-separator-comma">
           Comma
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="affiliation-separator-newline"
-          name="affiliation-separator"
-          class="form-check-input"
-          [formControl]="form.get('affiliation.separator')"
+        <input type="radio" id="affiliation-separator-newline" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
           value="newline">
-        <label
-          class="form-check-label"
-          for="affiliation-separator-newline">
+        <label class="form-check-label" for="affiliation-separator-newline">
           Newline
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="affiliation-separator-semicolon"
-          name="affiliation-separator"
-          class="form-check-input"
-          [formControl]="form.get('affiliation.separator')"
+        <input type="radio" id="affiliation-separator-semicolon" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
           value="semicolon">
-        <label
-          class="form-check-label"
-          for="affiliation-separator-semicolon">
+        <label class="form-check-label" for="affiliation-separator-semicolon">
           Semicolon
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          type="radio"
-          id="affiliation-separator-other"
-          name="affiliation-separator"
-          class="form-check-input"
-          [formControl]="form.get('affiliation.separator')"
+        <input type="radio" id="affiliation-separator-other" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
           value="other">
-        <label
-          class="sr-only"
-          for="affiliation-separator-other">
+        <label class="sr-only" for="affiliation-separator-other">
           Other Separator
         </label>
 
-        <input
-          id="affiliation-separator-other-input"
-          placeholder="Other"
-          class="form-control form-control-sm"
-          size="1" maxlength="2"
-          style="width: 60px;"
-          (click)="form.get('affiliation.separator').setValue('other')"
-          [formControl]="form.get('affiliation.customSeparator')">
-        <label
-          class="sr-only"
-          for="affiliation-separator-other-input">
+        <input id="affiliation-separator-other-input" placeholder="Other" class="form-control form-control-sm" size="1" maxlength="2"
+          style="width: 60px;" (click)="form.get('affiliation.separator').setValue('other')" [formControl]="form.get('affiliation.customSeparator')">
+        <label class="sr-only" for="affiliation-separator-other-input">
           Other Separator Input
         </label>
       </div>
@@ -297,46 +195,25 @@
       <h3 style="font-size: 1rem;" class="mt-4">Affiliation Label</h3>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="affiliation-label-position"
-          id="affiliation-label-position-superscript"
-          value="superscript"
-          [formControl]="form.get('affiliation.labelPosition')">
-        <label
-          class="form-check-label"
-          for="affiliation-label-position-superscript">
+        <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-superscript"
+          value="superscript" [formControl]="form.get('affiliation.labelPosition')">
+        <label class="form-check-label" for="affiliation-label-position-superscript">
           Superscript
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="affiliation-label-position"
-          id="affiliation-label-position-inline"
-          value="inline"
+        <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-inline" value="inline"
           [formControl]="form.get('affiliation.labelPosition')">
-        <label
-          class="form-check-label"
-          for="affiliation-label-position-inline">
+        <label class="form-check-label" for="affiliation-label-position-inline">
           Inline
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="affiliation-label-position"
-          id="affiliation-label-position-subscript"
-          value="subscript"
-          [formControl]="form.get('affiliation.labelPosition')">
-        <label
-          class="form-check-label"
-          for="affiliation-label-position-subscript">
+        <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-subscript"
+          value="subscript" [formControl]="form.get('affiliation.labelPosition')">
+        <label class="form-check-label" for="affiliation-label-position-subscript">
           Subscript
         </label>
       </div>
@@ -344,31 +221,17 @@
 
       <h3 style="font-size: 1rem;" class="mt-4">Label Style</h3>
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="affiliation-label-style"
-          id="affiliation-label-style-numeric"
-          value="numeric"
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numeric" value="numeric"
           [formControl]="form.get('affiliation.labelStyle')">
-        <label
-          class="form-check-label"
-          for="affiliation-label-style-numeric">
+        <label class="form-check-label" for="affiliation-label-style-numeric">
           Numeric
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="affiliation-label-style"
-          id="affiliation-label-style-alphabetic"
-          value="alphabetic"
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-alphabetic" value="alphabetic"
           [formControl]="form.get('affiliation.labelStyle')">
-        <label
-          class="form-check-label"
-          for="affiliation-label-style-alphabetic">
+        <label class="form-check-label" for="affiliation-label-style-alphabetic">
           Alphabetic
         </label>
       </div>

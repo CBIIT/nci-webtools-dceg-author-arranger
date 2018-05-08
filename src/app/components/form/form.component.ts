@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { DragulaService } from 'ng2-dragula';
 
 
 @Component({
@@ -11,10 +12,12 @@ export class FormComponent {
 
   form: FormGroup;
 
+  fieldOrder = [];
+
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private ds: DragulaService) {
     this.form = fb.group({
       file: fb.group({
         filename: '',
@@ -28,6 +31,8 @@ export class FormComponent {
             name: 'Title',
             column: 'Title',
             addPeriod: false,
+            disabled: false,
+            index: 0,
           }),
 
           fb.group({
@@ -35,6 +40,8 @@ export class FormComponent {
             column: 'First',
             abbreviate: false,
             addPeriod: false,
+            disabled: false,
+            index: 1,
           }),
 
           fb.group({
@@ -42,6 +49,8 @@ export class FormComponent {
             column: 'Middle',
             abbreviate: false,
             addPeriod: false,
+            disabled: false,
+            index: 2,
           }),
 
           fb.group({
@@ -49,6 +58,8 @@ export class FormComponent {
             column: 'Last',
             abbreviate: false,
             addPeriod: false,
+            disabled: false,
+            index: 3,
           }),
 
           fb.group({
@@ -56,6 +67,8 @@ export class FormComponent {
             column: 'Degree',
             addComma: false,
             addPeriod: false,
+            disabled: false,
+            index: 4,
           }),
 
           fb.group({
@@ -63,6 +76,8 @@ export class FormComponent {
             column: 'Other',
             addComma: false,
             addPeriod: false,
+            disabled: false,
+            index: 5,
           }),
         ]),
         separator: 'comma',
@@ -90,6 +105,16 @@ export class FormComponent {
       } else {
         this.form.get('file.filename').patchValue('');
       }
+    });
+
+    ds.drop.subscribe(value => {
+      const group: HTMLElement = value[2];
+      const controls = (<FormArray>this.form.get('author.fields')).controls;
+
+      Array.from(group.children)
+        .forEach((node, index) => controls
+          .find(control => control.value.name == node.getAttribute('data-name'))
+          .patchValue({index}))
     });
   }
 
