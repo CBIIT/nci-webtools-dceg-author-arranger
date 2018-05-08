@@ -1,3 +1,9 @@
-<p>
-  home works!
-</p>
+<div class="row">
+  <div class="col-md-6">
+    <author-arranger-form (change)="formValue = $event"></author-arranger-form>
+  </div>
+
+  <div class="col-md-6">
+    <author-arranger-preview [data]="formValue"></author-arranger-preview>
+  </div>
+</div>

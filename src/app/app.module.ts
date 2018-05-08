@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -9,6 +10,7 @@ import { HelpComponent } from './components/help/help.component';
 import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { FileValueAccessor } from './direcives/file-value-accessor.directive';
 
 @NgModule({
   declarations: [
@@ -17,14 +19,18 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     HelpComponent,
     FormComponent,
     PreviewComponent,
-    NavbarComponent
+    NavbarComponent,
+    FileValueAccessor,
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
-    NgbModule
+    BrowserModule,
+    ReactiveFormsModule,
+    NgbModule,
   ],
-  providers: [],
+  providers: [
+    FormBuilder,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
