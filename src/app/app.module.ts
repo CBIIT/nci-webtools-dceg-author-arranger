@@ -11,7 +11,7 @@ import { HelpComponent } from './components/help/help.component';
 import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { FileValueAccessor } from './direcives/file-value-accessor.directive';
+import { FileValueAccessor } from './directives/file-value-accessor.directive';
 
 @NgModule({
   declarations: [
