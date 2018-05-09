@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
-
+import { ParserService } from '../../services/parser/parser.service';
 
 @Component({
   selector: 'author-arranger-form',
@@ -10,14 +10,20 @@ import { DragulaService } from 'ng2-dragula';
 })
 export class FormComponent {
 
+  alerts = [];
+
   form: FormGroup;
 
-  fieldOrder = [];
+  templateHeaders = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Affiliations', 'Other']
+  headers = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Other'];
 
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private fb: FormBuilder, private ds: DragulaService) {
+  constructor(
+    private fb: FormBuilder,
+    private ds: DragulaService,
+    private ps: ParserService) {
     this.form = fb.group({
       file: fb.group({
         filename: '',
@@ -30,7 +36,7 @@ export class FormComponent {
           fb.group({
             name: 'Title',
             column: 'Title',
-            addPeriod: false,
+            addPeriod: true,
             disabled: false,
             index: 0,
           }),
@@ -94,9 +100,75 @@ export class FormComponent {
     });
 
     this.form.valueChanges.subscribe(value => {
-      console.log(value);
       this.change.emit(value);
     });
+
+    this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
+      try {
+        const sheets = await ps.parse(files[0])
+        let validHeaders = true;
+
+        let sheetData = []
+        this.headers = [];
+        this.alerts = [];
+
+        const controls = (this.form.get('author.fields') as FormArray).controls;
+        controls.forEach(control => control.patchValue({column: null}));
+
+        // if there is more than one sheet
+        if (sheets.length > 1) {
+          const sheet = sheets.find(sheet => sheet.name == 'Template');
+          if (!sheet) {
+            this.alerts.push({
+              type: 'warning',
+              message: 'Please ensure the workbook contains a sheet named "Template".'
+            });
+            return;
+          } else {
+            sheetData = sheet.data;
+          }
+        } else if (sheets.length == 1) {
+          sheetData = sheets[0].data;
+        }
+
+        if (sheetData.length <= 1) {
+          this.alerts.push({
+            type: 'warning',
+            message: 'No data could be parsed from the workbook.'
+          });
+          return;
+        }
+
+        console.log(sheetData)
+        this.headers = sheetData[0];
+
+        // attempt to match file headers with form fields
+        for (let header of this.headers) {
+          const controls = (this.form.get('author.fields') as FormArray).controls;
+          controls.forEach(control => control.patchValue({column: null}));
+          const control = controls.find((item: FormGroup) => item.value.name == header);
+          if (control) {
+            setTimeout(() => control.patchValue({column: header}), 0);
+          } else if (!this.templateHeaders.includes(header)) {
+            validHeaders = false;
+          }
+        }
+
+        if (!validHeaders) {
+          this.alerts.push({
+            type: 'info',
+            message: `This workbook contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.`
+          });
+        }
+
+        this.form.get('file').patchValue({data: sheetData});
+      } catch (e) {
+        this.alerts.push({
+          type: 'danger',
+          message: 'Please upload a valid excel workbook.'
+        });
+      }
+    })
 
     this.form.get('file.files').valueChanges.subscribe((files: FileList) => {
       if (files.length) {
@@ -125,12 +197,14 @@ export class FormComponent {
 
   useExample() {
     const file = this.form.controls.file as FormGroup;
-
     file.patchValue({
       filename: 'AuthorArranger Example.xlsx',
-      data: [],
+      data: [
+        ["Title","First","Middle","Last","Degree","Affiliations","Other"],
+        ["Dr","Mitchell","John","Machiela","ScD; MPH","Integrative Tumor Epidemiology Branch, Division of Cancer Epidemiology and Genetics, National Cancer Institute, Rockville, MD, USA"],
+        ["Mr","Geoffrey",null,"Tobias","BS","Office of the Directory, Division of Cancer Epidemiology and Genetics, National Cancer Institute, Rockville, MD, USA"],
+        ["Ms","Sue",null,"Pan","MS","Center for Biomedical Informatics and Information Technology, National Cancer Institude, Rockville, MD, USA"]
+      ],
     });
-
-    console.log('using example...');
   }
 }

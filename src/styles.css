@@ -7,6 +7,10 @@
     opacity: 1;
 }
 
+.small .alert-dismissible .close {
+    padding: 0.25rem 0.5rem;
+}
+
 .gu-mirror.list-group-item {
     border-radius: 4px;
 }

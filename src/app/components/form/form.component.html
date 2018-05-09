@@ -6,6 +6,14 @@
       <a class="text-muted font-weight-bold small" href="#" (click)="useExample()">(use example)</a>
     </div>
     <div class="card-body">
+      <p *ngFor="let alert of alerts; let i = index" class="small">
+        <ngb-alert
+          [type]="alert.type"
+          (close)="alerts.splice(i, 1)">
+          {{ alert.message }}
+        </ngb-alert>
+      </p>
+
       <div class="input-group" (click)="inputfile.click()">
         <label for="file-input" class="sr-only">
           File Input
@@ -15,10 +23,10 @@
         <label for="file-name" class="sr-only">
           File Name
         </label>
-        <input class="form-control cursor-pointer" placeholder="Select a file" id="file-name" [readonly]="true" [formControl]="form.get('file.filename')">
+        <input class="form-control form-control-sm cursor-pointer" placeholder="Select a file" id="file-name" [readonly]="true" [formControl]="form.get('file.filename')">
 
         <div class="input-group-append">
-          <button class="btn btn-primary">
+          <button class="btn btn-primary btn-sm">
             Browse
           </button>
         </div>
@@ -50,7 +58,10 @@
               class="form-control form-control-sm"
               [attr.id]="field.value.name + '-' + field.value.column"
               [formControl]="field.controls.column">
-              <option *ngFor="let column of getColumns()"
+              <option [value]="null">
+                  {{ field.value.name }} &larr; No data
+              </option>
+              <option *ngFor="let column of headers"
                 [value]="column"
                 [attr.selected]="field.value.column == column || null">
                 {{ field.value.name }} &larr; {{ column }}

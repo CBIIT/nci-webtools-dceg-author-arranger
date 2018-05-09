@@ -12,6 +12,8 @@ import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FileValueAccessor } from './directives/file-value-accessor.directive';
+import { ParserService } from './services/parser/parser.service';
+
 
 @NgModule({
   declarations: [
@@ -28,10 +30,11 @@ import { FileValueAccessor } from './directives/file-value-accessor.directive';
     BrowserModule,
     DragulaModule,
     ReactiveFormsModule,
-    NgbModule,
+    NgbModule.forRoot(),
   ],
   providers: [
     FormBuilder,
+    ParserService,
   ],
   bootstrap: [AppComponent]
 })
