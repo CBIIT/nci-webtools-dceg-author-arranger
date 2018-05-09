@@ -116,6 +116,7 @@ export class FormComponent {
           .find(control => control.value.name == node.getAttribute('data-name'))
           .patchValue({index}))
     });
+
   }
 
   getColumns() {
