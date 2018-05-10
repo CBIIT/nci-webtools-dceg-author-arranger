@@ -13,6 +13,6 @@
         class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-muted text-center">
         <span>Please upload a file to generate a preview.</span>
       </h3>
-    <p *ngIf="config?.file?.data?.length > 0" #preview></p>
+    <p style="max-height: 500px" *ngIf="config?.file?.data?.length > 0" #preview></p>
   </div>
 </div>

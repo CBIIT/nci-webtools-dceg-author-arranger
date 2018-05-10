@@ -16,10 +16,17 @@ export class PreviewComponent implements OnChanges {
   constructor(private renderer: Renderer2){}
 
   generatePreview() {
-    if (!this.preview || this.config.file.data.length == 0) return;
+    let root: HTMLElement;
+    if (this.preview) {
+      root = this.preview.nativeElement;
+      for (let child of Array.from(root.children)) {
+        this.renderer.removeChild(root, child);
+      }
+    }
 
-
-    const root: HTMLElement = this.preview.nativeElement;
+    if (!this.preview || this.config.file.data.length <= 1) {
+      return;
+    }
 
     let records = [...this.config.file.data];
     let fileHeaders = records.shift(); // remove headers

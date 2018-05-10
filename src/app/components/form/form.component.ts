@@ -105,12 +105,22 @@ export class FormComponent {
 
     this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
       try {
-        const sheets = await ps.parse(files[0])
+
+        this.alerts = [];
+
+        if (!files || files.length == 0) {
+          this.resetForm();
+          return;
+        }
+
+        const file = files[0];
+        const sheets = await ps.parse(file);
+
+        this.form.get('file.filename').patchValue(file.name);
         let validHeaders = true;
 
         let sheetData = []
         this.headers = [];
-        this.alerts = [];
 
         const controls = (this.form.get('author.fields') as FormArray).controls;
         controls.forEach(control => control.patchValue({column: null}));
@@ -123,6 +133,8 @@ export class FormComponent {
               type: 'warning',
               message: 'Please ensure the workbook contains a sheet named "Template".'
             });
+            this.resetForm();
+            this.change.emit(this.form.value);
             return;
           } else {
             sheetData = sheet.data;
@@ -136,6 +148,8 @@ export class FormComponent {
             type: 'warning',
             message: 'No data could be parsed from the file.'
           });
+          this.resetForm();
+          this.change.emit(this.form.value);
           return;
         }
 
@@ -154,35 +168,28 @@ export class FormComponent {
         }
 
         if (!validHeaders) {
+          let message = `The file contains headers not found in the template. Please ensure these headers are mapped properly in the fields below `;
+          if (!this.headers.includes('Affiliations'))
+            message += ', and the file contains an "Affiliations" header'
           this.alerts.push({
             type: 'info',
-            message: `The file contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.`
+            message: message + '.'
           });
         }
 
         if (!this.headers.includes('Affiliations')) {
-          this.alerts.push({
-            type: 'danger',
-            message: `The file does not contain an "Affiliations" header.`
-          });
           return;
         }
 
         this.form.get('file').patchValue({data: sheetData});
       } catch (e) {
+        console.log(e);
         this.alerts.push({
           type: 'danger',
           message: 'Please upload a valid excel workbook.'
         });
-      }
-    })
-
-    this.form.get('file.files').valueChanges.subscribe((files: FileList) => {
-      if (files.length) {
-        const file = files[0];
-        this.form.get('file.filename').patchValue(file.name);
-      } else {
-        this.form.get('file.filename').patchValue('');
+        this.resetForm();
+        this.change.emit(this.form.value);
       }
     });
 
@@ -196,6 +203,85 @@ export class FormComponent {
           .patchValue({index}))
     });
 
+  }
+
+  resetForm() {
+    this.headers = [];
+
+    this.form.reset({
+      file: {
+        filename: '',
+        files: null,
+        data: [],
+      },
+
+      author: {
+        fields: [
+          {
+            name: 'Title',
+            column: null,
+            addPeriod: true,
+            disabled: false,
+            index: 0,
+          },
+
+          {
+            name: 'First',
+            column: null,
+            abbreviate: false,
+            addPeriod: false,
+            disabled: false,
+            index: 1,
+          },
+
+          {
+            name: 'Middle',
+            column: null,
+            abbreviate: false,
+            addPeriod: false,
+            disabled: false,
+            index: 2,
+          },
+
+          {
+            name: 'Last',
+            column: null,
+            abbreviate: false,
+            addPeriod: false,
+            disabled: false,
+            index: 3,
+          },
+
+          {
+            name: 'Degree',
+            column: null,
+            addComma: false,
+            addPeriod: false,
+            disabled: false,
+            index: 4,
+          },
+
+          {
+            name: 'Other',
+            column: null,
+            addComma: false,
+            addPeriod: false,
+            disabled: false,
+            index: 5,
+          },
+        ],
+        separator: 'comma',
+        customSeparator: '',
+        labelPosition: 'superscript',
+      },
+
+      affiliation: {
+        separator: 'comma',
+        customSeparator: '',
+        labelPosition: 'superscript',
+        labelStyle: 'numeric',
+      },
+    }, {emitEvent: false})
   }
 
   getColumns() {
