@@ -7,8 +7,12 @@
 
     <a class="text-muted font-weight-bold small" href="#" (click)="downloadPreview()">(download .docx)</a>
   </div>
-  <div class="card-body d-flex align-items-center justify-content-center mh-100" style="overflow: auto;">
-    <h3 class="h5 font-weight-light text-muted text-center" *ngIf="!data">Please upload a file to generate a preview.</h3>
-    <pre *ngIf="data" class="w-100">{{ data | json }}</pre>
+  <div class="card-body mh-100 h-100" style="overflow: auto;">
+      <h3
+        *ngIf="config?.file?.data?.length == 0 || !config?.file?.data"
+        class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-muted text-center">
+        <span>Please upload a file to generate a preview.</span>
+      </h3>
+    <p *ngIf="config?.file?.data?.length > 0" #preview></p>
   </div>
 </div>

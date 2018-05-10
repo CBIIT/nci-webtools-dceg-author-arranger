@@ -52,18 +52,18 @@
           [attr.data-name]="field.value.name">
           <div>
             <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
-              {{ field.value.name }} is mapped to the {{ field.value.column }} column
+              {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
             </label>
             <select
               class="form-control form-control-sm"
               [attr.id]="field.value.name + '-' + field.value.column"
               [formControl]="field.controls.column">
-              <option [value]="null">
+              <option [ngValue]="null">
                   {{ field.value.name }} &larr; No data
               </option>
-              <option *ngFor="let column of headers"
-                [value]="column"
-                [attr.selected]="field.value.column == column || null">
+              <option *ngFor="let column of headers; index as columnIndex;"
+                [ngValue]="columnIndex"
+                [attr.selected]="field.value.column == columnIndex || null">
                 {{ field.value.name }} &larr; {{ column }}
               </option>
             </select>

@@ -15,7 +15,7 @@ export class FormComponent {
   form: FormGroup;
 
   templateHeaders = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Affiliations', 'Other']
-  headers = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Other'];
+  headers = [];
 
   @Output()
   change: EventEmitter<any> = new EventEmitter<any>();
@@ -35,7 +35,7 @@ export class FormComponent {
         fields: fb.array([
           fb.group({
             name: 'Title',
-            column: 'Title',
+            column: null,
             addPeriod: true,
             disabled: false,
             index: 0,
@@ -43,7 +43,7 @@ export class FormComponent {
 
           fb.group({
             name: 'First',
-            column: 'First',
+            column: null,
             abbreviate: false,
             addPeriod: false,
             disabled: false,
@@ -52,7 +52,7 @@ export class FormComponent {
 
           fb.group({
             name: 'Middle',
-            column: 'Middle',
+            column: null,
             abbreviate: false,
             addPeriod: false,
             disabled: false,
@@ -61,7 +61,7 @@ export class FormComponent {
 
           fb.group({
             name: 'Last',
-            column: 'Last',
+            column: null,
             abbreviate: false,
             addPeriod: false,
             disabled: false,
@@ -70,7 +70,7 @@ export class FormComponent {
 
           fb.group({
             name: 'Degree',
-            column: 'Degree',
+            column: null,
             addComma: false,
             addPeriod: false,
             disabled: false,
@@ -79,7 +79,7 @@ export class FormComponent {
 
           fb.group({
             name: 'Other',
-            column: 'Other',
+            column: null,
             addComma: false,
             addPeriod: false,
             disabled: false,
@@ -134,12 +134,11 @@ export class FormComponent {
         if (sheetData.length <= 1) {
           this.alerts.push({
             type: 'warning',
-            message: 'No data could be parsed from the workbook.'
+            message: 'No data could be parsed from the file.'
           });
           return;
         }
 
-        console.log(sheetData)
         this.headers = sheetData[0];
 
         // attempt to match file headers with form fields
@@ -148,7 +147,7 @@ export class FormComponent {
           controls.forEach(control => control.patchValue({column: null}));
           const control = controls.find((item: FormGroup) => item.value.name == header);
           if (control) {
-            setTimeout(() => control.patchValue({column: header}), 0);
+            setTimeout(() => control.patchValue({column: this.headers.indexOf(header)}), 0);
           } else if (!this.templateHeaders.includes(header)) {
             validHeaders = false;
           }
@@ -157,8 +156,16 @@ export class FormComponent {
         if (!validHeaders) {
           this.alerts.push({
             type: 'info',
-            message: `This workbook contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.`
+            message: `The file contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.`
           });
+        }
+
+        if (!this.headers.includes('Affiliations')) {
+          this.alerts.push({
+            type: 'danger',
+            message: `The file does not contain an "Affiliations" header.`
+          });
+          return;
         }
 
         this.form.get('file').patchValue({data: sheetData});
@@ -196,6 +203,8 @@ export class FormComponent {
   }
 
   useExample() {
+
+    const controls = this.form.controls;
     const file = this.form.controls.file as FormGroup;
     file.patchValue({
       filename: 'AuthorArranger Example.xlsx',
@@ -206,5 +215,19 @@ export class FormComponent {
         ["Ms","Sue",null,"Pan","MS","Center for Biomedical Informatics and Information Technology, National Cancer Institude, Rockville, MD, USA"]
       ],
     });
+
+    this.headers = [...this.templateHeaders];
+    this.headers.forEach((header, index) => {
+      setTimeout(() => {
+        const controls = (<FormArray>this.form.get('author.fields')).controls;
+        let control = controls.find(control => control.value.name == header);
+        if (control) {
+          let column = this.headers.indexOf(header);
+          control.patchValue({column, index})
+        };
+      }, 0);
+    })
+
+
   }
 }
