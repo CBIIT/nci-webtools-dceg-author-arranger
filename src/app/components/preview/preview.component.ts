@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import * as FileSaver from 'file-saver';
+import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 
 @Component({
   selector: 'author-arranger-preview',
@@ -110,6 +112,8 @@ export class PreviewComponent implements OnChanges {
         inline: 'span',
       }[config.labelPosition];
 
+      let numericLabels = this.config.affiliation.labelStyle == 'numeric';
+
       let separator = separatorMap[config.separator] ||
         config.customSeparator;
 
@@ -120,21 +124,25 @@ export class PreviewComponent implements OnChanges {
       );
 
       let label = this.renderer.createElement(labelType);
-      this.renderer.setStyle(label, 'margin', '0px 8px 0px 0px');
+      this.renderer.setStyle(label, 'margin', '0px 4px 0 2px');
       this.renderer.appendChild(label,
         this.renderer.createText(
           author.affiliations
-            .map(e => e + 1)
+            .map(e =>
+              numericLabels ? e + 1 : this.toColumnName(e + 1))
             .join(', '))
       )
 
       this.renderer.appendChild(authorEl,
         this.renderer.createText(index < authors.length - 1
           ? separator
-          : ' ')
+          : '')
       );
 
       this.renderer.appendChild(authorEl, label);
+      this.renderer.appendChild(authorEl,
+        this.renderer.createText(' ')
+      );
 
       if (separator == '\n') {
         this.renderer.appendChild(authorEl,
@@ -155,16 +163,22 @@ export class PreviewComponent implements OnChanges {
         inline: 'span',
       }[config.labelPosition];
 
+      let numericLabels = this.config.affiliation.labelStyle == 'numeric';
+
       let separator = separatorMap[config.separator] ||
         config.customSeparator;
 
       let affiliationEl = this.renderer.createElement('span');
       this.renderer.setStyle(affiliationEl, 'margin-right', '4px')
 
-      let affiliationLabelText = this.renderer.createText((index + 1).toString());
+      let affiliationLabelText = this.renderer.createText(
+        (numericLabels
+          ? index + 1
+          : this.toColumnName(index + 1)
+         ).toString()
+      );
       let affiliationLabel = this.renderer.createElement(labelType);
       affiliationLabel.appendChild(affiliationLabelText);
-      this.renderer.setStyle(affiliationLabel, 'margin-right', '4px')
 
       this.renderer.appendChild(affiliationEl,
         this.renderer.createText(affiliation)
@@ -183,6 +197,9 @@ export class PreviewComponent implements OnChanges {
       }
 
       affiliationsParagraph.appendChild(affiliationLabel);
+      affiliationsParagraph.appendChild(
+        this.renderer.createText(' ')
+      );
       affiliationsParagraph.appendChild(affiliationEl);
     })
 
@@ -194,7 +211,18 @@ export class PreviewComponent implements OnChanges {
   }
 
   downloadPreview() {
-    console.log('generating download...')
+    if (this.preview && this.config.file.data.length > 1) {
+      const filename = this.config.file.filename.replace(/\.[^/\\.]+$/, '.docx');
+      const html = (this.preview.nativeElement as HTMLElement).innerHTML;
+      FileSaver.saveAs(htmlDocx.asBlob(html), filename);
+    }
+  }
+
+  toColumnName(num: number) {
+    for (var ret = '', a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
+      ret = String.fromCharCode((+(num % b) / a) + 65) + ret;
+    }
+    return ret;
   }
 
   ngOnChanges(changes: SimpleChanges) {
