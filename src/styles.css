@@ -2,6 +2,10 @@
     cursor: pointer;
 }
 
+.w-inherit {
+    width: inherit !important;
+}
+
 .form-control:disabled, .form-control[readonly] {
     background-color: #f4f4f4;
     opacity: 1;
