@@ -14,6 +14,7 @@ export interface FormatParameters {
             abbreviate?: boolean;
             addPeriod?: boolean;
             addComma?: boolean;
+            removeSpace?: boolean;
             disabled?: boolean;
         }[];
         separator: string;

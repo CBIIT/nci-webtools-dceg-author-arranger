@@ -62,15 +62,21 @@
       </h3>
 
       <div dragula="author-fields">
-
-        <div href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center flex-wrap" *ngFor="let field of form.get('author.fields')['controls']"
+        <div
+          class="list-group-item d-flex p-0"
+          *ngFor="let field of form.get('author.fields')['controls']"
           [attr.data-name]="field.value.name">
-          <div>
+
+          <div class="d-flex align-items-center p-2 bg-light rounded-left border-right c-move" dragula-handle="true">
+            <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
+          </div>
+
+          <div class="d-flex p-2 align-items-center justify-content-between" style="flex-grow: 1">
             <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
               {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
             </label>
             <select
-              class="form-control form-control-sm"
+              class="form-control form-control-sm w-inherit"
               [attr.id]="field.value.name + '-' + field.value.column"
               [formControl]="field.controls.column">
               <option [ngValue]="null">
@@ -82,27 +88,27 @@
                 {{ field.value.name }} &larr; {{ column }}
               </option>
             </select>
-          </div>
 
-          <div class="d-flex flex-wrap small">
-            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
-              <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
-            </label>
+            <div class="d-flex flex-wrap small">
+              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
+                <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
+              </label>
 
-            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
-              <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma">Add Comma
-            </label>
+              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
+                <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace">Remove Space
+              </label>
 
-            <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
-              <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod">Add Period
-            </label>
+              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
+                <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma">Add Comma
+              </label>
+
+              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
+                <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod">Add Period
+              </label>
+            </div>
           </div>
         </div>
-
       </div>
-
-
-
 
       <h3 style="font-size: 1rem;" class="mt-4">Author Affiliation</h3>
       <div class="form-check form-check-inline">

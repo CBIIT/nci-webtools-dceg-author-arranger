@@ -11,8 +11,7 @@ export class ParserService {
   constructor() { }
 
   async parse(file: File) {
-    const byteString = await this.readAsBinary(file);
-
+    const byteString = await this.readFile(file);
     const workbook = xlsx.read(byteString, {type: 'binary'});
 
     const sheets = [];
@@ -25,17 +24,22 @@ export class ParserService {
     return sheets;
   }
 
-  readAsBinary(file: File) {
+  readFile(file: File) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         try {
-          resolve(e.target.result);
+          let byteString = '';
+          let bytes = new Uint8Array(e.target.result);
+          for (let i = 0; i < bytes.byteLength; i ++) {
+            byteString += String.fromCharCode(bytes[i]);
+          }
+          resolve(byteString);
         } catch (e) {
           reject(e);
         }
       }
-      reader.readAsBinaryString(file);
+      reader.readAsArrayBuffer(file);
     });
   }
 

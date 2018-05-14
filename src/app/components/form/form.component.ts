@@ -125,6 +125,7 @@ export class FormComponent {
             column: null,
             abbreviate: false,
             addPeriod: false,
+            removeSpace: false,
             disabled: false,
             index: 1,
           }),
@@ -134,6 +135,7 @@ export class FormComponent {
             column: null,
             abbreviate: false,
             addPeriod: false,
+            removeSpace: false,
             disabled: false,
             index: 2,
           }),
@@ -253,6 +255,10 @@ export class FormComponent {
         this.resetForm();
         this.change.emit(this.form.value);
       }
+    });
+
+    ds.setOptions('author-fields', {
+      invalid: (el, handle) => handle.getAttribute('dragula-handle') === null
     });
 
     // set form field indexes when dragged
