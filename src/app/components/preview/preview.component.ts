@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { FormatParameters } from '../../app.models';
 import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 
@@ -10,7 +11,7 @@ import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 export class PreviewComponent implements OnChanges {
 
   @Input()
-  config: any = {};
+  config: FormatParameters;
 
   @ViewChild('preview')
   preview: ElementRef;
@@ -18,6 +19,7 @@ export class PreviewComponent implements OnChanges {
   constructor(private renderer: Renderer2){}
 
   generatePreview() {
+
     let root: HTMLElement;
     if (this.preview) {
       root = this.preview.nativeElement;
@@ -26,14 +28,16 @@ export class PreviewComponent implements OnChanges {
       }
     }
 
-    if (!this.preview || this.config.file.data.length <= 1) {
+    if (!this.preview ||
+      !this.config ||
+      this.config.file.data.length <= 1 ||
+      this.config.affiliation.column === null) {
       return;
     }
 
     let records = [...this.config.file.data];
-    let fileHeaders = records.shift(); // remove headers
-    let affiliationsIndex = fileHeaders.indexOf('Affiliations');
-    if (affiliationsIndex == -1) return;
+    let headers = [...this.config.file.headers];
+    let affiliationsIndex = this.config.affiliation.column;
 
     const authors = [];
     const affiliations = [];
@@ -47,11 +51,11 @@ export class PreviewComponent implements OnChanges {
 
     const columns = this.config.author.fields
       .filter(field => field.column !== null && !field.disabled)
-      .sort((a, b) => a.index > b.index)
+      .sort((a, b) => a.index - b.index)
       .map(field => ({... field, formatter: (text) => {
         if (!text) return null;
 
-        let value = text;
+        let value = text.replace(/;/g, ',');
 
         if (field.abbreviate)
           value = value[0];
@@ -66,7 +70,6 @@ export class PreviewComponent implements OnChanges {
       }}));
 
     for (let record of records) {
-
 
       const authorText = columns
         .map(field =>  field.formatter(record[field.column]))
@@ -124,24 +127,26 @@ export class PreviewComponent implements OnChanges {
       );
 
       let label = this.renderer.createElement(labelType);
-      this.renderer.setStyle(label, 'margin', '0px 4px 0 2px');
+      // this.renderer.setStyle(label, 'margin', '0px 4px 0 2px');
       this.renderer.appendChild(label,
         this.renderer.createText(
           author.affiliations
             .map(e =>
               numericLabels ? e + 1 : this.toColumnName(e + 1))
-            .join(', '))
+            .join(','))
       )
 
-      this.renderer.appendChild(authorEl,
-        this.renderer.createText(index < authors.length - 1
-          ? separator
-          : '')
-      );
+      if (labelType == 'span') {
+        this.renderer.appendChild(authorEl,
+          this.renderer.createText(' ')
+        );
+      }
 
       this.renderer.appendChild(authorEl, label);
       this.renderer.appendChild(authorEl,
-        this.renderer.createText(' ')
+        this.renderer.createText(index < authors.length - 1
+          ? separator + ' '
+          : '')
       );
 
       if (separator == '\n') {
@@ -197,17 +202,17 @@ export class PreviewComponent implements OnChanges {
       }
 
       affiliationsParagraph.appendChild(affiliationLabel);
-      affiliationsParagraph.appendChild(
-        this.renderer.createText(' ')
-      );
+      if (labelType == 'span') {
+        affiliationsParagraph.appendChild(
+          this.renderer.createText(' ')
+        );
+      }
       affiliationsParagraph.appendChild(affiliationEl);
     })
 
     this.renderer.appendChild(root, authorParagraph);
     // this.renderer.appendChild(root, this.renderer.createElement('br'));
     this.renderer.appendChild(root, affiliationsParagraph);
-
-
   }
 
   downloadPreview() {
@@ -227,15 +232,13 @@ export class PreviewComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.config) {
-      let data = changes.config;
-      let { currentValue, previousValue } = data;
+      const { currentValue, previousValue } = changes.config;
 
-      // only generate previews for form parameters
-      if (currentValue.constructor == Event) {
-        this.config = previousValue;
-      } else {
+      if (currentValue && currentValue.constructor != Event) {
         this.config = currentValue;
         this.generatePreview();
+      } else {
+        this.config = previousValue;
       }
     }
   }

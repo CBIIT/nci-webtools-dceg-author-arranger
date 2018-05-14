@@ -1,5 +1,4 @@
-
-<div class="card shadow-sm h-100">
+<div class="card shadow-sm h-100" style="min-height: 400px">
   <div class="card-header d-flex justify-content-between align-items-baseline">
     <h2 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">
       Preview
@@ -8,11 +7,9 @@
     <a class="text-muted font-weight-bold small" href="#" (click)="downloadPreview()">(download .docx)</a>
   </div>
   <div class="card-body mh-100 h-100" style="overflow: auto;">
-      <h3
-        *ngIf="config?.file?.data?.length == 0 || !config?.file?.data"
-        class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-muted text-center">
-        <span>Please upload a file to generate a preview.</span>
-      </h3>
-    <p style="max-height: 500px" *ngIf="config?.file?.data?.length > 0" #preview></p>
+    <h3 *ngIf="!config || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-muted text-center">
+      <span>Please upload a file to generate a preview.</span>
+    </h3>
+    <p style="max-height: 500px" [hidden]="!config || config?.file?.data?.length === 0" #preview></p>
   </div>
 </div>

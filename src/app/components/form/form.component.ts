@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
 import { ParserService } from '../../services/parser/parser.service';
-import { FormatParameters } from './form.models';
+import { FormatParameters } from '../../app.models';
 
 @Component({
   selector: 'author-arranger-form',
@@ -179,8 +179,9 @@ export class FormComponent {
       }),
     });
 
-    this.form.valueChanges.subscribe((value: FormatParameters) =>
-      this.change.emit(value));
+    this.form.valueChanges.subscribe((value: FormatParameters) => {
+      this.change.emit(value);
+    });
 
     this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
       try {
@@ -225,9 +226,11 @@ export class FormComponent {
         }
 
         const fileHeaders = sheet.data.shift();
-        this.form.get('file.filename').patchValue(file.name);
-        this.form.get('file.headers').patchValue(fileHeaders);
-        this.form.get('file.data').patchValue({data: [...sheet.data]});
+        this.form.get('file').patchValue({
+          filename: file.name,
+          headers: fileHeaders,
+          data: sheet.data,
+        });
 
         // attempt to map file headers to columns with the same name
         if (!this.mapHeaders(fileHeaders)) {
