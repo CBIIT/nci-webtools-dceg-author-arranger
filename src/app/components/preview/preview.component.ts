@@ -30,6 +30,7 @@ export class PreviewComponent implements OnChanges {
 
     if (!this.preview ||
       !this.config ||
+      !this.config.file.data ||
       this.config.file.data.length <= 1 ||
       this.config.affiliation.column === null) {
       return;
