@@ -76,10 +76,7 @@
             <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
           </div>
 
-          <div class="d-flex p-2 align-items-center justify-content-between flex-wrap" style="flex-grow: 1">
-            <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
-              {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
-            </label>
+          <div class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1">
             <select
               class="form-control form-control-sm w-sm-inherit"
               [attr.id]="field.value.name + '-' + field.value.column"
@@ -93,6 +90,9 @@
                 {{ field.value.name }} &larr; {{ column }}
               </option>
             </select>
+            <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
+                {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
+              </label>
 
             <div class="d-flex flex-wrap small py-1">
               <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
