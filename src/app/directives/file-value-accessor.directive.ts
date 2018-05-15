@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, ElementRef } from '@angular/core';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from "@angular/forms";
 
 @Directive({
@@ -13,8 +13,13 @@ import {NG_VALUE_ACCESSOR, ControlValueAccessor} from "@angular/forms";
 })
 export class FileValueAccessor implements ControlValueAccessor {
     value: any;
-    onChange = (_) => {};
+
     onTouched = () => {};
+    onChange = (val: any) => {
+        if (!val) this.hostElement.nativeElement.value = '';
+    };
+
+    constructor(private hostElement: ElementRef) {}
 
     writeValue(value) {}
     registerOnChange(fn: any) { this.onChange = fn; }
