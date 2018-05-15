@@ -78,13 +78,13 @@ export class PreviewComponent implements OnChanges {
       .map(field => ({... field, formatter: (text) => {
         let value = text.replace(/;/g, ',');
 
-        if (field.abbreviate)
-          value = value[0] || '';
+        if (field.abbreviate && value.length > 0)
+          value = value[0];
 
-        if (field.addPeriod)
+        if (field.addPeriod && value.length > 0)
           value += '.';
 
-        if (field.addComma)
+        if (field.addComma && value.length > 0)
           value += ',';
 
         if (!field.abbreviate
