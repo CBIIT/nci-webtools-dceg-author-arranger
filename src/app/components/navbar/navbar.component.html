@@ -4,24 +4,19 @@
     <img class="d-none d-sm-inline-block" src="assets/images/author-arranger-logo.png" height="34" alt="Author Arranger Logo">
   </a>
 
-  <button
-    (click)="navbarCollapsed = !navbarCollapsed"
-    class="navbar-toggler"
-    aria-controls="navbar-content"
-    [attr.aria-expanded]="!navbarCollapsed"
+  <button (click)="navbarCollapsed = !navbarCollapsed" class="navbar-toggler" aria-controls="navbar-content" [attr.aria-expanded]="!navbarCollapsed"
     aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbar-content" [ngbCollapse]="navbarCollapsed">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" [ngClass]="{'active': router.url == '/'}">
+      <li class="nav-item" [class.active]="router.url == '/'">
         <a class="nav-link" [routerLink]="['/']">Home</a>
       </li>
-      <li class="nav-item"  [ngClass]="{'active': router.url == '/help'}">
+      <li class="nav-item" [class.active]="router.url == '/help'">
         <a class="nav-link" [routerLink]="['/help']">Help</a>
       </li>
-
     </ul>
   </div>
 </nav>
