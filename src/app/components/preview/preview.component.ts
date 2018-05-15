@@ -93,7 +93,7 @@ export class PreviewComponent implements OnChanges {
         || (field.abbreviate && !field.removeSpace))
           value += ' ';
 
-        return value;
+        return value.trim();
       }}));
 
 
