@@ -50,6 +50,28 @@ export class PreviewComponent implements OnChanges {
       other: null
     };
 
+    const labelFormatter = (index) => {
+      switch(this.config.affiliation.labelStyle) {
+        case 'numbers':
+          return index;
+
+        case 'letters-lowercase':
+          return this.toColumnName(index).toLowerCase();
+
+        case 'letters-uppercase':
+          return this.toColumnName(index).toUpperCase();
+
+        case 'numerals-lowercase':
+          return this.toRomanNumerals(index).toLowerCase();
+
+        case 'numerals-uppercase':
+          return this.toRomanNumerals(index).toUpperCase();
+
+        default:
+          return index;
+      }
+    };
+
     const columns = this.config.author.fields
       .filter(field => field.column !== null && !field.disabled)
       .sort((a, b) => a.index - b.index)
@@ -65,17 +87,22 @@ export class PreviewComponent implements OnChanges {
           value += '.';
 
         if (field.addComma)
-          value += ','
+          value += ',';
+
+        if (!field.abbreviate
+        || (field.abbreviate && !field.removeSpace))
+          value += ' ';
 
         return value;
       }}));
+
 
     for (let record of records) {
 
       const authorText = columns
         .map(field =>  field.formatter(record[field.column]))
         .filter(item => item != null)
-        .join(' ');
+        .join('');
 
       const authorAffiliations = (record[affiliationsIndex] || '')
         .split(';')
@@ -116,8 +143,6 @@ export class PreviewComponent implements OnChanges {
         inline: 'span',
       }[config.labelPosition];
 
-      let numericLabels = this.config.affiliation.labelStyle == 'numeric';
-
       let separator = separatorMap[config.separator] ||
         config.customSeparator;
 
@@ -132,8 +157,8 @@ export class PreviewComponent implements OnChanges {
       this.renderer.appendChild(label,
         this.renderer.createText(
           author.affiliations
-            .map(e =>
-              numericLabels ? e + 1 : this.toColumnName(e + 1))
+            .map(e => e + 1)
+            .map(labelFormatter)
             .join(','))
       )
 
@@ -177,12 +202,7 @@ export class PreviewComponent implements OnChanges {
       let affiliationEl = this.renderer.createElement('span');
       this.renderer.setStyle(affiliationEl, 'margin-right', '4px')
 
-      let affiliationLabelText = this.renderer.createText(
-        (numericLabels
-          ? index + 1
-          : this.toColumnName(index + 1)
-         ).toString()
-      );
+      let affiliationLabelText = this.renderer.createText(labelFormatter(index + 1));
       let affiliationLabel = this.renderer.createElement(labelType);
       affiliationLabel.appendChild(affiliationLabelText);
 
@@ -229,6 +249,19 @@ export class PreviewComponent implements OnChanges {
       ret = String.fromCharCode((+(num % b) / a) + 65) + ret;
     }
     return ret;
+  }
+
+  toRomanNumerals(num: number) {
+    var roman =  {"M" :1000, "CM":900, "D":500, "CD":400, "C":100, "XC":90, "L":50, "XL":40, "X":10, "IX":9, "V":5, "IV":4, "I":1};
+    var str = "";
+
+    for (var i of Object.keys(roman) ) {
+      var q = Math.floor(num / roman[i]);
+      num -= q * roman[i];
+      str += i.repeat(q);
+    }
+
+    return str;
   }
 
   ngOnChanges(changes: SimpleChanges) {

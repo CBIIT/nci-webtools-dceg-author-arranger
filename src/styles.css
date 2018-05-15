@@ -1,9 +1,17 @@
+body {
+    min-height: 100vh;
+}
+
 .c-pointer {
     cursor: pointer;
 }
 
 .c-move {
     cursor: move;
+}
+
+.opacity-75 {
+    opacity: 0.75;
 }
 
 .pointer-events-none {
@@ -14,15 +22,42 @@
     width: inherit !important;
 }
 
+@media (min-width: 576px) {
+    .w-sm-inherit {
+        width: inherit !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .w-md-inherit {
+        width: inherit !important;
+    }
+}
+
 .form-control:disabled, .form-control[readonly] {
     background-color: #f4f4f4;
     opacity: 1;
 }
 
 .small .alert-dismissible .close {
-    padding: 0.25rem 0.5rem;
+    padding: 0 0.3rem;
 }
 
 .gu-mirror.list-group-item {
     border-radius: 4px;
+}
+
+.spin {
+    animation: spin 1000ms infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
 }

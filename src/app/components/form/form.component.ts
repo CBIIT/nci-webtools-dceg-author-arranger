@@ -16,7 +16,13 @@ export class FormComponent {
 
   alerts: {type: string, message: string}[] = [];
 
+  loading: boolean = false;
+
   form: FormGroup = null;
+
+  dragOptions = {
+    invalid: (el, handle) => handle.getAttribute('drag-handle') === null
+  }
 
   defaultHeaders = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Affiliations', 'Other']
 
@@ -43,6 +49,7 @@ export class FormComponent {
           column: null,
           abbreviate: false,
           addPeriod: false,
+          removeSpace: false,
           disabled: false,
           index: 1,
         },
@@ -52,6 +59,7 @@ export class FormComponent {
           column: null,
           abbreviate: false,
           addPeriod: false,
+          removeSpace: false,
           disabled: false,
           index: 2,
         },
@@ -93,7 +101,7 @@ export class FormComponent {
       separator: 'comma',
       customSeparator: '',
       labelPosition: 'superscript',
-      labelStyle: 'numeric',
+      labelStyle: 'numbers',
     },
   };
 
@@ -177,7 +185,7 @@ export class FormComponent {
         separator: 'comma',
         customSeparator: '',
         labelPosition: 'superscript',
-        labelStyle: 'numeric',
+        labelStyle: 'numbers',
       }),
     });
 
@@ -199,7 +207,14 @@ export class FormComponent {
         }
 
         const file = files[0];
+
+        // only show loading indicator if file is above 512 kb
+        if (file.size > 512 * 1024)
+          this.loading = true;
+
         const sheets = await ps.parse(file);
+        this.loading = false;
+        this.alerts.pop();
 
         if (sheets.length == 0) {
           throw({
@@ -243,6 +258,7 @@ export class FormComponent {
         }
 
       } catch (e) {
+        this.loading = false;
         if (e.type && e.message) {
           this.alerts.push(e);
         } else {
@@ -257,9 +273,6 @@ export class FormComponent {
       }
     });
 
-    ds.setOptions('author-fields', {
-      invalid: (el, handle) => handle.getAttribute('dragula-handle') === null
-    });
 
     // set form field indexes when dragged
     ds.drop.subscribe((value: [string, HTMLElement, HTMLElement]) => {
@@ -311,7 +324,8 @@ export class FormComponent {
         data: [
           ["Dr","Mitchell","John","Machiela","ScD; MPH","Integrative Tumor Epidemiology Branch, Division of Cancer Epidemiology and Genetics, National Cancer Institute, Rockville, MD, USA"],
           ["Mr","Geoffrey",null,"Tobias","BS","Office of the Directory, Division of Cancer Epidemiology and Genetics, National Cancer Institute, Rockville, MD, USA"],
-          ["Ms","Sue",null,"Pan","MS","Center for Biomedical Informatics and Information Technology, National Cancer Institute, Rockville, MD, USA"]
+          ["Ms","Sue",null,"Pan","MS","Center for Biomedical Informatics and Information Technology, National Cancer Institute, Rockville, MD, USA"],
+          ["Dr","Ye",null,"Wu","MS; PhD","Center for Biomedical Informatics and Information Technology, National Cancer Institute, Rockville, MD, USA"],
         ],
       }
     });

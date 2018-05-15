@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'author-arranger-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-}
+export class AppComponent {}

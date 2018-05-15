@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>AuthorArranger</title>
@@ -8,11 +9,24 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.1.1/dist/css/bootstrap.min.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body>
-  <a href="https://dceg.cancer.gov/" class="d-block">
-    <img height="90" src="assets/images/dceg-logo.svg" alt="Division of Cancer Epidemiology &amp; Genetics">
-  </a>
-  <author-arranger-root></author-arranger-root>
+
+<body class="d-flex flex-column">
+
+  <a class="sr-only sr-only-focusable" href="#main">Skip to main content</a>
+
+  <header>
+    <a href="https://dceg.cancer.gov/" class="d-block">
+      <img height="90" src="assets/images/dceg-logo.svg" alt="Division of Cancer Epidemiology &amp; Genetics">
+    </a>
+  </header>
+
+  <author-arranger-root class="d-flex flex-column flex-grow-1">
+    <div class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+      <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+      <span class="text-dark">Loading...</span>
+    </div>
+  </author-arranger-root>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js" defer></script>
 </body>
+
 </html>

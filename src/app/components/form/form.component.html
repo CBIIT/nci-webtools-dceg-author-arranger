@@ -1,9 +1,14 @@
+<div *ngIf="loading" class="fade-opacity p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+  <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+  <span>Loading File</span>
+</div>
+
 <form [formGroup]="form">
 
   <div class="card shadow-sm mb-4">
     <div class="card-header d-flex justify-content-between align-items-baseline flex-wrap">
       <h2 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">Upload Author Information</h2>
-      <a class="text-muted font-weight-bold small" href="#" (click)="useExample()">(use example)</a>
+      <a class="text-dark font-weight-bold small" href="#" (click)="resetForm(); useExample()">(use example)</a>
     </div>
     <div class="card-body">
       <p *ngFor="let alert of alerts; let i = index" class="small">
@@ -14,7 +19,7 @@
         </ngb-alert>
       </p>
 
-      <div class="input-group" (click)="inputfile.click()">
+      <div class="input-group" (click)="resetForm(); inputfile.click()">
         <label for="file-input" class="sr-only">
           File Input
         </label>
@@ -30,7 +35,7 @@
           File Name
         </label>
         <input
-          class="form-control cursor-pointer"
+          class="form-control c-pointer"
           placeholder="Select a file"
           id="file-name"
           [readonly]="true"
@@ -42,7 +47,7 @@
           </button>
         </div>
       </div>
-      <small class="form-text text-muted mb-2">
+      <small class="form-text text-dark mb-2">
         Supported formats: xls, xlsx, csv, txt
       </small>
 
@@ -58,25 +63,25 @@
     </div>
     <div class="card-body">
       <h3 style="font-size: 1rem;">Fields
-        <small class="text-muted font-weight-bold">(drag to reorder)</small>
+        <small class="text-dark font-weight-bold">(drag to reorder)</small>
       </h3>
 
-      <div dragula="author-fields">
+      <div dragula="author-fields" [dragulaOptions]="dragOptions">
         <div
           class="list-group-item d-flex p-0"
           *ngFor="let field of form.get('author.fields')['controls']"
           [attr.data-name]="field.value.name">
 
-          <div class="d-flex align-items-center p-2 bg-light rounded-left border-right c-move" dragula-handle="true">
+          <div class="d-flex align-items-center p-2 bg-light rounded-left border-right c-move" drag-handle="true">
             <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
           </div>
 
-          <div class="d-flex p-2 align-items-center justify-content-between" style="flex-grow: 1">
+          <div class="d-flex p-2 align-items-center justify-content-between flex-wrap" style="flex-grow: 1">
             <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
               {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
             </label>
             <select
-              class="form-control form-control-sm w-inherit"
+              class="form-control form-control-sm w-sm-inherit"
               [attr.id]="field.value.name + '-' + field.value.column"
               [formControl]="field.controls.column">
               <option [ngValue]="null">
@@ -89,13 +94,13 @@
               </option>
             </select>
 
-            <div class="d-flex flex-wrap small">
-              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
-                <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
-              </label>
-
+            <div class="d-flex flex-wrap small py-1">
               <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
                 <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace">Remove Space
+              </label>
+
+              <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
+                <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
               </label>
 
               <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
@@ -175,9 +180,6 @@
           Other Separator Input
         </label>
       </div>
-
-
-
     </div>
   </div>
 
@@ -188,6 +190,7 @@
     <div class="card-body">
 
       <h3 style="font-size: 1rem;" class="">Affiliation Column</h3>
+      <label class="sr-only" for="affiliation-column">Affiliation column</label>
       <select
         class="form-control form-control-sm d-inline-block w-inherit"
         id="affiliation-column"
@@ -271,20 +274,47 @@
 
       <h3 style="font-size: 1rem;" class="mt-4">Label Style</h3>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numeric" value="numeric"
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numbers" value="numbers"
           [formControl]="form.get('affiliation.labelStyle')">
-        <label class="form-check-label" for="affiliation-label-style-numeric">
-          Numeric
+        <label class="form-check-label" for="affiliation-label-style-numbers">
+          numbers
         </label>
       </div>
 
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-alphabetic" value="alphabetic"
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-letters-lowercase" value="letters-lowercase"
           [formControl]="form.get('affiliation.labelStyle')">
-        <label class="form-check-label" for="affiliation-label-style-alphabetic">
-          Alphabetic
+        <label class="form-check-label" for="affiliation-label-style-letters-lowercase">
+          letters
         </label>
       </div>
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-letters-uppercase" value="letters-uppercase"
+          [formControl]="form.get('affiliation.labelStyle')">
+        <label class="form-check-label" for="affiliation-label-style-letters-uppercase">
+          LETTERS
+        </label>
+      </div>
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numerals-lowercase" value="numerals-lowercase"
+          [formControl]="form.get('affiliation.labelStyle')">
+        <label class="form-check-label" for="affiliation-label-style-numerals-lowercase">
+          numerals
+        </label>
+      </div>
+
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numerals-uppercase" value="numerals-uppercase"
+          [formControl]="form.get('affiliation.labelStyle')">
+        <label class="form-check-label" for="affiliation-label-style-numerals-uppercase">
+          NUMERALS
+        </label>
+      </div>
+
+
     </div>
   </div>
 </form>
