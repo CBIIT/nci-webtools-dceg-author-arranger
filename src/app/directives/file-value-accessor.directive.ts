@@ -15,13 +15,10 @@ export class FileValueAccessor implements ControlValueAccessor {
     value: any;
 
     onTouched = () => {};
-    onChange = (val: any) => {
-        if (!val) this.hostElement.nativeElement.value = '';
-    };
+    onChange = (_) => {};
 
     constructor(private hostElement: ElementRef) {}
-
-    writeValue(value) {}
+    writeValue(value) { if (!value) this.hostElement.nativeElement.value = ''; }
     registerOnChange(fn: any) { this.onChange = fn; }
     registerOnTouched(fn: any) { this.onTouched = fn; }
 }

@@ -312,7 +312,8 @@ export class FormComponent {
     this.form.reset({
       ...this.defaultParameters,
       ...parameters
-    }, {emitEvent: false})
+    }, {emitEvent: false});
+    this.form.updateValueAndValidity();
   }
 
   useExample(): void {
