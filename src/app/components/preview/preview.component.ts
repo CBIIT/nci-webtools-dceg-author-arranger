@@ -76,12 +76,10 @@ export class PreviewComponent implements OnChanges {
       .filter(field => field.column !== null && !field.disabled)
       .sort((a, b) => a.index - b.index)
       .map(field => ({... field, formatter: (text) => {
-        if (!text) return null;
-
         let value = text.replace(/;/g, ',');
 
         if (field.abbreviate)
-          value = value[0];
+          value = value[0] || '';
 
         if (field.addPeriod)
           value += '.';
@@ -93,16 +91,17 @@ export class PreviewComponent implements OnChanges {
         || (field.abbreviate && !field.removeSpace))
           value += ' ';
 
-        return value.trim();
+        return value;
       }}));
 
 
     for (let record of records) {
 
       const authorText = columns
-        .map(field =>  field.formatter(record[field.column]))
-        .filter(item => item != null)
-        .join('');
+        .map(field =>  field.formatter(record[field.column] || ''))
+        .filter(e => e != undefined)
+        .join('')
+        .trim();
 
       const authorAffiliations = (record[affiliationsIndex] || '')
         .split(';')
