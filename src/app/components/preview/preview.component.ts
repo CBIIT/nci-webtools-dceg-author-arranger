@@ -224,7 +224,7 @@ export class PreviewComponent implements OnChanges {
       affiliationsParagraph.appendChild(affiliationLabel);
       if (labelType == 'span') {
         affiliationsParagraph.appendChild(
-          this.renderer.createText(' ')
+          this.renderer.createText('. ')
         );
       }
       affiliationsParagraph.appendChild(affiliationEl);
@@ -236,7 +236,7 @@ export class PreviewComponent implements OnChanges {
   }
 
   downloadPreview() {
-    if (this.preview && this.config.file.data.length > 1) {
+    if (this.preview && this.config.file.data && this.config.file.data.length > 1) {
       const filename = this.config.file.filename.replace(/\.[^/\\.]+$/, '.docx');
       const html = (this.preview.nativeElement as HTMLElement).innerHTML;
       FileSaver.saveAs(htmlDocx.asBlob(html), filename);

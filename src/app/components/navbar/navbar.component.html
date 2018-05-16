@@ -1,19 +1,11 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light shadow-sm">
-  <a class="navbar-brand" href="#" title="Conquer journal title pages in seconds">
-    <h1 class="h5 font-weight-normal d-inline m-0 mr-2">Author&zwj;Arranger</h1>
-    <img class="d-none d-sm-inline-block" src="assets/images/author-arranger-logo.png" height="34" alt="Author Arranger Logo">
-  </a>
+<nav class="navbar navbar-expand-sm navbar-dark shadow-sm bg-primary" style="height: 36px;">
+  <div class="container">
 
-  <button (click)="navbarCollapsed = !navbarCollapsed" class="navbar-toggler" aria-controls="navbar-content" [attr.aria-expanded]="!navbarCollapsed"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <a class="navbar-brand" href="#" title="Conquer journal title pages in seconds" [routerLink]="['/']">
+      <h1 class="h5 font-weight-normal d-inline m-0 mr-2">Author&zwj;Arranger</h1>
+    </a>
 
-  <div class="collapse navbar-collapse" id="navbar-content" [ngbCollapse]="navbarCollapsed">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" [class.active]="router.url == '/'">
-        <a class="nav-link" [routerLink]="['/']">Home</a>
-      </li>
       <li class="nav-item" [class.active]="router.url == '/help'">
         <a class="nav-link" [routerLink]="['/help']">Help</a>
       </li>

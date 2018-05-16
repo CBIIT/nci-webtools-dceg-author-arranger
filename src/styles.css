@@ -3,6 +3,10 @@ body {
     min-height: 100vh;
 }
 
+.bg-primary {
+    background-color: #2a71a5 !important;
+}
+
 .c-pointer {
     cursor: pointer;
 }
@@ -22,6 +26,26 @@ body {
 .w-inherit {
     width: inherit !important;
 }
+
+@media (max-width: 575.98px) {
+    .w-lt-sm-100 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .w-lt-md-100 {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 1199.98px) {
+    .w-lt-lg-100 {
+        width: 100%;
+    }
+}
+
 
 @media (min-width: 576px) {
     .w-sm-inherit {

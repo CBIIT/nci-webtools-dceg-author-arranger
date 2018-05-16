@@ -6,7 +6,6 @@ import { DragulaModule } from 'ng2-dragula';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
 import { HelpComponent } from './components/help/help.component';
 import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
@@ -18,7 +17,6 @@ import { ParserService } from './services/parser/parser.service';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     HelpComponent,
     FormComponent,
     PreviewComponent,
