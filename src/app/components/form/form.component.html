@@ -119,10 +119,10 @@
             </div>
           </div>
 
-          <h3 style="font-size: 1rem;" class="mt-4">Author Affiliation</h3>
+          <h3 style="font-size: 1rem;" class="mt-4" id="author-affiliation-title">Author Affiliation</h3>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-superscript" value="superscript"
-              [formControl]="form.get('author.labelPosition')">
+              [formControl]="form.get('author.labelPosition')" aria-labelledby="author-affiliation-title">
             <label class="form-check-label" for="author-label-position-superscript">
               Superscript
             </label>
@@ -130,7 +130,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-inline" value="inline"
-              [formControl]="form.get('author.labelPosition')">
+              [formControl]="form.get('author.labelPosition')" aria-labelledby="author-affiliation-title">
             <label class="form-check-label" for="author-label-position-inline">
               Inline
             </label>
@@ -138,17 +138,17 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-subscript" value="subscript"
-              [formControl]="form.get('author.labelPosition')">
+              [formControl]="form.get('author.labelPosition')" aria-labelledby="author-affiliation-title">
             <label class="form-check-label" for="author-label-position-subscript">
               Subscript
             </label>
           </div>
 
-          <h3 style="font-size: 1rem;" class="mt-4">Author Separator</h3>
+          <h3 style="font-size: 1rem;" class="mt-4" id="author-separator-title">Author Separator</h3>
 
           <div class="form-check form-check-inline">
             <input type="radio" id="author-separator-comma" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
-              value="comma">
+              value="comma" aria-labelledby="author-separator-title">
             <label class="form-check-label" for="author-separator-comma">
               Comma
             </label>
@@ -156,7 +156,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="author-separator-newline" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
-              value="newline">
+              value="newline" aria-labelledby="author-separator-title">
             <label class="form-check-label" for="author-separator-newline">
               Newline
             </label>
@@ -164,7 +164,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="author-separator-semicolon" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
-              value="semicolon">
+              value="semicolon" aria-labelledby="author-separator-title">
             <label class="form-check-label" for="author-separator-semicolon">
               Semicolon
             </label>
@@ -173,7 +173,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="author-separator-other" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
-              value="other">
+              value="other" aria-labelledby="author-separator-title">
             <label class="sr-only" for="author-separator-other">
               Other Separator
             </label>
@@ -193,7 +193,7 @@
         </div>
         <div class="card-body">
 
-          <h3 style="font-size: 1rem;" class="">Affiliation Column</h3>
+          <h3 style="font-size: 1rem;" class="" id="affiliation-column-title">Affiliation Column</h3>
           <label class="sr-only" for="affiliation-column">Affiliation column</label>
           <select class="form-control form-control-sm d-inline-block w-inherit" id="affiliation-column" [formControl]="form.get('affiliation.column')">
             <option [ngValue]="null">
@@ -204,10 +204,10 @@
             </option>
           </select>
 
-          <h3 style="font-size: 1rem;" class="mt-4">Affiliation Separator</h3>
+          <h3 style="font-size: 1rem;" class="mt-4" id="affiliation-separator-title">Affiliation Separator</h3>
           <div class="form-check form-check-inline">
             <input type="radio" id="affiliation-separator-comma" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
-              value="comma">
+              value="comma" aria-labelledby="affiliation-separator-title">
             <label class="form-check-label" for="affiliation-separator-comma">
               Comma
             </label>
@@ -215,7 +215,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="affiliation-separator-newline" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
-              value="newline">
+              value="newline" aria-labelledby="affiliation-separator-title">
             <label class="form-check-label" for="affiliation-separator-newline">
               Newline
             </label>
@@ -223,7 +223,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="affiliation-separator-semicolon" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
-              value="semicolon">
+              value="semicolon" aria-labelledby="affiliation-separator-title">
             <label class="form-check-label" for="affiliation-separator-semicolon">
               Semicolon
             </label>
@@ -231,7 +231,7 @@
 
           <div class="form-check form-check-inline">
             <input type="radio" id="affiliation-separator-other" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
-              value="other">
+              value="other" aria-labelledby="affiliation-separator-title">
             <label class="sr-only" for="affiliation-separator-other">
               Other Separator
             </label>
@@ -244,11 +244,11 @@
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4">Affiliation Label</h3>
+          <h3 style="font-size: 1rem;" class="mt-4" id="affiliation-label-title">Affiliation Label</h3>
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-superscript"
-              value="superscript" [formControl]="form.get('affiliation.labelPosition')">
+              value="superscript" [formControl]="form.get('affiliation.labelPosition')" aria-labelledby="affiliation-label-title">
             <label class="form-check-label" for="affiliation-label-position-superscript">
               Superscript
             </label>
@@ -256,7 +256,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-inline" value="inline"
-              [formControl]="form.get('affiliation.labelPosition')">
+              [formControl]="form.get('affiliation.labelPosition')" aria-labelledby="affiliation-label-title">
             <label class="form-check-label" for="affiliation-label-position-inline">
               Inline
             </label>
@@ -264,17 +264,17 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-subscript"
-              value="subscript" [formControl]="form.get('affiliation.labelPosition')">
+              value="subscript" [formControl]="form.get('affiliation.labelPosition')" aria-labelledby="affiliation-label-title">
             <label class="form-check-label" for="affiliation-label-position-subscript">
               Subscript
             </label>
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4">Label Style</h3>
+          <h3 style="font-size: 1rem;" class="mt-4" id="label-style-title">Label Style</h3>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numbers" value="numbers"
-              [formControl]="form.get('affiliation.labelStyle')">
+              [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
             <label class="form-check-label" for="affiliation-label-style-numbers">
               numbers
             </label>
@@ -282,7 +282,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-letters-lowercase"
-              value="letters-lowercase" [formControl]="form.get('affiliation.labelStyle')">
+              value="letters-lowercase" [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
             <label class="form-check-label" for="affiliation-label-style-letters-lowercase">
               letters
             </label>
@@ -290,7 +290,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-letters-uppercase"
-              value="letters-uppercase" [formControl]="form.get('affiliation.labelStyle')">
+              value="letters-uppercase" [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
             <label class="form-check-label" for="affiliation-label-style-letters-uppercase">
               LETTERS
             </label>
@@ -298,7 +298,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numerals-lowercase"
-              value="numerals-lowercase" [formControl]="form.get('affiliation.labelStyle')">
+              value="numerals-lowercase" [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
             <label class="form-check-label" for="affiliation-label-style-numerals-lowercase">
               numerals
             </label>
@@ -307,7 +307,7 @@
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numerals-uppercase"
-              value="numerals-uppercase" [formControl]="form.get('affiliation.labelStyle')">
+              value="numerals-uppercase" [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
             <label class="form-check-label" for="affiliation-label-style-numerals-uppercase">
               NUMERALS
             </label>

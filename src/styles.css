@@ -7,6 +7,10 @@ body {
     background-color: #2a71a5 !important;
 }
 
+.alert.alert-info a {
+    color: #22313F;
+}
+
 a {
     color: #2a71a5;
 }
