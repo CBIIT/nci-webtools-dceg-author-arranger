@@ -3,8 +3,12 @@ body {
     min-height: 100vh;
 }
 
-.bg-primary {
+.bg-primary, .btn-primary {
     background-color: #2a71a5 !important;
+}
+
+a {
+    color: #2a71a5;
 }
 
 .c-pointer {
@@ -25,6 +29,12 @@ body {
 
 .w-inherit {
     width: inherit !important;
+}
+
+@media (min-width: 1500px) {
+    .container {
+        max-width: 1300px;
+    }
 }
 
 @media (max-width: 575.98px) {
