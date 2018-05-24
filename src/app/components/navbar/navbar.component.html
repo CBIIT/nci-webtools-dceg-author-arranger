@@ -1,13 +1,15 @@
-<nav class="navbar navbar-expand-sm navbar-dark shadow-sm bg-primary" style="height: 36px;">
+<nav class="navbar navbar-expand-sm navbar-dark shadow-sm bg-primary text-light" style="height: 36px;">
   <div class="container">
 
-    <a class="navbar-brand" href="#" title="Conquer journal title pages in seconds" [routerLink]="['/']">
+    <a class="navbar-brand" title="Conquer journal title pages in seconds" [routerLink]="['/']">
       <h1 class="h5 font-weight-normal d-inline m-0">Author&zwj;Arranger</h1>
+      <span id="/" class="sr-only">Link to Home Page</span>
     </a>
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" [class.active]="router.url == '/help'">
-        <a class="nav-link text-light h5 font-weight-normal m-0" [routerLink]="['/help']">Help</a>
+        <a class="nav-link bg-transparent text-light h5 font-weight-normal m-0" [routerLink]="['/help']">Help</a>
+        <span id="/help" class="sr-only">Link to Help Page</span>
       </li>
     </ul>
   </div>

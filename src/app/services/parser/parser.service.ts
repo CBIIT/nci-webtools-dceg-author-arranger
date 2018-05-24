@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as xlsx from 'xlsx';
-import { resolve } from 'url';
-import { reject } from 'q';
 
 @Injectable({
   providedIn: 'root'

@@ -51,8 +51,8 @@
                   </div>
                 </div>
                 <div class="d-flex flex-wrap">
-                  <a class="mr-4" href="assets/files/AuthorArranger Template.xlsx">Download Template</a>
-                  <a href="javascript:;" (click)="resetForm(); useExample()">Use Example</a>
+                  <a class="mr-4" href="assets/files/AuthorArranger Sample.xlsx">Download Sample</a>
+                  <a href="javascript:;" (click)="resetForm(); useExample()">Load Sample</a>
                 </div>
               </div>
 
@@ -77,7 +77,7 @@
             <small class="text-dark font-weight-bold">(drag to reorder)</small>
           </h3>
 
-          <div dragula="author-fields" [dragulaOptions]="dragOptions">
+          <div dragula="author.fields" [dragulaOptions]="dragOptions">
             <div class="list-group-item d-flex p-0" *ngFor="let field of form.get('author.fields')['controls']" [attr.data-name]="field.value.name">
 
               <div class="d-flex align-items-center p-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
@@ -193,16 +193,50 @@
         </div>
         <div class="card-body">
 
-          <h3 style="font-size: 1rem;" class="" id="affiliation-column-title">Affiliation Column</h3>
-          <label class="sr-only" for="affiliation-column">Affiliation column</label>
-          <select class="form-control form-control-sm d-inline-block w-inherit" id="affiliation-column" [formControl]="form.get('affiliation.column')">
-            <option [ngValue]="null">
-              Affiliations &larr; No data
-            </option>
-            <option *ngFor="let column of form.get('file.headers').value; index as columnIndex;" [ngValue]="columnIndex" [attr.selected]="form.get('affiliation.column').value == columnIndex || null">
-              Affiliations &larr; {{ column }}
-            </option>
-          </select>
+          <h3 style="font-size: 1rem;">Fields
+            <small class="text-dark font-weight-bold">(drag to reorder)</small>
+          </h3>
+          <div dragula="affiliation.fields" [dragulaOptions]="dragOptions">
+            <div class="list-group-item d-flex p-0" *ngFor="let field of form.get('affiliation.fields')['controls']" [attr.data-name]="field.value.name">
+
+              <div class="d-flex align-items-center p-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+                <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
+              </div>
+
+              <div class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1">
+                <select style="min-width: 200px; max-width: 200px; padding-right: 0;" class="form-control form-control-sm w-sm-inherit" [attr.id]="field.value.name + '-' + field.value.column"
+                  [formControl]="field.controls.column">
+                  <option [ngValue]="null">
+                    {{ field.value.name }} &larr; No data
+                  </option>
+                  <option *ngFor="let column of form.get('file.headers').value; index as columnIndex;" [ngValue]="columnIndex" [attr.selected]="field.value.column == columnIndex || null">
+                    {{ field.value.name }} &larr; {{ column }}
+                  </option>
+                </select>
+                <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
+                  {{ field.value.name }} is mapped to column {{ field.value.column + 1 }}
+                </label>
+
+                <div class="d-flex flex-wrap small py-1 w-lt-lg-100">
+                  <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
+                    <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace">Remove Space
+                  </label>
+
+                  <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
+                    <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate">Abbreviate
+                  </label>
+
+                  <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
+                    <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma">Add Comma
+                  </label>
+
+                  <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
+                    <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod">Add Period
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <h3 style="font-size: 1rem;" class="mt-4" id="affiliation-separator-title">Affiliation Separator</h3>
           <div class="form-check form-check-inline">
@@ -313,7 +347,6 @@
             </label>
           </div>
 
-
         </div>
       </div>
     </div>
@@ -322,10 +355,7 @@
       <author-arranger-preview [config]="form.value"></author-arranger-preview>
     </div>
 
-
   </div>
 </form>
-
-
 
 <!-- <pre>{{form.value | json}}</pre> -->

@@ -1,3 +1,14 @@
+export interface FieldFormat {
+    name: string;
+    column: number | null;
+    index: number;
+    abbreviate?: boolean;
+    addPeriod?: boolean;
+    addComma?: boolean;
+    removeSpace?: boolean;
+    disabled?: boolean;
+};
+
 export interface FormatParameters {
     file: {
         filename: string,
@@ -7,26 +18,31 @@ export interface FormatParameters {
     };
 
     author: {
-        fields: {
-            name: string;
-            column: number | null;
-            index: number;
-            abbreviate?: boolean;
-            addPeriod?: boolean;
-            addComma?: boolean;
-            removeSpace?: boolean;
-            disabled?: boolean;
-        }[];
+        fields: FieldFormat[];
         separator: string;
         customSeparator: string;
         labelPosition: string;
     };
 
     affiliation: {
-        column: number | null;
+        fields: FieldFormat[];
         separator: string;
         customSeparator: string;
         labelPosition: string;
         labelStyle: string;
     };
+
+    disabledAuthorIds?: number[];
+};
+
+export interface ArrangedAuthors {
+    authors: {
+        id: number,
+        affiliationIds: number,
+    }[];
+    affiliations: {
+        id: number,
+        uniqueName: string,
+        fields: FieldFormat[]
+    }[];
 }

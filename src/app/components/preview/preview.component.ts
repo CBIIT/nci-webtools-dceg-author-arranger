@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef } from '@angular/core';
+
 import { FormatParameters } from '../../app.models';
 import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
+import { ArrangerService } from '../../services/arranger/arranger.service';
 
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.css']
+  styleUrls: ['./preview.component.css'],
 })
 export class PreviewComponent implements OnChanges {
 
@@ -16,10 +18,14 @@ export class PreviewComponent implements OnChanges {
   @ViewChild('preview')
   preview: ElementRef;
 
-  constructor(private renderer: Renderer2){}
+  authorOrder: {name: string, index: number}[] = [];
+
+  constructor(private arranger: ArrangerService){}
 
   generatePreview() {
+    console.log(this.arranger.generateMarkup(this.config));
 
+    /*
     let root: HTMLElement;
     if (this.preview) {
       root = this.preview.nativeElement;
@@ -31,14 +37,13 @@ export class PreviewComponent implements OnChanges {
     if (!this.preview ||
       !this.config ||
       !this.config.file.data ||
-      this.config.file.data.length <= 1 ||
-      this.config.affiliation.column === null) {
+      this.config.file.data.length <= 1) {
       return;
     }
 
     let records = [...this.config.file.data];
     let headers = [...this.config.file.headers];
-    let affiliationsIndex = this.config.affiliation.column;
+//    let affiliationsIndex = this.config.affiliation.column;
 
     const authors = [];
     const affiliations = [];
@@ -72,28 +77,31 @@ export class PreviewComponent implements OnChanges {
       }
     };
 
+    const fieldFormatter = (field, text) => {
+      let value = text.replace(/;/g, ',');
+
+      if (field.abbreviate && value.length > 0)
+        value = value[0];
+
+      if (field.addPeriod && value.length > 0)
+        value += '.';
+
+      if (field.addComma && value.length > 0)
+        value += ',';
+
+      if (!field.abbreviate
+      || (field.abbreviate && !field.removeSpace))
+        value += ' ';
+
+      return value;
+    };
+
     const columns = this.config.author.fields
       .filter(field => field.column !== null && !field.disabled)
       .sort((a, b) => a.index - b.index)
       .map(field => ({... field, formatter: (text) => {
-        let value = text.replace(/;/g, ',');
-
-        if (field.abbreviate && value.length > 0)
-          value = value[0];
-
-        if (field.addPeriod && value.length > 0)
-          value += '.';
-
-        if (field.addComma && value.length > 0)
-          value += ',';
-
-        if (!field.abbreviate
-        || (field.abbreviate && !field.removeSpace))
-          value += ' ';
-
-        return value;
+        return fieldFormatter(field, text);
       }}));
-
 
     for (let record of records) {
 
@@ -233,6 +241,7 @@ export class PreviewComponent implements OnChanges {
     this.renderer.appendChild(root, authorParagraph);
     // this.renderer.appendChild(root, this.renderer.createElement('br'));
     this.renderer.appendChild(root, affiliationsParagraph);
+*/
   }
 
   downloadPreview() {
