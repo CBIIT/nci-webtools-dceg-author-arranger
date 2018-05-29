@@ -212,12 +212,6 @@ export class ArrangerService {
         .find(author => author.id === authorId)
         .affiliations
         .push(affiliations.findIndex(e => e.id === affiliationId));
-
-      // find affiliation ids for the author
-      // const authorAffiliations = rowIds
-      //   .filter(row => row[0] === authorId)
-      //   .map(row => affiliations.findIndex(e => e.id == row[1]));
-
     });
 
     const authorLabelTag = tagNames[config.author.labelPosition];
