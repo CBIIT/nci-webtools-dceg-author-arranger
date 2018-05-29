@@ -3,6 +3,10 @@ body {
     min-height: 100vh;
 }
 
+a {
+    color: #2a71a5;
+}
+
 .bg-transparent {
     background-color: transparent !important;
 }
@@ -20,11 +24,7 @@ body {
 }
 
 .card-header {
-    background: linear-gradient(#fefefe, #f8f8f8);
-}
-
-a {
-    color: #2a71a5;
+    background-color: #fafafa;
 }
 
 .c-pointer {
