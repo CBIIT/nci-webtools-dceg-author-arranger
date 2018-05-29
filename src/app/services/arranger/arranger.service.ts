@@ -171,39 +171,53 @@ export class ArrangerService {
 
     const authors: {id: number, name: string, affiliations: number[]}[] = [];
     const affiliations: {id: number, name: string}[] = [];
-    const data = config.file.data || [];
+    const rows = config.file.data || [];
+
+    // contains an array of [authorId, affiliationId] pairs which correspond
+    // to the row of the input file in which they first appear
     const rowIds = this.generateIds(config);
 
-    data.forEach((row, index, rows) => {
+    rows.forEach((row, index) => {
       const [authorId, affiliationId] = rowIds[index];
+
       const authorRow = rows[authorId];
       const affiliationRow = rows[affiliationId];
 
       const authorText = authorFields
         .map(field => fieldFormatter(authorRow[field.column], field))
-        .join('');
+        .join('')
+        .trim();
 
       const affiliationText = affiliationFields
         .map(field => fieldFormatter(affiliationRow[field.column], field))
-        .join('');
+        .join('')
+        .trim();
 
-      // find affiliation ids for the author
-      const authorAffiliations = rowIds
-        .filter(e => e[0] == authorId)
-        .map(e => rowIds.findIndex(([a, b]) => b == e[1]));
+      let author, affiliation;
 
       if (!authors.find(e => e.id === authorId))
         authors.push({
-          id: authors.length,
+          id: authorId,
           name: authorText,
-          affiliations: authorAffiliations
+          affiliations: []
         });
 
       if (!affiliations.find(e => e.id === affiliationId))
         affiliations.push({
-          id: affiliations.length,
+          id: affiliationId,
           name: affiliationText,
         });
+
+      authors
+        .find(author => author.id === authorId)
+        .affiliations
+        .push(affiliations.findIndex(e => e.id === affiliationId));
+
+      // find affiliation ids for the author
+      // const authorAffiliations = rowIds
+      //   .filter(row => row[0] === authorId)
+      //   .map(row => affiliations.findIndex(e => e.id == row[1]));
+
     });
 
     const authorLabelTag = tagNames[config.author.labelPosition];
