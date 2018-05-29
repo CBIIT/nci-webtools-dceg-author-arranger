@@ -143,7 +143,7 @@ export class ArrangerService {
         if (!text ||
           text.trim().length === 0 ||
           format.disabled ||
-          format.column === null) return '';
+          format.column === null) text = '';
 
         // ensure one consecutive space exists
         text = text
@@ -152,13 +152,13 @@ export class ArrangerService {
           .trim();
 
         if (format.abbreviate)
-          text = text[0];
+          text = text[0] || '';
 
         if (format.addPeriod)
-          text += '.';
+          text.length > 0 ? text += '.' : null;
 
         if (format.addComma)
-          text += ',';
+          text.length > 0 ? text += ',' : null;
 
         if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
           text += ' ';

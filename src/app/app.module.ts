@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgModule, Renderer2 } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragulaModule } from 'ng2-dragula';
@@ -30,6 +30,7 @@ import { ParserService } from './services/parser/parser.service';
     BrowserModule,
     DragulaModule,
     HttpClientModule,
+    FormsModule,
     ReactiveFormsModule,
     NgbModule.forRoot(),
   ],

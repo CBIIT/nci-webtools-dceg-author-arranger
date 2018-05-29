@@ -12,26 +12,17 @@
 </head>
 
 <body class="d-flex flex-column h-100">
-
   <a class="sr-only sr-only-focusable" href="#main">Skip to main content</a>
-
   <header>
-    <a href="https://dceg.cancer.gov/" class="d-block">
-      <img height="90" src="assets/images/dceg-logo.svg" alt="Division of Cancer Epidemiology &amp; Genetics">
+    <a href="https://dceg.cancer.gov/" class="d-none d-sm-block">
+      <img class="mw-100" height="90" src="assets/images/dceg-logo.svg" alt="Division of Cancer Epidemiology &amp; Genetics">
     </a>
   </header>
-
-  <author-arranger-root class="d-flex flex-column flex-grow-1">
-    <div class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+  <author-arranger-root class="d-flex flex-column flex-grow-1" style="min-width: 320px">
+    <div id="main" class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
       <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
-      <span class="text-dark">Loading...</span>
+      <span aria-role="alert" class="text-dark">Loading...</span>
     </div>
   </author-arranger-root>
-
-
-
-
-
 </body>
-
 </html>

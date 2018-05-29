@@ -25,6 +25,8 @@ a {
 
 .card-header {
     background-color: #fafafa;
+    height: 50px;
+    min-height: 50px;
 }
 
 .c-pointer {

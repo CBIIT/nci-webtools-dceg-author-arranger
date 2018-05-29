@@ -5,6 +5,11 @@ import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 
+interface Author {
+  rowId: number;
+
+}
+
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
@@ -18,7 +23,11 @@ export class PreviewComponent implements OnChanges {
   @ViewChild('preview')
   preview: ElementRef;
 
-  authorOrder: {name: string, index: number}[] = [];
+  authorOrder: {id: number, name: string, affiliations: number[]}[] = [];
+
+  selectedTab = 'preview';
+
+  fullWidth = false;
 
   constructor(private renderer: Renderer2, private arranger: ArrangerService){}
 
@@ -38,6 +47,7 @@ export class PreviewComponent implements OnChanges {
     }
 
     const arrangedAuthors = this.arranger.arrangeAuthors(this.config);
+    this.authorOrder = [...arrangedAuthors.authors];
     const markup = this.arranger.generateMarkup(this.config, arrangedAuthors);
     this.renderer.appendChild(
       this.preview.nativeElement,

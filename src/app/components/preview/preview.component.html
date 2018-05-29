@@ -1,17 +1,52 @@
 <div class="card shadow-sm h-100" style="min-height: 400px">
-  <div class="card-header d-flex justify-content-between align-items-baseline">
-    <h2 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">
-      Preview
-    </h2>
+  <div class="card-header d-flex justify-content-between align-items-center py-0">
 
-    <a href="javascript:;" (click)="downloadPreview()">Download .docx</a>
+  <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="preview">
+      <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="reorder">
+      <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
+    </label>
   </div>
-  <div class="card-body mh-100 h-100" style="overflow: auto;">
+  <a class="p-2 my-1" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
+  </div>
+
+  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'preview'">
     <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to generate a preview.</span>
     </p>
     <p style="max-height: 500px" [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0" #preview></p>
   </div>
+
+  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'reorder'">
+    <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
+      <span>Please upload a file to reorder authors.</span>
+    </p>
+
+    <button
+      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0"
+      class="btn btn-primary btn-sm" (click)="fullWidth=!fullWidth">Toggle width</button>
+
+    <p
+      dragula="author.order"
+      style="max-height: 500px"
+      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0"
+      #reorder>
+      <span
+        *ngFor="let author of authorOrder"
+        class="btn btn-light btn-sm m-1"
+        [ngClass]="fullWidth ? 'd-block' : 'd-inline-block'"
+      >
+        {{ author.name }}
+      </span>
+
+    </p>
+  </div>
+
+
 </div>
 
     <!-- <pre>{{ config | json }}</pre> -->
