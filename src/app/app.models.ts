@@ -36,13 +36,12 @@ export interface FormatParameters {
 };
 
 export interface ArrangedAuthors {
-    authors: {
-        id: number,
-        affiliationIds: number,
-    }[];
-    affiliations: {
-        id: number,
-        uniqueName: string,
-        fields: FieldFormat[]
-    }[];
+    authors: {id: number, name: string, affiliations: number[]}[];
+    affiliations: {id: number, name: string}[];
+}
+
+export interface MarkupElement {
+    tagName: string;
+    text?: string;
+    children?: MarkupElement[];
 }

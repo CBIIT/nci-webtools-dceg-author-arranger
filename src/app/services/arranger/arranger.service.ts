@@ -1,12 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { ArrangedAuthors, FormatParameters, FieldFormat } from 'src/app/app.models';
+import { ArrangedAuthors, FormatParameters, FieldFormat, MarkupElement } from 'src/app/app.models';
 import * as _ from 'lodash';
-
-interface MarkupElement {
-  tagName: string;
-  text?: string;
-  children?: MarkupElement[];
-}
 
 @Injectable({
   providedIn: 'root'
@@ -95,7 +89,119 @@ export class ArrangerService {
     return htmlElement;
   }
 
-  generateMarkup(config: FormatParameters): MarkupElement {
+  arrangeAuthors(config: FormatParameters): ArrangedAuthors {
+
+    const authors: {id: number, name: string, affiliations: number[]}[] = [];
+    const affiliations: {id: number, name: string}[] = [];
+
+    const authorFields: FieldFormat[] = [...config.author.fields]
+      .sort((a, b) => a.index - b.index);
+
+    const affiliationFields: FieldFormat[] = [...config.affiliation.fields]
+      .sort((a, b) => a.index - b.index);
+
+    const rows = config.file.data || [];
+
+    // contains an array of [authorId, affiliationId] pairs which correspond
+    // to the row of the input file in which they first appear
+    const rowIds = this.generateIds(config);
+
+    const fieldFormatter = (text: string, format: FieldFormat) => {
+      if (!text ||
+        text.trim().length === 0 ||
+        format.disabled ||
+        format.column === null) return '';
+
+      // ensure one consecutive space exists
+      text = text
+        .replace(/\s+/g, ' ')
+        .replace(/;/g, ',')
+        .trim();
+
+      if (format.abbreviate)
+        text = text[0];
+
+      if (format.addPeriod)
+        text += '.';
+
+      if (format.addComma)
+        text += ',';
+
+      if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
+        text += ' ';
+
+      return text;
+    };
+
+    rows.forEach((row, index) => {
+      const [authorId, affiliationId] = rowIds[index];
+
+      const authorRow = rows[authorId];
+      const affiliationRow = rows[affiliationId];
+
+      const fieldFormatter = (text: string, format: FieldFormat) => {
+        if (!text ||
+          text.trim().length === 0 ||
+          format.disabled ||
+          format.column === null) return '';
+
+        // ensure one consecutive space exists
+        text = text
+          .replace(/\s+/g, ' ')
+          .replace(/;/g, ',')
+          .trim();
+
+        if (format.abbreviate)
+          text = text[0];
+
+        if (format.addPeriod)
+          text += '.';
+
+        if (format.addComma)
+          text += ',';
+
+        if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
+          text += ' ';
+
+        return text;
+      };
+
+      const authorText = authorFields
+        .map(field => fieldFormatter(authorRow[field.column], field))
+        .join('')
+        .trim();
+
+      const affiliationText = affiliationFields
+        .map(field => fieldFormatter(affiliationRow[field.column], field))
+        .join('')
+        .trim();
+
+      if (!authors.find(e => e.id === authorId))
+        authors.push({
+          id: authorId,
+          name: authorText,
+          affiliations: []
+        });
+
+      if (!affiliations.find(e => e.id === affiliationId))
+        affiliations.push({
+          id: affiliationId,
+          name: affiliationText,
+        });
+
+      authors
+        .find(author => author.id === authorId)
+        .affiliations
+        .push(affiliations.findIndex(e => e.id === affiliationId));
+    });
+
+    return {authors, affiliations};
+  }
+
+  generateMarkup(config: FormatParameters, arrangedAuthors: ArrangedAuthors): MarkupElement {
+
+    const { authors, affiliations } = arrangedAuthors;
+
     const markup = {
       tagName: 'div',
       children: [],
@@ -132,33 +238,6 @@ export class ArrangerService {
       other: null
     };
 
-    const fieldFormatter = (text: string, format: FieldFormat) => {
-      if (!text ||
-        text.trim().length === 0 ||
-        format.disabled ||
-        format.column === null) return '';
-
-      // ensure one consecutive space exists
-      text = text
-        .replace(/\s+/g, ' ')
-        .replace(/;/g, ',')
-        .trim();
-
-      if (format.abbreviate)
-        text = text[0];
-
-      if (format.addPeriod)
-        text += '.';
-
-      if (format.addComma)
-        text += ',';
-
-      if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
-        text += ' ';
-
-      return text;
-    };
-
     const labelFormatter = (index: number) => ({
       'numbers': index,
       'letters-lowercase': this.toLetters(index).toLowerCase(),
@@ -166,55 +245,6 @@ export class ArrangerService {
       'numerals-lowercase': this.toRomanNumerals(index).toLowerCase(),
       'numerals-uppercase': this.toRomanNumerals(index).toUpperCase()
     })[config.affiliation.labelStyle];
-
-    let lastAuthor: string;
-
-    const authors: {id: number, name: string, affiliations: number[]}[] = [];
-    const affiliations: {id: number, name: string}[] = [];
-    const rows = config.file.data || [];
-
-    // contains an array of [authorId, affiliationId] pairs which correspond
-    // to the row of the input file in which they first appear
-    const rowIds = this.generateIds(config);
-
-    rows.forEach((row, index) => {
-      const [authorId, affiliationId] = rowIds[index];
-
-      const authorRow = rows[authorId];
-      const affiliationRow = rows[affiliationId];
-
-      const authorText = authorFields
-        .map(field => fieldFormatter(authorRow[field.column], field))
-        .join('')
-        .trim();
-
-      const affiliationText = affiliationFields
-        .map(field => fieldFormatter(affiliationRow[field.column], field))
-        .join('')
-        .trim();
-
-      let author, affiliation;
-
-      if (!authors.find(e => e.id === authorId))
-        authors.push({
-          id: authorId,
-          name: authorText,
-          affiliations: []
-        });
-
-      if (!affiliations.find(e => e.id === affiliationId))
-        affiliations.push({
-          id: affiliationId,
-          name: affiliationText,
-        });
-
-      authors
-        .find(author => author.id === authorId)
-        .affiliations
-        .push(affiliations.findIndex(e => e.id === affiliationId));
-    });
-
-    const authorLabelTag = tagNames[config.author.labelPosition];
 
     authors.forEach(({name, affiliations}, index) => {
       let text = name.trim();
@@ -226,7 +256,7 @@ export class ArrangerService {
         tagName: 'span',
         text: text,
       }, {
-        tagName: authorLabelTag,
+        tagName: tagNames[config.author.labelPosition],
         text: affiliations
           .map(e => e + 1)
           .map(labelFormatter)
@@ -247,9 +277,7 @@ export class ArrangerService {
           tagName: 'br',
         });
       }
-    })
-
-    const affiliationLabelTag = tagNames[config.affiliation.labelPosition];
+    });
 
     affiliations.forEach(({name}, index) => {
       let text = name.trim();
@@ -259,7 +287,7 @@ export class ArrangerService {
       labelText += ' ';
 
       affiliationsMarkup.children.push({
-        tagName: affiliationLabelTag,
+        tagName: tagNames[config.affiliation.labelPosition],
         text: labelText,
       }, {
         tagName: 'span',
@@ -280,8 +308,7 @@ export class ArrangerService {
             tagName: 'br',
           });
       }
-
-    })
+    });
 
     return markup;
   }
