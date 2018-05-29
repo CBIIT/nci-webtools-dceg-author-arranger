@@ -125,6 +125,13 @@ export class ArrangerService {
       subscript: 'sub',
     };
 
+    const separators = {
+      comma: ',',
+      newline: '\n',
+      semicolon: ';',
+      other: null
+    };
+
     const fieldFormatter = (text: string, format: FieldFormat) => {
       if (!text ||
         text.trim().length === 0 ||
@@ -158,7 +165,7 @@ export class ArrangerService {
       'letters-uppercase': this.toLetters(index).toUpperCase(),
       'numerals-lowercase': this.toRomanNumerals(index).toLowerCase(),
       'numerals-uppercase': this.toRomanNumerals(index).toUpperCase()
-    })[index] || index;
+    })[config.affiliation.labelStyle];
 
     let lastAuthor: string;
 
@@ -199,7 +206,74 @@ export class ArrangerService {
         });
     });
 
-    console.log(authors, affiliations);
+    const authorLabelTag = tagNames[config.author.labelPosition];
+
+    authors.forEach(({name, affiliations}, index) => {
+      let text = name.trim();
+
+      if (config.author.labelPosition === 'inline')
+        text += ' ';
+
+      authorsMarkup.children.push({
+        tagName: 'span',
+        text: text,
+      }, {
+        tagName: authorLabelTag,
+        text: affiliations
+          .map(e => e + 1)
+          .map(labelFormatter)
+          .join(','),
+      });
+
+      if (index < authors.length - 1) {
+        let separator = separators[config.author.separator] ||
+          config.author.customSeparator;
+
+        authorsMarkup.children.push({
+          tagName: 'span',
+          text: separator + ' '
+        });
+
+        if (separator === '\n')
+        authorsMarkup.children.push({
+          tagName: 'br',
+        });
+      }
+    })
+
+    const affiliationLabelTag = tagNames[config.affiliation.labelPosition];
+
+    affiliations.forEach(({name}, index) => {
+      let text = name.trim();
+      let labelText = labelFormatter(index + 1);
+
+      if (config.affiliation.labelPosition === 'inline')
+      labelText += ' ';
+
+      affiliationsMarkup.children.push({
+        tagName: affiliationLabelTag,
+        text: labelText,
+      }, {
+        tagName: 'span',
+        text: text
+      })
+
+      if (index < affiliations.length - 1) {
+        let separator = separators[config.affiliation.separator] ||
+          config.affiliation.customSeparator;
+
+        affiliationsMarkup.children.push({
+          tagName: 'span',
+          text: separator + ' '
+        });
+
+        if (separator === '\n')
+          affiliationsMarkup.children.push({
+            tagName: 'br',
+          });
+      }
+
+    })
 
     return markup;
   }

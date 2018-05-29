@@ -20,12 +20,10 @@ export class PreviewComponent implements OnChanges {
 
   authorOrder: {name: string, index: number}[] = [];
 
-  constructor(private arranger: ArrangerService){}
+  constructor(private renderer: Renderer2, private arranger: ArrangerService){}
 
   generatePreview() {
-    console.log(this.arranger.generateMarkup(this.config));
 
-    /*
     let root: HTMLElement;
     if (this.preview) {
       root = this.preview.nativeElement;
@@ -41,6 +39,12 @@ export class PreviewComponent implements OnChanges {
       return;
     }
 
+    const markup = this.arranger.generateMarkup(this.config);
+    const element = this.arranger.renderElement(markup);
+    root.appendChild(element);
+
+
+    /*
     let records = [...this.config.file.data];
     let headers = [...this.config.file.headers];
 //    let affiliationsIndex = this.config.affiliation.column;
