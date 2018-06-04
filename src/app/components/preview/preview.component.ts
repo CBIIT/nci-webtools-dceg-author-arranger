@@ -81,6 +81,15 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       }
     }
 
+    this.authors.forEach(author => {
+      author.duplicate = (
+        this.authors.filter(e =>
+          e.id != author.id &&
+          e.name == author.name &&
+          !e.removed).length > 0
+      );
+    })
+
     let arrangedAuthors = {...this.arrangedAuthors};
     arrangedAuthors.authors = this.authors
       .filter(author => !author.removed)
@@ -121,10 +130,15 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       });
 
     this.authors.forEach(author => {
-      if (this.authors.filter(e => e.id != author.id && e.name == author.name).length > 1)
-        author.duplicate = true;
+      author.duplicate = (
+        this.authors.filter(e =>
+          e.id != author.id &&
+          e.name == author.name &&
+          !e.removed).length > 0
+      );
     })
 
+    console.log(this.authors);
 
     const markup = this.arranger.generateMarkup(this.config, this.arrangedAuthors);
     this.renderer.appendChild(

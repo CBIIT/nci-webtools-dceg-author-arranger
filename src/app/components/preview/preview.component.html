@@ -49,7 +49,12 @@
             </div>
 
             <div
-              class="py-1 px-2 bg-white">
+              class="py-1 px-2"
+              [ngClass]="{
+                'bg-white': !author.duplicate,
+                'bg-danger': author.duplicate,
+                'text-light': author.duplicate
+              }">
               {{ author.fields.First }} {{ author.fields.Last}}
             </div>
 
