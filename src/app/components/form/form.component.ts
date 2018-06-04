@@ -412,6 +412,9 @@ export class FormComponent {
       const parent = value[2];
       const formArray = value[0];
 
+      if (!['author.fields', 'affiliation.fields'].includes(formArray))
+        return;
+
       Array.from(parent.children)
         .forEach((node, index) => (<FormArray>this.form.get(formArray)).controls
           .find(control => control.value.name == node.getAttribute('data-name'))

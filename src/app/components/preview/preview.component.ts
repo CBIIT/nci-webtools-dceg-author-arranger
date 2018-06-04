@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef, AfterViewInit, ApplicationRef } from '@angular/core';
 
-import { FormatParameters } from '../../app.models';
+import { FormatParameters, ArrangedAuthors } from '../../app.models';
 import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 import { ArrangerService } from '../../services/arranger/arranger.service';
+import { DragulaService } from 'ng2-dragula';
 
 interface Author {
   rowId: number;
@@ -14,8 +15,9 @@ interface Author {
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css'],
+  providers: [ApplicationRef],
 })
-export class PreviewComponent implements OnChanges {
+export class PreviewComponent implements OnChanges, AfterViewInit {
 
   @Input()
   config: FormatParameters;
@@ -23,13 +25,74 @@ export class PreviewComponent implements OnChanges {
   @ViewChild('preview')
   preview: ElementRef;
 
-  authorOrder: {id: number, name: string, affiliations: number[]}[] = [];
+  arrangedAuthors: ArrangedAuthors;
+
+  authors: {
+    id: number,
+    name: string,
+    affiliations: number[],
+    fields: any,
+    removed: boolean,
+    duplicate: boolean;
+  }[] = [];
 
   selectedTab = 'preview';
 
-  fullWidth = false;
+  dragOptions = {
+    direction: 'horizontal',
+    copy: false,
+    copySortSource: true,
+    invalid: (el, handle) => handle.getAttribute('drag-handle') === null,
+  }
 
-  constructor(private renderer: Renderer2, private arranger: ArrangerService){}
+  constructor(
+    private renderer: Renderer2,
+    private arranger: ArrangerService,
+    private dragula: DragulaService,
+    private applicationRef: ApplicationRef
+  ) {
+
+    dragula.drop.subscribe((value: [string, HTMLElement, HTMLElement, HTMLElement]) => {
+      const element = value[1];
+      const target = value[2];
+      const source = value[3];
+      const containerName = value[0];
+
+      if (containerName !== 'authors')
+        return;
+
+      const targetName = target.getAttribute('data-name');
+      const authorId = element.getAttribute('data-id');
+      const author = this.authors.find(author => author.id == +authorId);
+      author.removed = targetName === 'removed';
+
+      if (target != source)
+        source.appendChild(element);
+
+      setTimeout(() => this.updateAuthors(), 10);
+    });
+  }
+
+  updateAuthors() {
+    if (this.preview) {
+      let root = this.preview.nativeElement;
+      for (let child of Array.from(root.children)) {
+        this.renderer.removeChild(root, child);
+      }
+    }
+
+    let arrangedAuthors = {...this.arrangedAuthors};
+    arrangedAuthors.authors = this.authors
+      .filter(author => !author.removed)
+      .map(author => this.arrangedAuthors.authors.find(e => e.id == author.id));
+
+    const markup = this.arranger.generateMarkup(this.config, arrangedAuthors);
+    this.renderer.appendChild(
+      this.preview.nativeElement,
+      this.arranger.renderElement(markup)
+    );
+  }
+
 
   generatePreview() {
     if (this.preview) {
@@ -46,9 +109,24 @@ export class PreviewComponent implements OnChanges {
       return;
     }
 
-    const arrangedAuthors = this.arranger.arrangeAuthors(this.config);
-    this.authorOrder = [...arrangedAuthors.authors];
-    const markup = this.arranger.generateMarkup(this.config, arrangedAuthors);
+    this.arrangedAuthors = this.arranger.arrangeAuthors(this.config);
+    this.authors = this.arrangedAuthors.authors
+      .map(author => {
+        const row = this.config.file.data[author.id];
+        let fields = {};
+        for (let field of this.config.author.fields) {
+          fields[field.name] = row[field.column] || '';
+        }
+        return {...author, fields, removed: false, duplicate: false};
+      });
+
+    this.authors.forEach(author => {
+      if (this.authors.filter(e => e.id != author.id && e.name == author.name).length > 1)
+        author.duplicate = true;
+    })
+
+
+    const markup = this.arranger.generateMarkup(this.config, this.arrangedAuthors);
     this.renderer.appendChild(
       this.preview.nativeElement,
       this.arranger.renderElement(markup)
@@ -81,6 +159,9 @@ export class PreviewComponent implements OnChanges {
     }
 
     return str;
+  }
+
+  ngAfterViewInit() {
   }
 
   ngOnChanges(changes: SimpleChanges) {

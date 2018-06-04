@@ -96,9 +96,12 @@ a {
     padding: 0 0.3rem;
 }
 
+.gu-mirror {
+    opacity: 1;
+}
+
 .gu-mirror.list-group-item {
     border-radius: 4px;
-    opacity: 1;
 }
 
 .spin {
