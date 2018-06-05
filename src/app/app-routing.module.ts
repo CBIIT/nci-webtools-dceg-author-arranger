@@ -11,9 +11,9 @@ const routes: Routes = [
   },
 
   {
-    path: 'help',
+    path: 'about',
     component: HelpComponent,
-    data: { title: 'AuthorArranger Help' }
+    data: { title: 'About AuthorArranger' }
   },
 
   {

@@ -1,0 +1,9 @@
+.navbar-nav li a {
+    border: 3px solid transparent;
+    border-right: none;
+    border-left: none;
+}
+
+.navbar-nav li.active a {
+    border-bottom: 3px solid #F5AB35;
+}
