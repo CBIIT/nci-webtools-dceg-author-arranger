@@ -1,17 +1,17 @@
-<div class="card shadow-sm h-100" style="min-height: 400px">
+<div class="card rounded shadow-lg h-100  border-0" style="min-height: 400px">
   <label class="sr-only" id="preview-tab-label">Use this control to select whether to preview or reorder the output.</label>
-  <div class="card-header d-flex justify-content-between align-items-center py-0">
+  <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary-dark rounded-top text-light">
   <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
-    <label ngbButtonLabel class="btn-light border">
+    <label ngbButtonLabel class="btn-light ">
       <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
     </label>
-    <label ngbButtonLabel class="btn-light border">
+    <label ngbButtonLabel class="btn-light ">
       <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
     </label>
   </div>
-  <a class="p-2 my-1" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
+  <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
   </div>
 
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'preview'">
@@ -45,14 +45,14 @@
         class="mb-3 p-2 d-flex flex-wrap">
 
         <ng-container *ngFor="let author of authors">
-          <div [hidden]="author.removed" [attr.data-id]="author.id">
+          <div [hidden]="author.removed || author.name?.length == 0" [attr.data-id]="author.id">
 
             <div
-              class="border d-flex rounded m-1 p-0"
+              class="border d-flex rounded m-1 p-0 shadow-sm"
               placement="top"
               [ngbTooltip]="author.name" container="body">
 
-              <div class="d-flex align-items-center py-1 px-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+              <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
                 <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
               </div>
 
@@ -63,7 +63,7 @@
                   'bg-primary': author.duplicate,
                   'text-light': author.duplicate
                 }">
-                {{ author.fields.First }} {{ author.fields.Last}}
+                {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
               </div>
 
               <div
@@ -80,7 +80,6 @@
 
     <div
       class="bg-light rounded border"
-      style="min-height: 140px"
       [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
       <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
 
@@ -89,21 +88,21 @@
         dragula="authors"
         [dragulaOptions]="dragOptions"
         [dragulaModel]="authors"
+        style="min-height: 140px"
         class="d-flex flex-wrap p-2">
         <ng-container *ngFor="let author of authors">
-          <div [hidden]="!author.removed" [attr.data-id]="author.id">
+          <div [hidden]="!author.removed || author.name?.length == 0" [attr.data-id]="author.id">
             <div
-              class="border d-flex rounded m-1 p-0 flex-grow-0"
+              class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
               placement="top"
               [ngbTooltip]="author.name" container="body">
 
-              <div class="d-flex align-items-center py-1 px-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+              <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
                 <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
               </div>
 
-              <div
-                class="py-1 px-2 bg-white">
-                {{ author.fields.First }} {{ author.fields.Last}}
+              <div class="py-1 px-2 bg-white">
+                {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
               </div>
 
               <div

@@ -72,11 +72,11 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       if (target != source)
         source.appendChild(element);
 
-      setTimeout(() => this.updateAuthors(), 10);
+      this.updateAuthors();
     });
   }
 
-  updateAuthors() {
+  updateAuthors(preserveOrder: boolean = false) {
     if (this.preview) {
       let root = this.preview.nativeElement;
       for (let child of Array.from(root.children)) {
@@ -116,7 +116,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
   }
 
 
-  generatePreview() {
+  generatePreview(preserveOrder: boolean = false) {
     if (this.preview) {
       let root = this.preview.nativeElement;
       for (let child of Array.from(root.children)) {
@@ -132,17 +132,42 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     }
 
     this.arrangedAuthors = this.arranger.arrangeAuthors(this.config);
-    this.authors = this.arrangedAuthors.authors
-      .map(author => {
+
+    if (preserveOrder) {
+      this.authors = this.authors.map(author => {
         const row = this.config.file.data[author.id];
         let fields = {};
         for (let field of this.config.author.fields) {
           fields[field.name] = row[field.column] || '';
         }
-        return {...author, fields, removed: false, duplicate: false};
-      });
+        return {
+          ...author,
+          name: this.arrangedAuthors.authors
+            .find(e => e.id == author.id).name,
+          fields
+        };
+      })
 
-    this.updateAuthors();
+    } else {
+      this.authors = this.arrangedAuthors.authors
+        .map(author => {
+          const row = this.config.file.data[author.id];
+          let fields = {};
+          for (let field of this.config.author.fields) {
+            fields[field.name] = row[field.column] || '';
+          }
+          return {
+            ...author,
+            fields,
+            removed: false,
+            duplicate: false
+          };
+        });
+    }
+
+    console.log(this.authors);
+
+    this.updateAuthors(preserveOrder);
   }
 
   downloadPreview() {
@@ -183,8 +208,14 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       if (currentValue && currentValue.constructor != Event) {
         this.alerts = [];
         this.config = currentValue;
-        this.generatePreview();
-        this.selectedTab = 'preview';
+        const preserveOrder = previousValue
+          ? _(previousValue.file.data).isEqual(currentValue.file.data)
+          : false;
+
+        this.generatePreview(preserveOrder);
+
+        if (!preserveOrder)
+          this.selectedTab = 'preview';
       } else {
         this.config = previousValue;
       }

@@ -11,8 +11,16 @@ a {
     background-color: transparent !important;
 }
 
+.bg-light {
+    background-color: #f2f2f2 !important;
+}
+
 .bg-primary, .btn-primary {
     background-color: #2a71a5 !important;
+}
+
+.bg-primary-dark {
+    background-color: #336E7B !important;
 }
 
 .btn-primary {
