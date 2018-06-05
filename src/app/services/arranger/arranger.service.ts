@@ -26,7 +26,7 @@ export class ArrangerService {
    * @param config
    */
   generateIds(config: FormatParameters): [number, number][] {
-    const rows = config.file.data || [];
+    let rows = config.file.data || [];
     const ids: [number, number][] = [];
     const authors: string[][] = [];
     const affiliations: string[][] = [];
@@ -39,19 +39,22 @@ export class ArrangerService {
     const affiliationColumns = ['Department', 'Division', 'Institute', 'Street', 'City', 'State', 'Postal Code', 'Country']
       .map(columnName => config.affiliation.fields.find(field => field.name == columnName).column);
 
+    // ensure rows does not contain extra spaces
+    rows = rows.map(row => row.map(str => str.replace(/\s+/g, ' ').trim()))
+
+    const mappedAuthors = rows.map(row => authorColumns.map(i => row[i]));
+    const mappedAffiliations = rows.map(row => affiliationColumns.map(i => row[i]));
+
     // previous author's id (for empty authors)
     let previousAuthorId;
 
     rows.forEach((row, rowIndex) => {
-      // ensure row does not contain extra spaces
-      row = row.map(str => str.replace(/\s+/g, ' ').trim());
-
-      const authorFields = authorColumns.map(i => row[i]);
-      const affiliationFields = affiliationColumns.map(i => row[i]);
+      const authorFields = mappedAuthors[rowIndex];
+      const affiliationFields = mappedAffiliations[rowIndex];
 
       // try to find the affiliation
-      let affiliationId = affiliations.findIndex(
-        value => _.isEqual(value, affiliationFields));
+      let affiliationId = mappedAffiliations
+        .findIndex(row => _(row).isEqual(affiliationFields));
 
       // if it is not found, create a new affiliation
       if (affiliationId == -1) {

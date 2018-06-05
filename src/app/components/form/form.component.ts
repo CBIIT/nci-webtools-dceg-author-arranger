@@ -368,14 +368,18 @@ export class FormComponent {
           });
         }
 
-        if (sheet.data.length <= 1) {
+        // skip rows with no data
+        let sheetData = (sheet.data || [])
+          .filter(row => row.filter(e => e).length > 0);
+
+        if (sheetData.length <= 1) {
           throw({
             type: 'warning',
             message: 'No data could be parsed from the file.'
           });
         }
 
-        const fileHeaders = sheet.data.shift();
+        const fileHeaders = sheetData.shift();
 
         // attempt to map file headers to columns with the same name
         if (!this.mapHeaders(fileHeaders)) {
@@ -388,7 +392,7 @@ export class FormComponent {
         this.form.get('file').patchValue({
           filename: file.name,
           headers: fileHeaders,
-          data: sheet.data,
+          data: sheetData,
         });
 
       } catch (e) {

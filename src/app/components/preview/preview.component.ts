@@ -5,6 +5,7 @@ import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 import { DragulaService } from 'ng2-dragula';
+import * as _ from 'lodash';
 
 interface Author {
   rowId: number;
@@ -24,6 +25,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('preview')
   preview: ElementRef;
+
+  alerts: {type: string, message: string}[] = [];
 
   arrangedAuthors: ArrangedAuthors;
 
@@ -81,14 +84,24 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       }
     }
 
+    let hasDuplicates = false;
     this.authors.forEach(author => {
       author.duplicate = (
         this.authors.filter(e =>
           e.id != author.id &&
-          e.name == author.name &&
-          !e.removed).length > 0
+          _(e.fields).isEqual(author.fields) &&
+          (!e.removed && !author.removed)).length > 0
       );
+      if (author.duplicate)
+        hasDuplicates = true;
     })
+
+    if (hasDuplicates) {
+      this.alerts = [{
+        type: 'info',
+        message: 'Duplicate author names have been found.'
+      }];
+    }
 
     let arrangedAuthors = {...this.arrangedAuthors};
     arrangedAuthors.authors = this.authors
@@ -129,22 +142,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
         return {...author, fields, removed: false, duplicate: false};
       });
 
-    this.authors.forEach(author => {
-      author.duplicate = (
-        this.authors.filter(e =>
-          e.id != author.id &&
-          e.name == author.name &&
-          !e.removed).length > 0
-      );
-    })
-
-    console.log(this.authors);
-
-    const markup = this.arranger.generateMarkup(this.config, this.arrangedAuthors);
-    this.renderer.appendChild(
-      this.preview.nativeElement,
-      this.arranger.renderElement(markup)
-    );
+    this.updateAuthors();
   }
 
   downloadPreview() {
@@ -183,8 +181,10 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       const { currentValue, previousValue } = changes.config;
 
       if (currentValue && currentValue.constructor != Event) {
+        this.alerts = [];
         this.config = currentValue;
         this.generatePreview();
+        this.selectedTab = 'preview';
       } else {
         this.config = previousValue;
       }

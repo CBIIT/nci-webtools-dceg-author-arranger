@@ -22,55 +22,65 @@
   </div>
 
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'reorder'">
+    <p *ngFor="let alert of alerts; let i = index" class="small">
+      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
+        {{ alert.message }}
+      </ngb-alert>
+    </p>
+
     <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to reorder authors.</span>
     </p>
 
+
     <div
-      data-name="reorder"
-      dragula="authors"
-      [dragulaOptions]="dragOptions"
-      [dragulaModel]="authors"
-      class="mb-3 p-2 d-flex flex-wrap"
-      style="max-height: 500px"
       [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0"
-      #reorder>
+      style="max-height: 500px">
 
-      <ng-container *ngFor="let author of authors">
-        <div [hidden]="author.removed" [attr.data-id]="author.id">
+      <div
+        data-name="reorder"
+        dragula="authors"
+        [dragulaOptions]="dragOptions"
+        [dragulaModel]="authors"
+        class="mb-3 p-2 d-flex flex-wrap">
 
-          <div
-            class="border d-flex rounded m-1 p-0"
-            placement="top"
-            [ngbTooltip]="author.name" container="body">
-
-            <div class="d-flex align-items-center py-1 px-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
-              <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
-            </div>
+        <ng-container *ngFor="let author of authors">
+          <div [hidden]="author.removed" [attr.data-id]="author.id">
 
             <div
-              class="py-1 px-2"
-              [ngClass]="{
-                'bg-white': !author.duplicate,
-                'bg-danger': author.duplicate,
-                'text-light': author.duplicate
-              }">
-              {{ author.fields.First }} {{ author.fields.Last}}
-            </div>
+              class="border d-flex rounded m-1 p-0"
+              placement="top"
+              [ngbTooltip]="author.name" container="body">
 
-            <div
-              (click)="author.removed = !author.removed; updateAuthors();"
-              class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
-              &times;
+              <div class="d-flex align-items-center py-1 px-2 bg-light rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+                <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
+              </div>
+
+              <div
+                class="py-1 px-2"
+                [ngClass]="{
+                  'bg-white': !author.duplicate,
+                  'bg-primary': author.duplicate,
+                  'text-light': author.duplicate
+                }">
+                {{ author.fields.First }} {{ author.fields.Last}}
+              </div>
+
+              <div
+                (click)="author.removed = !author.removed; updateAuthors();"
+                class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
+                &times;
+              </div>
             </div>
           </div>
-        </div>
-      </ng-container>
+        </ng-container>
+      </div>
     </div>
+
 
     <div
       class="bg-light rounded border"
-      style="min-height: 100px"
+      style="min-height: 140px"
       [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
       <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
 
