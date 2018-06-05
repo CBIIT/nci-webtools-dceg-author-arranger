@@ -164,9 +164,6 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
           };
         });
     }
-
-    console.log(this.authors);
-
     this.updateAuthors(preserveOrder);
   }
 
