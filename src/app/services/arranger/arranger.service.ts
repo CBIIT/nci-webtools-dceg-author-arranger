@@ -1,5 +1,5 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { ArrangedAuthors, FormatParameters, FieldFormat, MarkupElement } from 'src/app/app.models';
+import { ArrangedAuthors, FormatParameters, FieldFormat, MarkupElement, Author, Affiliation } from 'src/app/app.models';
 import * as _ from 'lodash';
 
 @Injectable({
@@ -86,6 +86,12 @@ export class ArrangerService {
     if (element.text)
       r.appendChild(htmlElement, r.createText(element.text));
 
+    for (let key in element.attributes || {}) {
+      let value = element.attributes[key];
+      if (value !== null)
+        r.setAttribute(htmlElement, key, value)
+    }
+
     for (let child of element.children || [])
       r.appendChild(htmlElement, this.renderElement(child));
 
@@ -94,8 +100,8 @@ export class ArrangerService {
 
   arrangeAuthors(config: FormatParameters): ArrangedAuthors {
 
-    const authors: {id: number, name: string, affiliations: number[]}[] = [];
-    const affiliations: {id: number, name: string}[] = [];
+    const authors: Author[] = [];
+    const affiliations: Affiliation[] = [];
 
     const authorFields: FieldFormat[] = [...config.author.fields]
       .sort((a, b) => a.index - b.index);
@@ -142,33 +148,6 @@ export class ArrangerService {
       const authorRow = rows[authorId];
       const affiliationRow = rows[affiliationId];
 
-      const fieldFormatter = (text: string, format: FieldFormat) => {
-        if (!text ||
-          text.trim().length === 0 ||
-          format.disabled ||
-          format.column === null) text = '';
-
-        // ensure one consecutive space exists
-        text = text
-          .replace(/\s+/g, ' ')
-          .replace(/;/g, ',')
-          .trim();
-
-        if (format.abbreviate)
-          text = text[0] || '';
-
-        if (format.addPeriod)
-          text.length > 0 ? text += '.' : null;
-
-        if (format.addComma)
-          text.length > 0 ? text += ',' : null;
-
-        if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
-          text += ' ';
-
-        return text;
-      };
-
       const authorText = authorFields
         .map(field => fieldFormatter(authorRow[field.column], field))
         .join('')
@@ -183,7 +162,9 @@ export class ArrangerService {
         authors.push({
           id: authorId,
           name: authorText,
-          affiliations: []
+          affiliations: [],
+          duplicate: false,
+          removed: false
         });
 
       if (!affiliations.find(e => e.id === affiliationId))
@@ -193,9 +174,13 @@ export class ArrangerService {
         });
 
       authors
-        .find(author => author.id === authorId)
-        .affiliations
+        .find(author => author.id === authorId).affiliations
         .push(affiliations.findIndex(e => e.id === affiliationId));
+
+      const duplicates = authors.filter(author => author.name === authorText)
+      if (duplicates.length > 1) {
+        duplicates.forEach(author => author.duplicate = true);
+      }
     });
 
     return {authors, affiliations};
@@ -249,7 +234,10 @@ export class ArrangerService {
       'numerals-uppercase': this.toRomanNumerals(index).toUpperCase()
     })[config.affiliation.labelStyle];
 
-    authors.forEach(({name, affiliations}, index) => {
+    authors
+      .filter(author => !author.removed)
+      .forEach(({name, affiliations, duplicate, removed}, index, data) => {
+
       let text = name.trim();
 
       if (config.author.labelPosition === 'inline')
@@ -258,6 +246,9 @@ export class ArrangerService {
       authorsMarkup.children.push({
         tagName: 'span',
         text: text,
+        attributes: {
+          class: duplicate ? 'bg-primary text-light' : null,
+        }
       }, {
         tagName: tagNames[config.author.labelPosition],
         text: affiliations
@@ -266,7 +257,7 @@ export class ArrangerService {
           .join(','),
       });
 
-      if (index < authors.length - 1) {
+      if (index < data.length - 1) {
         let separator = separators[config.author.separator] ||
           config.author.customSeparator;
 

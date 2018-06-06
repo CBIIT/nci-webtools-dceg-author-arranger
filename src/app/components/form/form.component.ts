@@ -449,6 +449,7 @@ export class FormComponent {
   }
 
   resetForm(parameters = {}) {
+    this.alerts = [];
     this.form.reset({
       ...this.defaultParameters,
       ...parameters
@@ -458,6 +459,7 @@ export class FormComponent {
 
   async useExample() {
     try {
+      this.alerts = [];
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Sample.xlsx');
       const sheets = await this.fs.parseXlsx(bytes);

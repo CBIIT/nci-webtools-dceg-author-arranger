@@ -14,6 +14,14 @@
   <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
   </div>
 
+  <div class="px-3" [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
+    <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
+      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
+        {{ alert.message }}
+      </ngb-alert>
+    </p>
+  </div>
+
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'preview'">
     <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to generate a preview.</span>
@@ -22,21 +30,14 @@
   </div>
 
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'reorder'">
-    <p *ngFor="let alert of alerts; let i = index" class="small">
-      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
-        {{ alert.message }}
-      </ngb-alert>
-    </p>
 
     <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to reorder authors.</span>
     </p>
 
-
     <div
-      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0"
-      style="max-height: 500px">
-
+      style="max-height: 500px;"
+      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
       <div
         data-name="reorder"
         dragula="authors"
@@ -75,44 +76,40 @@
           </div>
         </ng-container>
       </div>
-    </div>
 
-
-    <div
-      class="bg-light rounded border"
-      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
-      <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
-
-      <div
-        data-name="removed"
-        dragula="authors"
-        [dragulaOptions]="dragOptions"
-        [dragulaModel]="authors"
-        style="min-height: 140px"
-        class="d-flex flex-wrap p-2">
-        <ng-container *ngFor="let author of authors">
-          <div [hidden]="!author.removed || author.name?.length == 0" [attr.data-id]="author.id">
-            <div
-              class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
-              placement="top"
-              [ngbTooltip]="author.name" container="body">
-
-              <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
-                <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
-              </div>
-
-              <div class="py-1 px-2 bg-white">
-                {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
-              </div>
-
+      <div class="bg-light rounded border mb-4">
+        <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
+        <div
+          data-name="removed"
+          dragula="authors"
+          [dragulaOptions]="dragOptions"
+          [dragulaModel]="authors"
+          style="min-height: 100px"
+          class="d-flex flex-wrap p-2">
+          <ng-container *ngFor="let author of authors">
+            <div [hidden]="!author.removed || author.name?.length == 0" [attr.data-id]="author.id">
               <div
-                (click)="author.removed = !author.removed; updateAuthors();"
-                class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
-                +
+                class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
+                placement="top"
+                [ngbTooltip]="author.name" container="body">
+
+                <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+                  <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
+                </div>
+
+                <div class="py-1 px-2 bg-white">
+                  {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
+                </div>
+
+                <div
+                  (click)="author.removed = !author.removed; updateAuthors();"
+                  class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
+                  +
+                </div>
               </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
     </div>
 

@@ -35,13 +35,28 @@ export interface FormatParameters {
     disabledAuthorIds?: number[];
 };
 
+export interface Author {
+    id: number;
+    name: string;
+    affiliations: number[];
+    fields?: any;
+    duplicate: boolean;
+    removed: boolean;
+}
+
+export interface Affiliation {
+    id: number;
+    name: string;
+}
+
 export interface ArrangedAuthors {
-    authors: {id: number, name: string, affiliations: number[]}[];
-    affiliations: {id: number, name: string}[];
+    authors: Author[];
+    affiliations: Affiliation[];
 }
 
 export interface MarkupElement {
     tagName: string;
+    attributes?: {[key: string]: string | null};
     text?: string;
     children?: MarkupElement[];
 }

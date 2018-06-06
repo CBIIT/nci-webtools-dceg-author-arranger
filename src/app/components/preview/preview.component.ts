@@ -1,16 +1,11 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef, AfterViewInit, ApplicationRef } from '@angular/core';
 
-import { FormatParameters, ArrangedAuthors } from '../../app.models';
+import { FormatParameters, ArrangedAuthors, Author } from '../../app.models';
 import * as FileSaver from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 import { DragulaService } from 'ng2-dragula';
 import * as _ from 'lodash';
-
-interface Author {
-  rowId: number;
-
-}
 
 @Component({
   selector: 'author-arranger-preview',
@@ -30,14 +25,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
 
   arrangedAuthors: ArrangedAuthors;
 
-  authors: {
-    id: number,
-    name: string,
-    affiliations: number[],
-    fields: any,
-    removed: boolean,
-    duplicate: boolean;
-  }[] = [];
+  authors: Author[] = [];
 
   selectedTab = 'preview';
 
@@ -56,10 +44,12 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
   ) {
 
     dragula.drop.subscribe((value: [string, HTMLElement, HTMLElement, HTMLElement]) => {
-      const element = value[1];
-      const target = value[2];
-      const source = value[3];
-      const containerName = value[0];
+      const [
+        containerName,
+        element,
+        target,
+        source
+      ] = value;
 
       if (containerName !== 'authors')
         return;
@@ -85,7 +75,9 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     }
 
     let hasDuplicates = false;
-    this.authors.forEach(author => {
+    this.alerts = [];
+
+    this.authors = this.authors.map(author => {
       author.duplicate = (
         this.authors.filter(e =>
           e.id != author.id &&
@@ -94,6 +86,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       );
       if (author.duplicate)
         hasDuplicates = true;
+      return author;
     })
 
     if (hasDuplicates) {
@@ -103,10 +96,10 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       }];
     }
 
-    let arrangedAuthors = {...this.arrangedAuthors};
-    arrangedAuthors.authors = this.authors
-      .filter(author => !author.removed)
-      .map(author => this.arrangedAuthors.authors.find(e => e.id == author.id));
+    const arrangedAuthors = {
+      ...this.arrangedAuthors,
+      authors: this.authors,
+    };
 
     const markup = this.arranger.generateMarkup(this.config, arrangedAuthors);
     this.renderer.appendChild(
