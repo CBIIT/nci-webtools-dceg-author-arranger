@@ -169,6 +169,14 @@ export class FormComponent {
       labelPosition: 'superscript',
       labelStyle: 'numbers',
     },
+
+    email: {
+      field:{
+        name: 'Email',
+        column: null,
+        index: 0,
+      }
+    },
   };
 
   constructor(
@@ -249,7 +257,6 @@ export class FormComponent {
       }),
 
       affiliation: fb.group({
-        column: null,
         fields: fb.array([
           fb.group({
             name: 'Department',
@@ -319,6 +326,14 @@ export class FormComponent {
         customSeparator: '',
         labelPosition: 'superscript',
         labelStyle: 'numbers',
+      }),
+
+      email: fb.group({
+        field: fb.group({
+          name: 'Email',
+          column: null,
+          index: 0,
+        }),
       }),
     });
 

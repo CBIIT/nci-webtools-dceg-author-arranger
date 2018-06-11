@@ -32,6 +32,10 @@ export interface FormatParameters {
         labelStyle: string;
     };
 
+    email: {
+        field: FieldFormat;
+    };
+
     disabledAuthorIds?: number[];
 };
 
