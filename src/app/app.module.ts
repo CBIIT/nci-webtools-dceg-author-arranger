@@ -14,7 +14,6 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { FileValueAccessor } from './directives/file-value-accessor.directive';
 import { ArrangerService } from './services/arranger/arranger.service';
 import { FileService } from './services/file/file.service';
-import { ParserService } from './services/parser/parser.service';
 import { QuickStartComponent } from './components/quick-start/quick-start.component';
 
 @NgModule({
@@ -39,7 +38,6 @@ import { QuickStartComponent } from './components/quick-start/quick-start.compon
   providers: [
     ArrangerService,
     FormBuilder,
-    ParserService,
     FileService,
   ],
   bootstrap: [AppComponent]

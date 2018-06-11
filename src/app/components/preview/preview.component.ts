@@ -36,6 +36,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     invalid: (el, handle) => handle.getAttribute('drag-handle') === null,
   }
 
+  isValid = false;
+
   constructor(
     private renderer: Renderer2,
     private arranger: ArrangerService,
@@ -120,7 +122,9 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     if (!this.preview ||
       !this.config ||
       !this.config.file.data ||
-      this.config.file.data.length <= 1) {
+      this.config.file.data.length <= 1 ||
+      this.config.author.fields.filter(field => field.column !== null).length === 0 ||
+      this.config.affiliation.fields.filter(field => field.column !== null).length === 0) {
       return;
     }
 

@@ -1,7 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
-import { ParserService } from '../../services/parser/parser.service';
 import { FormatParameters } from '../../app.models';
 import { FileService } from '../../services/file/file.service';
 import { ArrangerService } from '../../services/arranger/arranger.service';
@@ -183,7 +182,6 @@ export class FormComponent {
     private fb: FormBuilder,
     private as: ArrangerService,
     private ds: DragulaService,
-    private ps: ParserService,
     private fs: FileService) {
 
     this.form = fb.group({
@@ -343,63 +341,65 @@ export class FormComponent {
 
     this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
       try {
-        this.alerts = [];
         this.resetForm({file: {
           filename: '',
           files: files,
           data: []
         }});
 
-        if (!files || files.length == 0) {
-          return;
-        }
+        // early exit if no file exists
+        if (!files || files.length == 0) return;
 
         const file = files[0];
 
-        // only show loading indicator if file is above 512 kb
-        if (file.size > 512 * 1024)
-          this.loading = true;
+        // read file bytes into ArrayBuffer
+        const bytes = await this.fs.readFile(file);
 
-        const sheets = await ps.parse(file);
-        this.loading = false;
-        this.alerts.pop();
+        // validate workbook metadata to ensure we are
+        // parsing files in the correct format
+        const metadata = await this.fs.parseMetadata(bytes);
 
-        if (sheets.length == 0) {
+        // ensure the workbook contains an "Authors" sheet
+        if (metadata && !(metadata.SheetNames || []).includes('Authors')) {
           throw({
             type: 'danger',
-            message: 'The workbook contains no sheets.'
+            message: 'Please ensure the workbook contains an "Authors" sheet.'
           });
         }
+
+        // show loading indicator if file is larger than 128 kb
+        this.loading = (file.size > 128 * 1024);
+        const sheets = await fs.parse(bytes);
+        console.log(sheets);
 
         // if there is only one sheet, use the first sheet
         const sheet = sheets.length === 1
           ? sheets[0]
           : sheets.find(sheet => sheet.name == 'Authors');
 
-        if (!sheet) {
+        if (sheet.data.length <= 1) {
           throw({
-            type: 'warning',
-            message: 'Please ensure the workbook contains an "Authors" sheet.'
+            type: 'info',
+            message: sheet.name == 'Authors'
+              ? 'The input file contains no data in the Authors tab.'
+              : 'The input file does not contain data.'
           });
         }
 
-        // skip rows with no data
-        let sheetData = (sheet.data || [])
-          .filter(row => row.filter(e => e).length > 0);
+        // retrieve file headers
+        const fileHeaders = sheet.data.shift() as Array<any>;
 
-        if (sheetData.length <= 1) {
+        if (fileHeaders.length < 2) {
           throw({
             type: 'warning',
-            message: 'No data could be parsed from the file.'
+            message: 'The file does not contain headers.'
           });
         }
-
-        const fileHeaders = sheetData.shift();
 
         // attempt to map file headers to columns with the same name
         if (!this.mapHeaders(fileHeaders)) {
           this.alerts.push({
-            type: 'info',
+            type: 'warning',
             message: 'The file contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.'
           });
         }
@@ -407,22 +407,26 @@ export class FormComponent {
         this.form.get('file').patchValue({
           filename: file.name,
           headers: fileHeaders,
-          data: sheetData,
+          data: sheet.data,
         });
 
       } catch (e) {
-        this.loading = false;
-        if (e.type && e.message) {
+        this.resetForm();
+        this.change.emit(this.form.value);
+
+        console.log(e);
+
+        if (e.type && e.message && e.constructor != ErrorEvent) {
           this.alerts.push(e);
         } else {
           console.log(e);
           this.alerts.push({
             type: 'danger',
-            message: 'Please upload a valid excel workbook.',
+            message: 'An error occured while parsing the workbook.',
           });
         }
-        this.resetForm();
-        this.change.emit(this.form.value);
+      } finally {
+        this.loading = false;
       }
     });
 
@@ -477,9 +481,11 @@ export class FormComponent {
       this.alerts = [];
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Sample.xlsx');
-      const sheets = await this.fs.parseXlsx(bytes);
+      const sheets = await this.fs.parse(bytes);
+
       const data = sheets.find(sheet => sheet.name === 'Example').data;
       data.shift(); // remove first row (headers)
+
 
       this.resetForm({
         file: {

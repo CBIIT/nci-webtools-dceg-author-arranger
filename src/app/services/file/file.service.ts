@@ -10,88 +10,65 @@ export class FileService {
 
   constructor(private http: HttpClient) { }
 
-  async parse(file: File) {
+  async parseFile(file: File) {
     const bytes = await this.readFile(file);
-    const workbook = xlsx.read(bytes, {type: 'array'});
-
-    const sheets = [];
-    for (let name of workbook.SheetNames) {
-      let sheet = workbook.Sheets[name];
-      let data = xlsx.utils.sheet_to_json(sheet, {header: 1});
-      sheets.push({ name, data });
-    }
-
-    return sheets;
+    return await this.parse(bytes);
   }
 
-  async parseXlsx(bytes: ArrayBuffer) {
-    const workbook = xlsx.read(bytes, {type: 'array'});
+  async parseMetadata(bytes: ArrayBuffer) {
+    const workbook = xlsx.read(bytes, {
+      type: 'array',
+      bookProps: true,
+    });
 
-    const sheets = [];
-    for (let name of workbook.SheetNames) {
-      let sheet = workbook.Sheets[name];
-      let data = xlsx.utils.sheet_to_json(sheet, {header: 1});
-      sheets.push({ name, data });
-    }
+    return workbook.Props;
 
-    return sheets;
   }
 
-  toByteString(buffer: ArrayBuffer): string {
-    let byteString = '';
-    let bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i ++) {
-      byteString += String.fromCharCode(bytes[i]);
-    }
-    return byteString;
+  async parseOld(bytes: ArrayBuffer) {
+    const workbook = xlsx.read(bytes, {type: 'array'});
+
+    // return an array of sheets
+    return Object.entries(workbook.Sheets).map(
+      ([name, sheet]) => ({
+        name,
+        data: xlsx.utils.sheet_to_json(sheet, {
+          header: 1,
+          blankrows: false,
+        })
+      })
+    )
   }
 
   readFile(file: File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        try {
-          resolve(e.target.result);
-        } catch (e) {
-          reject(e);
-        }
+
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = e => {
+        reader.abort();
+        reject(e);
       }
+
       reader.readAsArrayBuffer(file);
     });
   }
 
-  readRemoteFile(url: string): Promise<ArrayBuffer> {
-    return this.http.get(url, {responseType: 'arraybuffer'})
-      // .pipe(map(e => this.toByteString(e)))
-      .toPromise();
-  }
+  parse(data: ArrayBuffer): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker('assets/web-workers/xlsx.js');
 
-  fillMissingColumns(rows, columns: number[] = [], skip = 1) {
-    let buffer = [];
-    if (!columns || columns.length === 0) {
-      columns = [];
-      for (let i = 0; i < (rows[0] || []).length; i ++)
-        columns.push(i);
-    }
-
-    return rows.map((row, rowIndex) => {
-      // Return rows as-is if they contain a value
-      // in the first entry, or they should be skipped
-      if (rowIndex <= skip || row[0]) {
-        buffer = [...row];
-        return row;
-      }
-
-      // Otherwise, use the previous row's values.
-      // These values are specified as column
-      // indexes in the 'columns' array
-      for (let i = 0; i < rows[0].length; i ++) {
-        if (!row[i] && columns.includes(i)) {
-          row[i] = buffer[i];
-        }
-      }
-      return row;
+      worker.onerror = error => reject(error);
+      worker.onmessage = message => resolve(message.data);
+      worker.postMessage({
+        type: 'readXlsx',
+        payload: data,
+      });
     });
   }
 
+
+  readRemoteFile(url: string): Promise<ArrayBuffer> {
+    return this.http.get(url, {responseType: 'arraybuffer'}).toPromise();
+  }
 }
