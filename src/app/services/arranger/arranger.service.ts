@@ -86,13 +86,13 @@ export class ArrangerService {
     if (element.text)
       r.appendChild(htmlElement, r.createText(element.text));
 
-    for (let key in element.attributes || {}) {
-      let value = element.attributes[key];
-      if (value !== null)
+    for (const key in element.attributes || {}) {
+      const value = element.attributes[key];
+      if (value !== null && value !== undefined)
         r.setAttribute(htmlElement, key, value)
     }
 
-    for (let child of element.children || [])
+    for (const child of element.children || [])
       r.appendChild(htmlElement, this.renderElement(child));
 
     return htmlElement;
@@ -121,21 +121,26 @@ export class ArrangerService {
         format.disabled ||
         format.column === null) text = '';
 
-      // ensure one consecutive space exists
-      text = text
-        .replace(/\s+/g, ' ')
-        .replace(/;/g, ',')
-        .trim();
+      // format text only if it is not empty
+      if (text.length > 0) {
 
-      if (format.abbreviate && text.length)
-        text = text[0];
+        // ensure text contains a max of one consecutive space
+        text = text
+          .replace(/\s+/g, ' ')
+          .replace(/;/g, ',')
+          .trim();
 
-      if (format.addPeriod && text.length)
-        text += '.';
+        if (format.abbreviate)
+          text = text[0];
 
-      if (format.addComma && text.length)
-        text += ',';
+        if (format.addPeriod)
+          text += '.';
 
+        if (format.addComma)
+          text += ',';
+      }
+
+      // append a space unless format.removeSpace is checked
       if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
         text += ' ';
 
@@ -188,7 +193,7 @@ export class ArrangerService {
 
   generateMarkup(config: FormatParameters, arrangedAuthors: ArrangedAuthors): MarkupElement {
 
-    const { authors, affiliations } = arrangedAuthors;
+    const {authors, affiliations} = arrangedAuthors;
 
     const markup = {
       tagName: 'div',

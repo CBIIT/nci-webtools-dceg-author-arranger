@@ -11,8 +11,8 @@ export class FileService {
   constructor(private http: HttpClient) { }
 
   async parse(file: File) {
-    const byteString = await this.readFile(file);
-    const workbook = xlsx.read(byteString, {type: 'binary'});
+    const bytes = await this.readFile(file);
+    const workbook = xlsx.read(bytes, {type: 'array'});
 
     const sheets = [];
     for (let name of workbook.SheetNames) {
@@ -24,8 +24,8 @@ export class FileService {
     return sheets;
   }
 
-  async parseXlsx(byteString: string) {
-    const workbook = xlsx.read(byteString, {type: 'binary'});
+  async parseXlsx(bytes: ArrayBuffer) {
+    const workbook = xlsx.read(bytes, {type: 'array'});
 
     const sheets = [];
     for (let name of workbook.SheetNames) {
@@ -46,13 +46,12 @@ export class FileService {
     return byteString;
   }
 
-  readFile(file: File): Promise<string> {
+  readFile(file: File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         try {
-          const buffer = e.target.result as ArrayBuffer;
-          resolve(this.toByteString(buffer));
+          resolve(e.target.result);
         } catch (e) {
           reject(e);
         }
@@ -61,9 +60,9 @@ export class FileService {
     });
   }
 
-  readRemoteFile(url: string): Promise<string> {
+  readRemoteFile(url: string): Promise<ArrayBuffer> {
     return this.http.get(url, {responseType: 'arraybuffer'})
-      .pipe(map(e => this.toByteString(e)))
+      // .pipe(map(e => this.toByteString(e)))
       .toPromise();
   }
 
