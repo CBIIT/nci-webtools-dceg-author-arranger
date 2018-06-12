@@ -350,6 +350,7 @@ export class FormComponent {
         // early exit if no file exists
         if (!files || files.length == 0) return;
 
+        this.loading = true;
         const file = files[0];
 
         // read file bytes into ArrayBuffer
@@ -367,7 +368,6 @@ export class FormComponent {
           });
         }
 
-        this.loading = true;
         const sheets = await fs.parse(bytes);
 
         // if there is only one sheet, use the first sheet
