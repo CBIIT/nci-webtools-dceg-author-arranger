@@ -356,8 +356,7 @@ export class FormComponent {
         // read file bytes into ArrayBuffer
         const bytes = await this.fs.readFile(file);
 
-        // validate workbook metadata to ensure we are
-        // parsing files in the correct format
+        // validate workbook metadata (avoid loading invalid workbooks)
         const metadata = await this.fs.parseMetadata(bytes);
 
         // ensure the workbook contains an "Authors" sheet
@@ -394,7 +393,7 @@ export class FormComponent {
           });
         }
 
-        // attempt to map file headers to columns with the same name
+        // map file headers to columns with the same name
         if (!this.mapHeaders(fileHeaders)) {
           this.alerts.push({
             type: 'warning',
@@ -402,6 +401,7 @@ export class FormComponent {
           });
         }
 
+        // update form value
         this.form.get('file').patchValue({
           filename: file.name,
           headers: fileHeaders,
@@ -410,9 +410,6 @@ export class FormComponent {
 
       } catch (e) {
         this.resetForm();
-        this.change.emit(this.form.value);
-
-        console.log(e);
 
         if (e.type && e.message && e.constructor != ErrorEvent) {
           this.alerts.push(e);
@@ -424,6 +421,7 @@ export class FormComponent {
           });
         }
       } finally {
+        this.change.emit(this.form.value);
         this.loading = false;
       }
     });
@@ -451,7 +449,8 @@ export class FormComponent {
       if (this.defaultHeaders.includes(header)) {
         let control = [
           ...(<FormArray>this.form.get('author.fields')).controls,
-          ...(<FormArray>this.form.get('affiliation.fields')).controls
+          ...(<FormArray>this.form.get('affiliation.fields')).controls,
+          this.form.get('email.field')
         ].find((item: FormGroup) => item.value.name == header);
 
         control && control.patchValue({column});
@@ -476,14 +475,12 @@ export class FormComponent {
 
   async useExample() {
     try {
-      this.alerts = [];
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');
       const sheets = await this.fs.parse(bytes);
 
       const data = sheets.find(sheet => sheet.name === 'Example').data;
       data.shift(); // remove first row (headers)
-
 
       this.resetForm({
         file: {

@@ -27,6 +27,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
 
   authors: Author[] = [];
 
+  emails = '';
+
   selectedTab = 'preview';
 
   dragOptions = {
@@ -108,8 +110,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       this.preview.nativeElement,
       this.arranger.renderElement(markup)
     );
+    this.generateEmails();
   }
-
 
   generatePreview(preserveOrder: boolean = false) {
     if (this.preview) {
@@ -162,6 +164,30 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
         });
     }
     this.updateAuthors(preserveOrder);
+  }
+
+  generateEmails() {
+    this.emails = '';
+
+    const data = this.config.file.data;
+    const column = this.config.email.field.column;
+    const emails = [];
+
+    if (column === null || !this.authors) return;
+
+    this.authors
+      .filter(author => !author.removed)
+      .forEach(author => {
+      const rowId = author.id;
+      const email = data[rowId][column];
+      const name =  author.fields.First && author.fields.Last
+        ? `${author.fields.First} ${author.fields.Last}`
+        : author.name;
+
+      emails.push(`${name} <${email}>`)
+    });
+
+    this.emails = emails.join('; ').trim() || 'No emails are available.';
   }
 
   downloadPreview() {

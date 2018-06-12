@@ -6,15 +6,19 @@
       <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
     </label>
-    <label ngbButtonLabel class="btn-light ">
+    <label ngbButtonLabel class="btn-light">
       <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
+    </label>
+    <label ngbButtonLabel class="btn-light ">
+      <input ngbButton type="radio" value="email" aria-labelledby="preview-tab-label">
+      <h2 class="m-0" style="font-size: 1.1rem">Email</h2>
     </label>
   </div>
   <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
   </div>
 
-  <div class="px-3" [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
+  <div class="px-3" [hidden]="(config?.file?.data || []).length === 0">
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
       <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
@@ -23,21 +27,21 @@
   </div>
 
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'preview'">
-    <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
+    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to generate a preview.</span>
     </p>
-    <p style="max-height: 500px" [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0" #preview></p>
+    <p style="max-height: 500px" [hidden]="(config?.file?.data || []).length === 0" #preview></p>
   </div>
 
   <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'reorder'">
 
-    <p *ngIf="!config || !config?.file?.data || config?.file?.data?.length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
+    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
       <span>Please upload a file to reorder authors.</span>
     </p>
 
     <div
       style="max-height: 500px;"
-      [hidden]="!config || !config?.file?.data || config?.file?.data?.length === 0">
+      [hidden]="(config?.file?.data || []).length === 0">
       <div
         data-name="reorder"
         dragula="authors"
@@ -111,9 +115,23 @@
         </div>
       </div>
     </div>
-
-
   </div>
+
+  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'email'">
+    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
+      <span>Please upload a file to view emails.</span>
+    </p>
+
+    <p *ngIf="(config?.file?.data || []).length !== 0 && config?.email?.field.column === null" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
+      <span>Please select a valid email column.</span>
+    </p>
+
+    <p
+      style="max-height: 500px"
+      [hidden]="(config?.file?.data || []).length === 0 && config?.email?.field.column === null"
+    ><i>{{ emails }}</i></p>
+  </div>
+
 
 
 </div>
