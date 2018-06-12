@@ -367,10 +367,8 @@ export class FormComponent {
           });
         }
 
-        // show loading indicator if file is larger than 128 kb
-        this.loading = (file.size > 128 * 1024);
+        this.loading = true;
         const sheets = await fs.parse(bytes);
-        console.log(sheets);
 
         // if there is only one sheet, use the first sheet
         const sheet = sheets.length === 1
@@ -381,8 +379,8 @@ export class FormComponent {
           throw({
             type: 'info',
             message: sheet.name == 'Authors'
-              ? 'The input file contains no data in the Authors tab.'
-              : 'The input file does not contain data.'
+              ? 'The input file contains no data in the Authors sheet.'
+              : 'The input file contains no data.'
           });
         }
 
@@ -392,7 +390,7 @@ export class FormComponent {
         if (fileHeaders.length < 2) {
           throw({
             type: 'warning',
-            message: 'The file does not contain headers.'
+            message: 'The file does not contain valid columns.'
           });
         }
 
@@ -400,7 +398,7 @@ export class FormComponent {
         if (!this.mapHeaders(fileHeaders)) {
           this.alerts.push({
             type: 'warning',
-            message: 'The file contains headers not found in the template. Please ensure these headers are mapped properly in the fields below.'
+            message: 'The file contains columns not found in the template. Please ensure these columns are properly mapped in the fields below.'
           });
         }
 
@@ -480,7 +478,7 @@ export class FormComponent {
     try {
       this.alerts = [];
       this.loading = true;
-      const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Sample.xlsx');
+      const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');
       const sheets = await this.fs.parse(bytes);
 
       const data = sheets.find(sheet => sheet.name === 'Example').data;

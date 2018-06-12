@@ -61,8 +61,7 @@
                 class="py-1 px-2"
                 [ngClass]="{
                   'bg-white': !author.duplicate,
-                  'bg-primary': author.duplicate,
-                  'text-light': author.duplicate
+                  'bg-warning': author.duplicate
                 }">
                 {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
               </div>

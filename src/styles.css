@@ -23,6 +23,10 @@ a {
     background-color: #336E7B !important;
 }
 
+.bg-warning {
+    background-color: #ffeeba !important;
+}
+
 .btn-primary {
     border-color: #2a71a5;
 }

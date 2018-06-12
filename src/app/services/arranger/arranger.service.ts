@@ -252,7 +252,7 @@ export class ArrangerService {
         tagName: 'span',
         text: text,
         attributes: {
-          class: duplicate ? 'bg-primary text-light' : null,
+          class: duplicate ? 'bg-warning' : null,
         }
       }, {
         tagName: tagNames[config.author.labelPosition],

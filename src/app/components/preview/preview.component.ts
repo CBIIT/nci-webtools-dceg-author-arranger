@@ -93,7 +93,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
 
     if (hasDuplicates) {
       this.alerts = [{
-        type: 'info',
+        type: 'warning',
         message: 'Duplicate author names have been found.'
       }];
     }
