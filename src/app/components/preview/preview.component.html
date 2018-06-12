@@ -6,13 +6,13 @@
       <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
     </label>
-    <label ngbButtonLabel class="btn-light">
-      <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
-      <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
-    </label>
     <label ngbButtonLabel class="btn-light ">
       <input ngbButton type="radio" value="email" aria-labelledby="preview-tab-label">
       <h2 class="m-0" style="font-size: 1.1rem">Email</h2>
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
+      <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
     </label>
   </div>
   <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
@@ -129,7 +129,7 @@
     <p
       style="max-height: 500px"
       [hidden]="(config?.file?.data || []).length === 0 && config?.email?.field.column === null"
-    ><i>{{ emails }}</i></p>
+    >{{ emails }}</p>
   </div>
 
 

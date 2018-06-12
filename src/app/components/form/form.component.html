@@ -140,6 +140,13 @@
               <label class="sr-only" [attr.for]="form.get('email.field').value.name + '-' + form.get('email.field').value.column">
                 {{ form.get('email.field.name').value }} is mapped to column {{ form.get('email.field.column').value  + 1 }}
               </label>
+              <div class="d-flex flex-wrap small py-1 w-lt-lg-100">
+                <label class="m-0 mx-1 d-flex align-items-center">
+                  <input class="mr-1" type="checkbox" checked disabled>Add Semicolon
+                </label>
+              </div>
+
+
             </div>
           </div>
 
