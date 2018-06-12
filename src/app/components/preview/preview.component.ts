@@ -184,7 +184,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
         ? `${author.fields.First} ${author.fields.Last}`
         : author.name;
 
-      emails.push(`${name} <${email}>`)
+      if (email)
+        emails.push(`${name} <${email}>`)
     });
 
     this.emails = emails.join('; ').trim() || 'No emails are available.';
