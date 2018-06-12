@@ -174,7 +174,6 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     const emails = [];
 
     if (column === null || !this.authors) return;
-
     this.authors
       .filter(author => !author.removed)
       .forEach(author => {

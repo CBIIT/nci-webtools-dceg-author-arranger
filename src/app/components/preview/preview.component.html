@@ -128,7 +128,7 @@
 
     <p
       style="max-height: 500px"
-      [hidden]="(config?.file?.data || []).length === 0 && config?.email?.field.column === null"
+      [hidden]="(config?.file?.data || []).length === 0 || config?.email?.field.column === null"
     >{{ emails }}</p>
   </div>
 
