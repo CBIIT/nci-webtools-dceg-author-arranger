@@ -15,6 +15,9 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.1.1/dist/css/bootstrap.min.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
+  <!-- DOM4 Polyfill -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/2.0.1/dom4.js"></script> -->
+
   <!-- Adobe DAP Snippet -->
   <script defer src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
 
@@ -50,7 +53,7 @@
   </script>
 
   <!-- End Adobe DAP Snippet -->
-  <script defer>_satellite.pageBottom();</script>
+  <script defer>(function _pb(){window._satellite !== undefined ? _satellite.pageBottom() : _pb, 1000})()</script>
 
   <!-- DCEG analytics code -->
   <script src="//static.cancer.gov/webanalytics/wa_dceg_pageload.js"></script>

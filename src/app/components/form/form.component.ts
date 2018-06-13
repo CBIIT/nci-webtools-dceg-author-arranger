@@ -357,17 +357,17 @@ export class FormComponent {
         const bytes = await this.fs.readFile(file);
 
         // validate workbook metadata (avoid loading invalid workbooks)
-        const metadata = await this.fs.parseMetadata(bytes);
+        const properties = await this.fs.getProperties(bytes);
 
         // ensure the workbook contains an "Authors" sheet
-        if (metadata && !(metadata.SheetNames || []).includes('Authors')) {
+        if (properties && !(properties.SheetNames || []).includes('Authors')) {
           throw({
             type: 'danger',
             message: 'Please ensure the workbook contains an "Authors" sheet.'
           });
         }
 
-        const sheets = await fs.parse(bytes);
+        const sheets = await fs.getSheets(bytes);
 
         // if there is only one sheet, use the first sheet
         const sheet = sheets.length === 1
@@ -477,7 +477,7 @@ export class FormComponent {
     try {
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');
-      const sheets = await this.fs.parse(bytes);
+      const sheets = await this.fs.getSheets(bytes);
 
       const data = sheets.find(sheet => sheet.name === 'Example').data;
       data.shift(); // remove first row (headers)

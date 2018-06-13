@@ -1,12 +1,72 @@
 importScripts('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
 
-function readXlsx(parameters) {
-    var bytes = parameters.data;
+/**
+ * Excel document properties
+ * @typedef {Object} Properties
+ * @property {string} [Title]
+ * @property {string} [Subject]
+ * @property {string} [Author]
+ * @property {string} [Manager]
+ * @property {string} [Company]
+ * @property {string} [Category]
+ * @property {string} [Keywords]
+ * @property {string} [Comments]
+ * @property {string} [LastAuthor]
+ * @property {Date} [CreatedDate]
+ * @property {Date} [ModifiedDate]
+ * @property {string} [Application]
+ * @property {string} [AppVersion]
+ * @property {string} [DocSecurity]
+ * @property {boolean} [HyperlinksChanged]
+ * @property {boolean} [SharedDoc]
+ * @property {boolean} [LinksUpToDate]
+ * @property {boolean} [ScaleCrop]
+ * @property {number} [Worksheets]
+ * @property {string[]} [SheetNames]
+ * @property {string} [ContentStatus]
+ * @property {string} [LastPrinted]
+ * @property {string | number} [Revision]
+ * @property {string} [Version]
+ * @property {string} [Identifier]
+ * @property {string} [Language]
+ */
 
+
+/**
+ * Gets an Excel document's properties
+ * @param {ArrayBuffer} bytes The Excel document's bytes
+ * @returns {Properties | null} The Excel document's properties
+ */
+function getProperties(bytes) {
+    var bytes = parameters.data;
+    var workbook = XLSX.read(bytes, {
+        type: 'array',
+        bookProps: true,
+    });
+
+    return workbook.Props || null;
+}
+
+
+/**
+ * Excel document worksheet
+ * @typedef {Object} Worksheet
+ * @property {String} name;
+ * @property {any[][]} data;
+ */
+
+
+/**
+ * Gets an Excel document's worksheets
+ * @param {ArrayBuffer} bytes The Excel document's bytes
+ * @returns {Worksheet[]} The Excel document's worksheets
+ */
+function getSheets(bytes) {
+
+    /** @type Worksheet[] */
     var sheets = [];
     var workbook = XLSX.read(bytes, {type: 'array'});
 
-    // return an array of sheets
     for (var name in workbook.Sheets || {}) {
         var sheet = workbook.Sheets[name];
         sheets.push({
@@ -15,31 +75,23 @@ function readXlsx(parameters) {
                 header: 1,
                 blankrows: false
             })
-        })
+        });
     }
 
-    return {
-        jobId: parameters.jobId,
-        payload: sheets
-    };
+    return sheets;
 }
 
-function readXlsxMetadata(parameters) {
-    var bytes = parameters.data;
-    var workbook = XLSX.read(bytes, {
-        type: 'array',
-        bookProps: true,
+
+addEventListener('message', function(event) {
+    var method = self[event.method];
+    var messageId = event.messageId;
+    var parameters = event.parameters;
+
+    postMessage({
+        messageId: messageId,
+        result: method(parameters)
     });
+});
 
-    return {
-        jobId: parameters.jobId,
-        payload: workbook.Props
-    };
-}
-
-onmessage = function(event) {
-    var action = event.data;
-    postMessage(self[action.type](action.payload));
-}
 
 postMessage('initialized');
