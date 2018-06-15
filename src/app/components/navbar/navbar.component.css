@@ -4,6 +4,6 @@
     border-left: none;
 }
 
-.navbar-nav li.active a {
+.navbar-nav li a.active {
     border-bottom: 3px solid #F5AB35;
 }

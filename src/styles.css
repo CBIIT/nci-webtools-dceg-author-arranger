@@ -7,9 +7,10 @@ a {
     color: #2a71a5;
 }
 
-.bg-transparent {
-    background-color: transparent !important;
+.alert.alert-info a {
+    color: #22313F;
 }
+
 
 .bg-light {
     background-color: #f2f2f2 !important;
@@ -23,16 +24,16 @@ a {
     background-color: #336E7B !important;
 }
 
-.bg-warning {
-    background-color: #ffeeba !important;
-}
-
 .btn-primary {
     border-color: #2a71a5;
 }
 
-.alert.alert-info a {
-    color: #22313F;
+.bg-transparent {
+    background-color: transparent !important;
+}
+
+.bg-warning {
+    background-color: #ffeeba !important;
 }
 
 .card-header {
@@ -41,12 +42,12 @@ a {
     min-height: 50px;
 }
 
-.c-pointer {
-    cursor: pointer;
-}
-
 .c-move {
     cursor: move;
+}
+
+.c-pointer {
+    cursor: pointer;
 }
 
 .opacity-75 {

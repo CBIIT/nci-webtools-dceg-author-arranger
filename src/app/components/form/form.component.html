@@ -9,7 +9,7 @@
     <div class="col">
       <div class="card shadow-lg mb-4 border-0">
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap py-0 bg-primary text-light">
-          <h2 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">Upload Author Information</h2>
+          <h1 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">Upload Author Information</h1>
         </div>
 
         <div class="card-body">
@@ -70,12 +70,12 @@
 
       <div class="card shadow-lg mb-4 border-0">
         <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary text-light">
-          <h2 style="font-size: 1.1rem" class="card-title m-0">Author Format</h2>
+          <h1 style="font-size: 1.1rem" class="card-title m-0">Author Format</h1>
         </div>
         <div class="card-body">
-          <h3 style="font-size: 1rem;">Fields
+          <h2 style="font-size: 1rem;">Fields
             <small class="text-dark font-weight-bold">(drag to reorder)</small>
-          </h3>
+          </h2>
 
           <div dragula="author.fields" [dragulaOptions]="dragOptions">
             <div class="list-group-item d-flex p-0" *ngFor="let field of form.get('author.fields')['controls']" [attr.data-name]="field.value.name">
@@ -120,7 +120,7 @@
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4">Email Column</h3>
+          <h2 style="font-size: 1rem;" class="mt-4">Email Column</h2>
 
           <div class="list-group-item d-flex p-0">
             <div class="d-flex align-items-center p-2 bg-white rounded-left border-right flex-shrink-0" style="overflow: hidden;">
@@ -151,7 +151,7 @@
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4" id="author-affiliation-title">Author Affiliation</h3>
+          <h2 style="font-size: 1rem;" class="mt-4" id="author-affiliation-title">Author Affiliation</h2>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="author-label-position" id="author-label-position-superscript" value="superscript"
               [formControl]="form.get('author.labelPosition')" aria-labelledby="author-affiliation-title">
@@ -176,7 +176,7 @@
             </label>
           </div>
 
-          <h3 style="font-size: 1rem;" class="mt-4" id="author-separator-title">Author Separator</h3>
+          <h2 style="font-size: 1rem;" class="mt-4" id="author-separator-title">Author Separator</h2>
 
           <div class="form-check form-check-inline">
             <input type="radio" id="author-separator-comma" name="author-separator" class="form-check-input" [formControl]="form.get('author.separator')"
@@ -221,13 +221,13 @@
 
       <div class="card shadow-lg mb-4 mb-lg-0  border-0">
         <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary text-light">
-          <h2 style="font-size: 1.1rem" class="card-title m-0">Affiliation Format</h2>
+          <h1 style="font-size: 1.1rem" class="card-title m-0">Affiliation Format</h1>
         </div>
         <div class="card-body">
 
-          <h3 style="font-size: 1rem;">Fields
+          <h2 style="font-size: 1rem;">Fields
             <small class="text-dark font-weight-bold">(drag to reorder)</small>
-          </h3>
+          </h2>
           <div dragula="affiliation.fields" [dragulaOptions]="dragOptions">
             <div class="list-group-item d-flex p-0" *ngFor="let field of form.get('affiliation.fields')['controls']" [attr.data-name]="field.value.name">
 
@@ -270,7 +270,7 @@
             </div>
           </div>
 
-          <h3 style="font-size: 1rem;" class="mt-4" id="affiliation-separator-title">Affiliation Separator</h3>
+          <h2 style="font-size: 1rem;" class="mt-4" id="affiliation-separator-title">Affiliation Separator</h2>
           <div class="form-check form-check-inline">
             <input type="radio" id="affiliation-separator-comma" name="affiliation-separator" class="form-check-input" [formControl]="form.get('affiliation.separator')"
               value="comma" aria-labelledby="affiliation-separator-title">
@@ -310,7 +310,7 @@
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4" id="affiliation-label-title">Affiliation Label</h3>
+          <h2 style="font-size: 1rem;" class="mt-4" id="affiliation-label-title">Affiliation Label</h2>
 
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-position" id="affiliation-label-position-superscript"
@@ -337,7 +337,7 @@
           </div>
 
 
-          <h3 style="font-size: 1rem;" class="mt-4" id="label-style-title">Label Style</h3>
+          <h2 style="font-size: 1rem;" class="mt-4" id="label-style-title">Label Style</h2>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="affiliation-label-style" id="affiliation-label-style-numbers" value="numbers"
               [formControl]="form.get('affiliation.labelStyle')" aria-labelledby="label-style-title">
