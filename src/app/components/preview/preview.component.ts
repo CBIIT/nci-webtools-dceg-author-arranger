@@ -113,7 +113,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
     this.generateEmails();
   }
 
-  generatePreview(preserveOrder: boolean = false) {
+  async generatePreview(preserveOrder: boolean = false) {
     if (this.preview) {
       let root = this.preview.nativeElement;
       for (let child of Array.from(root.children)) {
@@ -130,7 +130,7 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       return;
     }
 
-    this.arrangedAuthors = this.arranger.arrangeAuthors(this.config);
+    this.arrangedAuthors = await this.arranger.arrangeAuthors(this.config);
 
     if (preserveOrder) {
       this.authors = this.authors.map(author => {

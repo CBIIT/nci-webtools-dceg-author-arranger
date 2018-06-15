@@ -1,4 +1,9 @@
+//@ts-nocheck
+
+/** Adds XLSX to global namespace */
 importScripts('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
+
+/** DECLARE TYPES */
 
 /**
  * Excel document properties
@@ -31,6 +36,15 @@ importScripts('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
  * @property {string} [Language]
  */
 
+/**
+ * Excel document worksheet
+ * @typedef {Object} Worksheet
+ * @property {String} name;
+ * @property {any[][]} data;
+ */
+
+/** END TYPES */
+
 
 /**
  * Gets an Excel document's properties
@@ -38,22 +52,11 @@ importScripts('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
  * @returns {Properties | null} The Excel document's properties
  */
 function getProperties(bytes) {
-    var bytes = parameters.data;
-    var workbook = XLSX.read(bytes, {
+    return XLSX.read(bytes, {
         type: 'array',
         bookProps: true,
-    });
-
-    return workbook.Props || null;
+    }).Props || null;
 }
-
-
-/**
- * Excel document worksheet
- * @typedef {Object} Worksheet
- * @property {String} name;
- * @property {any[][]} data;
- */
 
 
 /**
@@ -83,9 +86,10 @@ function getSheets(bytes) {
 
 
 addEventListener('message', function(event) {
-    var method = self[event.method];
-    var messageId = event.messageId;
-    var parameters = event.parameters;
+    var data = event.data;
+    var method = self[data.method];
+    var messageId = data.messageId;
+    var parameters = data.parameters;
 
     postMessage({
         messageId: messageId,

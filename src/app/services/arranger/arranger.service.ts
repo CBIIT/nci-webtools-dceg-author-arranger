@@ -1,6 +1,7 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { ArrangedAuthors, FormatParameters, FieldFormat, MarkupElement, Author, Affiliation } from 'src/app/app.models';
 import * as _ from 'lodash';
+import { WorkerService } from '../worker/worker.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,75 +9,13 @@ import * as _ from 'lodash';
 export class ArrangerService {
 
   renderer: Renderer2;
+  worker: Worker = null;
 
-  constructor(rendererFactory: RendererFactory2) {
+  constructor(
+    private rendererFactory: RendererFactory2,
+    private workerService: WorkerService) {
+    this.worker = new Worker('web-workers/arranger.js');
     this.renderer = rendererFactory.createRenderer(null, null);
-  }
-
-  /**
-   * Generates an array consisting of author and affiliation ids in the format:
-   * [
-   *  [authorId, affiliationId]
-   *  ...
-   * ]
-   * These ids correspond to the row index of the input file in which the fields
-   * first appear
-   *
-   * @param rows
-   * @param config
-   */
-  generateIds(config: FormatParameters): [number, number][] {
-    let rows = config.file.data || [];
-    const ids: [number, number][] = [];
-    const authors: string[][] = [];
-    const affiliations: string[][] = [];
-
-    // columns used to uniquely identify an author
-    const authorColumns = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Other']
-      .map(columnName => config.author.fields.find(field => field.name == columnName).column);
-
-    // columns used to uniquely identify an affiliation
-    const affiliationColumns = ['Department', 'Division', 'Institute', 'Street', 'City', 'State', 'Postal Code', 'Country']
-      .map(columnName => config.affiliation.fields.find(field => field.name == columnName).column);
-
-    // ensure rows does not contain extra spaces
-    rows = rows.map(row => row.map(str => str.replace(/\s+/g, ' ').trim()))
-
-    const mappedAuthors = rows.map(row => authorColumns.map(i => row[i]));
-    const mappedAffiliations = rows.map(row => affiliationColumns.map(i => row[i]));
-
-    // previous author's id (for empty authors)
-    let previousAuthorId;
-
-    rows.forEach((row, rowIndex) => {
-      const authorFields = mappedAuthors[rowIndex];
-      const affiliationFields = mappedAffiliations[rowIndex];
-
-      // try to find the affiliation
-      let affiliationId = mappedAffiliations
-        .findIndex(row => _(row).isEqual(affiliationFields));
-
-      // if it is not found, create a new affiliation
-      if (affiliationId == -1) {
-        affiliations.push(affiliationFields);
-        affiliationId = rowIndex;
-      }
-
-      // initialize the author id
-      let authorId;
-
-      // if the author fields are empty, use the previous id
-      if (authorFields.filter(e => e).length == 0) {
-        authorId = previousAuthorId;
-      // otherwise, use the row index as the author id
-      } else {
-        previousAuthorId = authorId = rowIndex;
-      }
-
-      ids.push([authorId, affiliationId]);
-    });
-
-    return ids;
   }
 
   renderElement(element: MarkupElement) {
@@ -98,7 +37,7 @@ export class ArrangerService {
     return htmlElement;
   }
 
-  arrangeAuthors(config: FormatParameters): ArrangedAuthors {
+  async arrangeAuthors(config: FormatParameters): Promise<ArrangedAuthors> {
 
     const authors: Author[] = [];
     const affiliations: Affiliation[] = [];
@@ -113,7 +52,10 @@ export class ArrangerService {
 
     // contains an array of [authorId, affiliationId] pairs which correspond
     // to the row of the input file in which they first appear
-    const rowIds = this.generateIds(config);
+    const rowIds = //this.generateIds(config);
+    await this.workerService.callMethod(this.worker, 'generateIds', config);
+    console.log(rowIds);
+
 
     const fieldFormatter = (text: string, format: FieldFormat) => {
       if (!text ||

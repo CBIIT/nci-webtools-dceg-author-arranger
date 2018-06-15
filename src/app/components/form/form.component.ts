@@ -409,15 +409,15 @@ export class FormComponent {
         });
 
       } catch (e) {
+        console.log('caught exception', e);
         this.resetForm();
 
         if (e.type && e.message && e.constructor != ErrorEvent) {
           this.alerts.push(e);
         } else {
-          console.log(e);
           this.alerts.push({
             type: 'danger',
-            message: 'An error occured while parsing the workbook.',
+            message: 'An error occured while reading the file.',
           });
         }
       } finally {
@@ -474,6 +474,7 @@ export class FormComponent {
   }
 
   async useExample() {
+    this.resetForm();
     try {
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');

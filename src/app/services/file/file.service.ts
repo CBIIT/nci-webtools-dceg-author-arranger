@@ -11,7 +11,7 @@ export class FileService {
   initialized: boolean = false;
 
   constructor(private http: HttpClient, private workerService: WorkerService) {
-    this.worker = new Worker('assets/web-workers/xlsx.js');
+    this.worker = new Worker('web-workers/xlsx.js');
     this.worker.addEventListener(
       'message',
       (function onMessage({data}: MessageEvent) {
