@@ -9,7 +9,8 @@
       <li class="nav-item mr-4">
         <a
           routerLink="/"
-          [class.active]="router.url == '/'"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
           class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
           AuthorArranger
         </a>
@@ -18,7 +19,7 @@
       <li class="nav-item mr-4">
         <a
           routerLink="/quick-start"
-          [class.active]="router.url == '/quick-start'"
+          routerLinkActive="active"
           class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
           QuickStart
         </a>
@@ -27,7 +28,7 @@
       <li class="nav-item mr-4">
         <a
           routerLink="/about"
-          [class.active]="router.url == '/about'"
+          routerLinkActive="active"
           class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
           About
         </a>

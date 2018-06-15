@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'author-arranger-navbar',
@@ -8,6 +7,4 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
   navbarCollapsed: boolean = true;
-
-  constructor(public router: Router) {}
 }
