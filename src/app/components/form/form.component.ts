@@ -350,6 +350,13 @@ export class FormComponent {
         // early exit if no file exists
         if (!files || files.length == 0) return;
 
+        if (!this.fs.initialized) {
+          throw({
+            type: 'danger',
+            message: 'The files service is initializing. Please try again in a few moments.'
+          });
+        }
+
         this.loading = true;
         const file = files[0];
 
@@ -476,6 +483,13 @@ export class FormComponent {
   async useExample() {
     this.resetForm();
     try {
+      if (!this.fs.initialized) {
+        throw({
+          type: 'danger',
+          message: 'The files service is initializing. Please try again in a few moments.'
+        });
+      }
+
       this.loading = true;
       const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');
       const sheets = await this.fs.getSheets(bytes);
@@ -493,6 +507,8 @@ export class FormComponent {
       this.mapHeaders(this.defaultHeaders);
     } catch(e) {
       console.log(e);
+      if (e.type && e.message && e.constructor != ErrorEvent)
+        this.alerts.push(e);
     } finally {
       this.loading = false;
     }

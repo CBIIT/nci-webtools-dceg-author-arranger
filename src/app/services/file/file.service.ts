@@ -41,22 +41,12 @@ export class FileService {
   }
 
   async getProperties(data: ArrayBuffer) {
-    this.checkInitialized();
     return await this.workerService
       .callMethod(this.worker, 'getProperties', data);
   }
 
   async getSheets(data: ArrayBuffer) {
-    this.checkInitialized();
     return await this.workerService
       .callMethod(this.worker, 'getSheets', data);
-  }
-
-  checkInitialized() {
-    if (!this.initialized)
-      throw ({
-        type: 'danger',
-        message: 'The parsing service not not yet finished initializing. Please try again in a few moments.'
-      })
   }
 }
