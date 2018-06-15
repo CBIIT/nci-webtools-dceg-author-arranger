@@ -20,7 +20,10 @@ export class WorkerService {
         function messageListener({data}: MessageEvent) {
           if (data.messageId !== undefined && data.messageId !== messageId) return;
           worker.removeEventListener('message', messageListener);
-          resolve(data.result || data);
+          if (data.result !== undefined)
+            resolve(data.result);
+          else
+            resolve(null);
         },
       );
 

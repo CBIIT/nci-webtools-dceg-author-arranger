@@ -4,6 +4,7 @@ import { DragulaService } from 'ng2-dragula';
 import { FormatParameters } from '../../app.models';
 import { FileService } from '../../services/file/file.service';
 import { ArrangerService } from '../../services/arranger/arranger.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'author-arranger-form',
@@ -340,6 +341,11 @@ export class FormComponent {
     });
 
     this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
+
+      // set loading to true after 250 milliseconds
+      // do not show loading indicator if load takes less than 250 ms
+      const loadingTimeout = setTimeout(() => this.loading = true, 250);
+
       try {
         this.resetForm({file: {
           filename: '',
@@ -357,20 +363,19 @@ export class FormComponent {
           });
         }
 
-        this.loading = true;
         const file = files[0];
 
         // read file bytes into ArrayBuffer
         const bytes = await this.fs.readFile(file);
 
-        // validate workbook metadata (avoid loading invalid workbooks)
+        // validate workbook properties (avoid loading invalid workbooks)
         const properties = await this.fs.getProperties(bytes);
 
         // ensure the workbook contains an "Authors" sheet
         if (properties && !(properties.SheetNames || []).includes('Authors')) {
           throw({
             type: 'danger',
-            message: 'Please ensure the workbook contains an "Authors" sheet.'
+            message: 'Please ensure the workbook contains an Authors sheet.'
           });
         }
 
@@ -416,10 +421,9 @@ export class FormComponent {
         });
 
       } catch (e) {
-        console.log('caught exception', e);
         this.resetForm();
 
-        if (e.type && e.message && e.constructor != ErrorEvent) {
+        if (e.type && e.message && e.constructor !== ErrorEvent) {
           this.alerts.push(e);
         } else {
           this.alerts.push({
@@ -429,6 +433,7 @@ export class FormComponent {
         }
       } finally {
         this.change.emit(this.form.value);
+        clearTimeout(loadingTimeout);
         this.loading = false;
       }
     });
