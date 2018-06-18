@@ -1,10 +1,12 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
-import { FormatParameters } from '../../app.models';
+import { FormParameters } from '../../app.models';
 import { FileService } from '../../services/file/file.service';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 import { Observable } from 'rxjs';
+import { StoreService } from '../../services/store/store.service';
+import { merge, isArray, isObject } from 'lodash';
 
 @Component({
   selector: 'author-arranger-form',
@@ -13,189 +15,41 @@ import { Observable } from 'rxjs';
 })
 export class FormComponent {
 
-  @Output()
-  change: EventEmitter<FormatParameters> = new EventEmitter<FormatParameters>();
-
   alerts: {type: string, message: string}[] = [];
+
+  defaultHeaders = ['Title', 'First', 'Middle', 'Last', 'Degree', 'Other', 'Email', 'Department', 'Division', 'Institute', 'Street', 'City', 'State', 'Postal Code', 'Country'];
+
+  formGroup: FormGroup = null;
 
   loading: boolean = false;
 
-  form: FormGroup = null;
-
-  dragOptions = {
-    invalid: (el, handle) => handle.getAttribute('drag-handle') === null
-  }
-
-  defaultHeaders = ["Title", "First", "Middle", "Last", "Degree", "Other", "Email", "Department", "Division", "Institute", "Street", "City", "State", "Postal Code", "Country"];
-
-  defaultParameters: FormatParameters = {
-    file: {
-      filename: '',
-      files: null,
-      data: [],
-      headers: [],
-    },
-
-    author: {
-      fields: [
-        {
-          name: 'Title',
-          column: null,
-          addPeriod: true,
-          disabled: false,
-          index: 0,
-        },
-
-        {
-          name: 'First',
-          column: null,
-          abbreviate: false,
-          addPeriod: false,
-          removeSpace: false,
-          disabled: false,
-          index: 1,
-        },
-
-        {
-          name: 'Middle',
-          column: null,
-          abbreviate: false,
-          addPeriod: false,
-          removeSpace: false,
-          disabled: false,
-          index: 2,
-        },
-
-        {
-          name: 'Last',
-          column: null,
-          abbreviate: false,
-          addPeriod: false,
-          disabled: false,
-          index: 3,
-        },
-
-        {
-          name: 'Degree',
-          column: null,
-          addComma: false,
-          addPeriod: false,
-          disabled: false,
-          index: 4,
-        },
-
-        {
-          name: 'Other',
-          column: null,
-          addComma: false,
-          addPeriod: false,
-          disabled: false,
-          index: 5,
-        },
-      ],
-      separator: 'comma',
-      customSeparator: '',
-      labelPosition: 'superscript',
-    },
-
-    affiliation: {
-      fields: [
-        {
-          name: 'Department',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 0,
-        },
-
-        {
-          name: 'Division',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 1,
-        },
-
-        {
-          name: 'Institute',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 2,
-        },
-
-        {
-          name: 'Street',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 3,
-        },
-
-        {
-          name: 'City',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 4,
-        },
-
-        {
-          name: 'State',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 5,
-        },
-
-        {
-          name: 'Postal Code',
-          column: null,
-          addComma: true,
-          addPeriod: false,
-          index: 6,
-        },
-
-        {
-          name: 'Country',
-          column: null,
-          addComma: false,
-          addPeriod: false,
-          index: 7,
-        },
-      ],
-      separator: 'comma',
-      customSeparator: '',
-      labelPosition: 'superscript',
-      labelStyle: 'numbers',
-    },
-
-    email: {
-      field:{
-        name: 'Email',
-        column: null,
-        index: 0,
-      }
-    },
-  };
-
   constructor(
-    private fb: FormBuilder,
-    private as: ArrangerService,
-    private ds: DragulaService,
-    private fs: FileService) {
+    private formBuilder: FormBuilder,
+    private arrangerService: ArrangerService,
+    private fileService: FileService,
+    private storeService: StoreService) {
 
-    this.form = fb.group({
-      file: fb.group({
+    const group = this.formBuilder.group.bind(formBuilder);
+    const array = this.formBuilder.array.bind(formBuilder);
+    const control = this.formBuilder.control.bind(formBuilder);
+
+
+    const createFormObject = (item, accumulator) => {
+
+    }
+
+
+    this.formGroup = group({
+      file: group({
         filename: '',
         files: null,
         data: [],
         headers: [],
       }),
 
-      author: fb.group({
-        fields: fb.array([
-          fb.group({
+      author: group({
+        fields: array([
+          group({
             name: 'Title',
             column: null,
             addPeriod: true,
@@ -203,7 +57,7 @@ export class FormComponent {
             index: 0,
           }),
 
-          fb.group({
+          group({
             name: 'First',
             column: null,
             abbreviate: false,
@@ -213,7 +67,7 @@ export class FormComponent {
             index: 1,
           }),
 
-          fb.group({
+          group({
             name: 'Middle',
             column: null,
             abbreviate: false,
@@ -223,7 +77,7 @@ export class FormComponent {
             index: 2,
           }),
 
-          fb.group({
+          group({
             name: 'Last',
             column: null,
             addComma: false,
@@ -232,7 +86,7 @@ export class FormComponent {
             index: 3,
           }),
 
-          fb.group({
+          group({
             name: 'Degree',
             column: null,
             addComma: false,
@@ -241,7 +95,7 @@ export class FormComponent {
             index: 4,
           }),
 
-          fb.group({
+          group({
             name: 'Other',
             column: null,
             addComma: false,
@@ -255,9 +109,9 @@ export class FormComponent {
         labelPosition: 'superscript',
       }),
 
-      affiliation: fb.group({
-        fields: fb.array([
-          fb.group({
+      affiliation: group({
+        fields: array([
+          group({
             name: 'Department',
             column: null,
             addComma: true,
@@ -265,7 +119,7 @@ export class FormComponent {
             index: 0,
           }),
 
-          fb.group({
+          group({
             name: 'Division',
             column: null,
             addComma: true,
@@ -273,7 +127,7 @@ export class FormComponent {
             index: 1,
           }),
 
-          fb.group({
+          group({
             name: 'Institute',
             column: null,
             addComma: true,
@@ -281,7 +135,7 @@ export class FormComponent {
             index: 2,
           }),
 
-          fb.group({
+          group({
             name: 'Street',
             column: null,
             addComma: true,
@@ -289,7 +143,7 @@ export class FormComponent {
             index: 3,
           }),
 
-          fb.group({
+          group({
             name: 'City',
             column: null,
             addComma: true,
@@ -297,7 +151,7 @@ export class FormComponent {
             index: 4,
           }),
 
-          fb.group({
+          group({
             name: 'State',
             column: null,
             addComma: true,
@@ -305,7 +159,7 @@ export class FormComponent {
             index: 5,
           }),
 
-          fb.group({
+          group({
             name: 'Postal Code',
             column: null,
             addComma: true,
@@ -313,7 +167,7 @@ export class FormComponent {
             index: 6,
           }),
 
-          fb.group({
+          group({
             name: 'Country',
             column: null,
             addComma: false,
@@ -327,8 +181,8 @@ export class FormComponent {
         labelStyle: 'numbers',
       }),
 
-      email: fb.group({
-        field: fb.group({
+      email: group({
+        field: group({
           name: 'Email',
           column: null,
           index: 0,
@@ -336,40 +190,33 @@ export class FormComponent {
       }),
     });
 
-    this.form.valueChanges.subscribe((value: FormatParameters) => {
-      this.change.emit(value);
-    });
-
-    this.form.get('file.files').valueChanges.subscribe(async (files: FileList) => {
+    this.formGroup.get('file.files').valueChanges.subscribe(
+      async (files: FileList) => {
 
       // set loading to true after 250 milliseconds
       // do not show loading indicator if load takes less than 250 ms
       const loadingTimeout = setTimeout(() => this.loading = true, 250);
 
       try {
-        this.resetForm({file: {
-          filename: '',
-          files: files,
-          data: []
-        }});
+        this.reset({file: { files }});
 
         // early exit if no file exists
         if (!files || files.length == 0) return;
 
-        if (!this.fs.initialized) {
+        if (!this.fileService.initialized) {
           throw({
             type: 'danger',
-            message: 'The files service is initializing. Please try again in a few moments.'
+            message: 'The AuthorArranger service is initializing. Please try again in a few moments.'
           });
         }
 
         const file = files[0];
 
         // read file bytes into ArrayBuffer
-        const bytes = await this.fs.readFile(file);
+        const bytes = await this.fileService.readFile(file);
 
         // validate workbook properties (avoid loading invalid workbooks)
-        const properties = await this.fs.getProperties(bytes);
+        const properties = await this.fileService.getProperties(bytes);
 
         // ensure the workbook contains an "Authors" sheet
         if (properties && !(properties.SheetNames || []).includes('Authors')) {
@@ -421,7 +268,7 @@ export class FormComponent {
         });
 
       } catch (e) {
-        this.resetForm();
+        this.reset();
 
         if (e.type && e.message && e.constructor !== ErrorEvent) {
           this.alerts.push(e);
@@ -432,37 +279,22 @@ export class FormComponent {
           });
         }
       } finally {
-        this.change.emit(this.form.value);
         clearTimeout(loadingTimeout);
         this.loading = false;
       }
     });
-
-    // set form field indexes when dragged
-    ds.drop.subscribe((value: [string, HTMLElement, HTMLElement]) => {
-      const parent = value[2];
-      const formArray = value[0];
-
-      if (!['author.fields', 'affiliation.fields'].includes(formArray))
-        return;
-
-      Array.from(parent.children)
-        .forEach((node, index) => (<FormArray>this.form.get(formArray)).controls
-          .find(control => control.value.name == node.getAttribute('data-name'))
-          .patchValue({index}))
-    });
   }
 
-  mapHeaders(headers: string[]): boolean {
+  mapHeaders(headers: string[] = this.defaultHeaders): boolean {
     let validHeaders = true;
 
     headers.forEach((header, column) => {
 
       if (this.defaultHeaders.includes(header)) {
         let control = [
-          ...(<FormArray>this.form.get('author.fields')).controls,
-          ...(<FormArray>this.form.get('affiliation.fields')).controls,
-          this.form.get('email.field')
+          ...(<FormArray>this.formGroup.get('author.fields')).controls,
+          ...(<FormArray>this.formGroup.get('affiliation.fields')).controls,
+          this.formGroup.get('email.field')
         ].find((item: FormGroup) => item.value.name == header);
 
         control && control.patchValue({column});
@@ -476,44 +308,46 @@ export class FormComponent {
     return validHeaders;
   }
 
-  resetForm(parameters = {}) {
+  reset(value = {}) {
     this.alerts = [];
-    this.form.reset({
-      ...this.defaultParameters,
-      ...parameters
-    }, {emitEvent: false});
-    this.form.updateValueAndValidity();
+
+    const formValue = merge(
+      this.storeService.initialAppState.form,
+      value
+    );
+
+    this.formGroup.reset(formValue, { emitEvent: false });
+    this.formGroup.updateValueAndValidity();
+    this.storeService.patchState({form: formValue});
   }
 
   async useExample() {
-    this.resetForm();
     try {
-      if (!this.fs.initialized) {
+      this.loading = true;
+      this.reset();
+
+      if (!this.fileService.initialized) {
         throw({
           type: 'danger',
           message: 'The files service is initializing. Please try again in a few moments.'
         });
       }
 
-      this.loading = true;
-      const bytes = await this.fs.readRemoteFile('assets/files/AuthorArranger Template.xlsx');
-      const sheets = await this.fs.getSheets(bytes);
+      const filename = 'AuthorArranger Template.xlsx';
+      const bytes = await this.fileService.readRemoteFile(`assets/files/${filename}`);
+      const sheets = await this.fileService.getSheets(bytes);
 
       const data = sheets.find(sheet => sheet.name === 'Example').data;
-      data.shift(); // remove first row (headers)
+      const headers = data.shift(); // remove first row (headers)
 
-      this.resetForm({
-        file: {
-          filename: 'AuthorArranger Sample.xlsx',
-          headers: [...this.defaultHeaders],
-          data,
-        }
-      });
-      this.mapHeaders(this.defaultHeaders);
+      this.reset({file: { filename, headers, data }});
+      this.mapHeaders();
+
     } catch(e) {
       console.log(e);
       if (e.type && e.message && e.constructor != ErrorEvent)
         this.alerts.push(e);
+
     } finally {
       this.loading = false;
     }

@@ -15,6 +15,9 @@ import { FileValueAccessor } from './directives/file-value-accessor.directive';
 import { ArrangerService } from './services/arranger/arranger.service';
 import { FileService } from './services/file/file.service';
 import { QuickStartComponent } from './components/quick-start/quick-start.component';
+import { ReorderComponent } from './components/reorder/reorder/reorder.component';
+import { FieldsComponent } from './components/fields/fields/fields.component';
+import { EmailComponent } from './components/email/email/email.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,9 @@ import { QuickStartComponent } from './components/quick-start/quick-start.compon
     NavbarComponent,
     FileValueAccessor,
     QuickStartComponent,
+    ReorderComponent,
+    FieldsComponent,
+    EmailComponent,
   ],
   imports: [
     AppRoutingModule,

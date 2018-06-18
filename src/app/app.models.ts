@@ -7,12 +7,12 @@ export interface FieldFormat {
     addComma?: boolean;
     removeSpace?: boolean;
     disabled?: boolean;
-};
+}
 
-export interface FormatParameters {
+export interface FormParameters {
     file: {
-        filename: string,
-        files: FileList | null,
+        filename: string | null,
+        files: FileList | File[] | null,
         data: string[][],
         headers: string[],
     };
@@ -35,25 +35,32 @@ export interface FormatParameters {
     email: {
         field: FieldFormat;
     };
-
-    disabledAuthorIds?: number[];
-};
+}
 
 export interface Author {
     id: number;
+    rowId: number;
     name: string;
     affiliations: number[];
-    fields?: any;
     duplicate: boolean;
     removed: boolean;
+    fields: {
+        Title?: string;
+        First?: string;
+        Middle?: string;
+        Last?: string;
+        Degree?: string;
+        Other?: string;
+    };
 }
 
 export interface Affiliation {
     id: number;
+    rowId: number;
     name: string;
-}
+};
 
-export interface ArrangedAuthors {
+export interface ArrangedOutput {
     authors: Author[];
     affiliations: Affiliation[];
 }
@@ -63,4 +70,17 @@ export interface MarkupElement {
     attributes?: {[key: string]: string | null};
     text?: string;
     children?: MarkupElement[];
+}
+
+export interface AppState {
+    form: FormParameters;
+
+    rowIds: [number, number][];
+    rowOrder: number[];
+
+    authors: Author[];
+    affiliations: Affiliation[];
+
+    markup: MarkupElement;
+    emails: string[];
 }

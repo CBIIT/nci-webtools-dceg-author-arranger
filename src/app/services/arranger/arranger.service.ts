@@ -1,10 +1,10 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { ArrangedAuthors, FormatParameters, FieldFormat, MarkupElement, Author, Affiliation } from 'src/app/app.models';
+import { ArrangedAuthors, FormParameters, FieldFormat, MarkupElement, Author, Affiliation, ArrangedOutput } from 'src/app/app.models';
 import * as _ from 'lodash';
 import { WorkerService } from '../worker/worker.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ArrangerService {
 
@@ -37,7 +37,19 @@ export class ArrangerService {
     return htmlElement;
   }
 
-  async arrangeAuthors(config: FormatParameters): Promise<ArrangedAuthors> {
+  async arrange(config: FormParameters): Promise<ArrangedOutput> {
+    return await this.workerService.callMethod(
+      this.worker,
+      'arrange',
+      config
+    );
+  }
+
+
+
+  /*
+
+  async arrangeAuthors(config: FormParameters): Promise<ArrangedAuthors> {
 
     const authors: Author[] = [];
     const affiliations: Affiliation[] = [];
@@ -133,7 +145,7 @@ export class ArrangerService {
     return {authors, affiliations};
   }
 
-  generateMarkup(config: FormatParameters, arrangedAuthors: ArrangedAuthors): MarkupElement {
+  generateMarkup(config: FormParameters, arrangedAuthors: ArrangedAuthors): MarkupElement {
 
     const {authors, affiliations} = arrangedAuthors;
 
@@ -274,4 +286,6 @@ export class ArrangerService {
 
     return str;
   }
+
+  */
 }
