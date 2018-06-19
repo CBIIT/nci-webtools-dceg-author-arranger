@@ -45,7 +45,7 @@ export class FileService {
       .callMethod(this.worker, 'getProperties', data);
   }
 
-  async getSheets(data: ArrayBuffer) {
+  async getSheets(data: ArrayBuffer): Promise<{name: string, data: any[]}[]> {
     return await this.workerService
       .callMethod(this.worker, 'getSheets', data);
   }

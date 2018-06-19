@@ -1,6 +1,5 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { ArrangedAuthors, FormParameters, FieldFormat, MarkupElement, Author, Affiliation, ArrangedOutput } from 'src/app/app.models';
-import * as _ from 'lodash';
+import { FormParameters, FieldFormat, MarkupElement, Author, Affiliation, ArrangedOutput, AppState } from 'src/app/app.models';
 import { WorkerService } from '../worker/worker.service';
 
 @Injectable({
@@ -37,12 +36,23 @@ export class ArrangerService {
     return htmlElement;
   }
 
-  async arrange(config: FormParameters): Promise<ArrangedOutput> {
+  async arrange(appState: AppState): Promise<ArrangedOutput> {
     return await this.workerService.callMethod(
       this.worker,
       'arrange',
-      config
+      {
+        form: appState.form,
+        rowOrder: appState.rowOrder
+      }
     );
+  }
+
+  async getMarkup(data: ArrangedOutput) {
+    return await this.workerService.callMethod(
+      this.worker,
+      'getMarkup',
+      data
+    )
   }
 
 
