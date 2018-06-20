@@ -36,26 +36,11 @@ export class ArrangerService {
     return htmlElement;
   }
 
-  async arrange(appState: AppState): Promise<ArrangedOutput> {
-    return await this.workerService.callMethod(
-      this.worker,
-      'arrange',
-      {
-        form: appState.form,
-        rowOrder: appState.rowOrder
-      }
+  arrange(appState: AppState): Promise<AppState> {
+    return this.workerService.callMethod<AppState>(
+      this.worker, 'arrange', appState
     );
   }
-
-  async getMarkup(data: ArrangedOutput) {
-    return await this.workerService.callMethod(
-      this.worker,
-      'getMarkup',
-      data
-    )
-  }
-
-
 
   /*
 

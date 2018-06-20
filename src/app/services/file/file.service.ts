@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { FullProperties } from 'xlsx';
+import { Worksheet } from '../../app.models';
 import { WorkerService } from '../worker/worker.service';
+import { fileWorker } from './file.worker';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +13,11 @@ export class FileService {
   worker: Worker = null;
   initialized: boolean = false;
 
-  constructor(private http: HttpClient, private workerService: WorkerService) {
-    this.worker = new Worker('web-workers/xlsx.js');
+  constructor(
+    private http: HttpClient,
+    private workerService: WorkerService) {
+
+    this.worker = this.workerService.getWorker(fileWorker);
     this.worker.addEventListener(
       'message',
       (function onMessage({data}: MessageEvent) {
@@ -40,13 +46,15 @@ export class FileService {
     return this.http.get(url, {responseType: 'arraybuffer'}).toPromise();
   }
 
-  async getProperties(data: ArrayBuffer) {
-    return await this.workerService
-      .callMethod(this.worker, 'getProperties', data);
+  getProperties(data: ArrayBuffer): Promise<FullProperties> {
+    return this.workerService.callMethod<FullProperties>(
+      this.worker, 'getProperties', data
+    );
   }
 
-  async getSheets(data: ArrayBuffer): Promise<{name: string, data: any[]}[]> {
-    return await this.workerService
-      .callMethod(this.worker, 'getSheets', data);
+  getSheets(data: ArrayBuffer): Promise<Worksheet[]> {
+    return this.workerService.callMethod<Worksheet[]>(
+      this.worker, 'getSheets', data
+    );
   }
 }

@@ -1,51 +1,76 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Renderer2, ViewChild, ElementRef, AfterViewInit, ApplicationRef } from '@angular/core';
-
-import { FormatParameters, ArrangedAuthors, Author } from '../../app.models';
-import * as FileSaver from 'file-saver';
-import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
+import { Component, Renderer2, ViewChild, ElementRef } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { DragulaService } from 'ng2-dragula';
-import * as _ from 'lodash';
+import { StoreService } from '../../services/store/store.service';
+import { saveAs } from 'file-saver';
+import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css'],
-  providers: [ApplicationRef],
 })
-export class PreviewComponent implements OnChanges, AfterViewInit {
-
-  @Input()
-  config: FormatParameters;
+export class PreviewComponent {
 
   @ViewChild('preview')
   preview: ElementRef;
 
   alerts: {type: string, message: string}[] = [];
 
-  arrangedAuthors: ArrangedAuthors;
-
-  authors: Author[] = [];
-
-  emails = '';
+  hasData = false;
 
   selectedTab = 'preview';
 
-  dragOptions = {
-    direction: 'horizontal',
-    copy: false,
-    copySortSource: true,
-    invalid: (el, handle) => handle.getAttribute('drag-handle') === null,
+  constructor(
+    private renderer: Renderer2,
+    private arrangerService: ArrangerService,
+    private storeService: StoreService,
+  ) {
+    // whenever app state changes, re-render markup for this component
+    this.storeService.appState$.subscribe(state => {
+      this.alerts = [];
+
+      this.hasData = !isEmpty(state.form.file.data);
+
+      if (!this.preview) return;
+
+      let root = this.preview.nativeElement;
+      for (let child of Array.from(root.children)) {
+        this.renderer.removeChild(root, child);
+      }
+
+      if (this.hasData && state.markup) {
+        this.renderer.appendChild(
+          this.preview.nativeElement,
+          this.arrangerService.renderElement(state.markup)
+        );
+      }
+
+      if (state.duplicateAuthors) {
+        this.alerts = [{
+          type: 'warning',
+          message: 'Duplicate author names have been found.'
+        }];
+      }
+    });
   }
 
-  isValid = false;
+  downloadPreview() {
+    if (this.preview && this.hasData) {
+      const originalFilename = this.storeService.appState.form.file.filename;
+      const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
+      const html = (<HTMLElement> this.preview.nativeElement).innerHTML;
+      saveAs(htmlDocx.asBlob(html), filename);
+    }
+  }
+
+  /*
 
   constructor(
     private renderer: Renderer2,
     private arranger: ArrangerService,
-    private dragula: DragulaService,
-    private applicationRef: ApplicationRef
   ) {
+
 
     dragula.drop.subscribe((value: [string, HTMLElement, HTMLElement, HTMLElement]) => {
       const [
@@ -69,6 +94,8 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       this.updateAuthors();
     });
   }
+
+
 
   updateAuthors(preserveOrder: boolean = false) {
     if (this.preview) {
@@ -241,4 +268,5 @@ export class PreviewComponent implements OnChanges, AfterViewInit {
       }
     }
   }
+  */
 }

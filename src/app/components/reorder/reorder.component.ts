@@ -7,6 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReorderComponent implements OnInit {
 
+  dragOptions = {
+    direction: 'horizontal',
+    copy: false,
+    copySortSource: true,
+    invalid: (el, handle) => handle.getAttribute('drag-handle') === null,
+  }
+
   constructor() { }
 
   ngOnInit() {

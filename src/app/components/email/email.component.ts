@@ -1,19 +1,36 @@
 import { Component } from '@angular/core';
-import { StoreService } from '../../../services/store/store.service';
+import { AppState } from '../../app.models';
+import { StoreService } from '../../services/store/store.service';
+import { get, isNil, isEmpty } from 'lodash';
 
 @Component({
   selector: 'author-arranger-email',
-  templateUrl: './email.component.html',
-  styleUrls: ['./email.component.css']
+  templateUrl: 'email.component.html',
 })
-export class EmailComponent implements OnInit {
+export class EmailComponent {
 
-  emails: string;
+  emails: string[];
 
-  constructor(private storeService: StoreService) {
-    this.emails = this.storeService.appState.emails.join('; ');
-    this.storeService.appState$.subscribe(
-      ({emails}) => this.emails = emails.join('; ')
-    );
+  hasData: boolean = false;
+
+  hasEmailColumn: boolean = false;
+
+  constructor(
+    private storeService: StoreService,
+  ) {
+    this.loadState(this.storeService.appState);
+    this.storeService.appState$.subscribe(e => {
+      this.loadState(e);
+    });
+  }
+
+  loadState(state: AppState) {
+    const fileData = get(state, 'form.file.data');
+    const emailColumn = get(state, 'form.author.email.fields[0].column');
+
+    // check for both undefined and null
+    this.hasEmailColumn = isNil(emailColumn);
+    this.hasData = !isEmpty(fileData);
+    this.emails = state.emails;
   }
 }

@@ -1,24 +1,30 @@
 <div class="card rounded shadow-lg h-100  border-0" style="min-height: 400px">
-  <label class="sr-only" id="preview-tab-label">Use this control to select whether to preview or reorder the output.</label>
+
+  <label class="sr-only" id="preview-tab-label">
+    Use this control to select whether to preview or reorder the output.
+  </label>
+
   <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary rounded-top text-light">
-  <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
-    <label ngbButtonLabel class="btn-light ">
-      <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
-      <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
-    </label>
-    <label ngbButtonLabel class="btn-light">
-      <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
-      <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
-    </label>
-    <label ngbButtonLabel class="btn-light ">
-      <input ngbButton type="radio" value="email" aria-labelledby="preview-tab-label">
-      <h2 class="m-0" style="font-size: 1.1rem">Email</h2>
-    </label>
-  </div>
-  <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">Download .docx</a>
+    <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
+      <label ngbButtonLabel class="btn-light ">
+        <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
+        <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
+      </label>
+      <label ngbButtonLabel class="btn-light">
+        <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
+        <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
+      </label>
+      <label ngbButtonLabel class="btn-light ">
+        <input ngbButton type="radio" value="email" aria-labelledby="preview-tab-label">
+        <h2 class="m-0" style="font-size: 1.1rem">Email</h2>
+      </label>
+    </div>
+    <a class="p-2 my-1 text-light" href="javascript:;" (click)="downloadPreview()">
+      Download .docx
+    </a>
   </div>
 
-  <div class="px-3" [hidden]="(config?.file?.data || []).length === 0">
+  <div class="px-3" *ngIf="hasData">
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
       <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
@@ -26,114 +32,19 @@
     </p>
   </div>
 
-  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'preview'">
-    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
-      <span>Please upload a file to generate a preview.</span>
-    </p>
-    <p style="max-height: 500px" [hidden]="(config?.file?.data || []).length === 0" #preview></p>
+  <div
+    *ngIf="hasData; else warning"
+    class="card-body overflow-auto mh-100 h-100">
+    <p [hidden]="selectedTab != 'preview'" style="max-height: 500px" #preview></p>
+    <author-arranger-reorder [hidden]="selectedTab != 'reorder'"></author-arranger-reorder>
+    <author-arranger-email [hidden]="selectedTab != 'reorder'"></author-arranger-email>
   </div>
 
-  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'reorder'">
-
-    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
-      <span>Please upload a file to reorder authors.</span>
-    </p>
-
-    <div
-      style="max-height: 500px;"
-      [hidden]="(config?.file?.data || []).length === 0">
-      <div
-        data-name="reorder"
-        dragula="authors"
-        [dragulaOptions]="dragOptions"
-        [dragulaModel]="authors"
-        class="mb-3 p-2 d-flex flex-wrap">
-
-        <ng-container *ngFor="let author of authors">
-          <div [hidden]="author.removed || author.name?.length == 0" [attr.data-id]="author.id">
-
-            <div
-              class="border d-flex rounded m-1 p-0 shadow-sm"
-              placement="top"
-              [ngbTooltip]="author.name" container="body">
-
-              <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
-                <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
-              </div>
-
-              <div
-                class="py-1 px-2"
-                [ngClass]="{
-                  'bg-white': !author.duplicate,
-                  'bg-warning': author.duplicate
-                }">
-                {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
-              </div>
-
-              <div
-                (click)="author.removed = !author.removed; updateAuthors();"
-                class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
-                &times;
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-
-      <div class="bg-light rounded border mb-4">
-        <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
-        <div
-          data-name="removed"
-          dragula="authors"
-          [dragulaOptions]="dragOptions"
-          [dragulaModel]="authors"
-          style="min-height: 100px"
-          class="d-flex flex-wrap p-2">
-          <ng-container *ngFor="let author of authors">
-            <div [hidden]="!author.removed || author.name?.length == 0" [attr.data-id]="author.id">
-              <div
-                class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
-                placement="top"
-                [ngbTooltip]="author.name" container="body">
-
-                <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
-                  <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
-                </div>
-
-                <div class="py-1 px-2 bg-white">
-                  {{ (author.fields.First +  ' ' + author.fields.Last).trim() || author.name }}
-                </div>
-
-                <div
-                  (click)="author.removed = !author.removed; updateAuthors();"
-                  class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
-                  +
-                </div>
-              </div>
-            </div>
-          </ng-container>
-        </div>
+  <ng-template #warning>
+    <div class="card-body overflow-auto mh-100 h-100">
+      <div class="d-flex-center font-weight-light h5 h-100">
+        <span>Please upload a file to view authors.</span>
       </div>
     </div>
-  </div>
-
-  <div class="card-body mh-100 h-100" style="overflow: auto;" [hidden]="selectedTab != 'email'">
-    <p *ngIf="(config?.file?.data || []).length === 0" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
-      <span>Please upload a file to view emails.</span>
-    </p>
-
-    <p *ngIf="(config?.file?.data || []).length !== 0 && config?.email?.field.column === null" class="m-0 h-100 d-flex align-items-center justify-content-center h5 font-weight-light text-dark text-center">
-      <span>Please select a valid email column.</span>
-    </p>
-
-    <p
-      style="max-height: 500px"
-      [hidden]="(config?.file?.data || []).length === 0 || config?.email?.field.column === null"
-    >{{ emails }}</p>
-  </div>
-
-
-
+  </ng-template>
 </div>
-
-    <!-- <pre>{{ config | json }}</pre> -->

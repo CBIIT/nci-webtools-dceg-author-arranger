@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AppState } from '../../app.models';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, get as getFromPath } from 'lodash';
 import { Subject } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -156,15 +157,18 @@ export class StoreService {
       },
 
       email: {
-        field:{
-          name: 'Email',
-          column: null,
-          index: 0,
-        }
+        fields: [
+          {
+            name: 'Email',
+            column: null,
+            index: 0,
+          },
+        ]
       },
     },
     rowIds: [],
     rowOrder: [],
+    preserveOrder: false,
 
     authors: [],
     affiliations: [],
@@ -172,6 +176,10 @@ export class StoreService {
     markup: {tagName: 'span'},
     emails: [],
   };
+
+  get(path: any) {
+    return cloneDeep(getFromPath(this._appState, path));
+  }
 
   get appState() {
     return cloneDeep(this._appState);

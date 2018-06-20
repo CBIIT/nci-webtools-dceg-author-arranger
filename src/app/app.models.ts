@@ -33,7 +33,7 @@ export interface FormParameters {
     };
 
     email: {
-        field: FieldFormat;
+        fields: FieldFormat[];
     };
 }
 
@@ -77,10 +77,17 @@ export interface AppState {
 
     rowIds: [number, number][];
     rowOrder: number[];
+    preserveOrder: boolean;
 
     authors: Author[];
     affiliations: Affiliation[];
+    duplicateAuthors: boolean;
 
     markup: MarkupElement;
     emails: string[];
+}
+
+export interface Worksheet {
+    name: string;
+    data: (string | undefined)[][];
 }

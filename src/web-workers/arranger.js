@@ -1,4 +1,4 @@
-//@ts-nocheck
+/// <reference path="../app/app.models.ts" />
 
 /** Adds _ to global namespace */
 importScripts('https://unpkg.com/lodash@4.17.10/lodash.min.js');
@@ -92,6 +92,15 @@ function generateIds(config) {
 
     return [authorId, affiliationId];
   });
+
+}
+
+/**
+ *
+ *
+ * @param {AppState} appState
+ */
+function arrange(appState) {
 
 }
 

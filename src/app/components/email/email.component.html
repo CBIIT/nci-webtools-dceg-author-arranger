@@ -1,3 +1,11 @@
-<p>
-  email works!
+<div
+  *ngIf="hasData && !hasEmailColumn"
+  class="h-100 d-flex-center h5 font-weight-light">
+  <span>Please select a valid email column.</span>
+</div>
+
+<p
+  *ngIf="hasData && hasEmailColumn"
+  style="max-height: 500px">
+  <span>{{ emails.join('; ') }}</span>
 </p>
