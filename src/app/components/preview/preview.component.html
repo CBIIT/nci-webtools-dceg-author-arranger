@@ -24,27 +24,24 @@
     </a>
   </div>
 
-  <div class="px-3" *ngIf="hasData">
+  <div
+    [hidden]="!hasData"
+    class="card-body overflow-auto mh-100 h-100">
+
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
       <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
       </ngb-alert>
     </p>
+
+    <p [hidden]="selectedTab != 'preview'" style="max-height: 500px" #preview></p>
+    <!-- <author-arranger-reorder [hidden]="selectedTab != 'reorder'"></author-arranger-reorder> -->
+    <author-arranger-email [hidden]="selectedTab != 'email'"></author-arranger-email>
   </div>
 
   <div
-    *ngIf="hasData; else warning"
-    class="card-body overflow-auto mh-100 h-100">
-    <p [hidden]="selectedTab != 'preview'" style="max-height: 500px" #preview></p>
-    <author-arranger-reorder [hidden]="selectedTab != 'reorder'"></author-arranger-reorder>
-    <author-arranger-email [hidden]="selectedTab != 'reorder'"></author-arranger-email>
+    [hidden]="hasData"
+    class="card-body overflow-auto mh-100 h-100 d-flex-center font-weight-light h5">
+    <p style="max-height: 500px; margin: 0;">Please upload a file to view authors.</p>
   </div>
-
-  <ng-template #warning>
-    <div class="card-body overflow-auto mh-100 h-100">
-      <div class="d-flex-center font-weight-light h5 h-100">
-        <span>Please upload a file to view authors.</span>
-      </div>
-    </div>
-  </ng-template>
 </div>

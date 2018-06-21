@@ -1,14 +1,16 @@
-import * as XLSX from 'xlsx';
+import { FullProperties } from 'xlsx';
 import { Worksheet } from '../../app.models';
 
 export function fileWorker() {
 
-    importScripts('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
+    self['importScripts']('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
+
+    let XLSX = self['XLSX'];
 
     /**
      * Gets an Excel document's properties
      */
-    self['getProperties'] = (bytes: ArrayBuffer): XLSX.FullProperties => (
+    self['getProperties'] = (bytes: ArrayBuffer): FullProperties => (
         XLSX.read(bytes, {
             type: 'array',
             bookProps: true,

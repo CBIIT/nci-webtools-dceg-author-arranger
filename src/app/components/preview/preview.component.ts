@@ -22,27 +22,26 @@ export class PreviewComponent {
   selectedTab = 'preview';
 
   constructor(
+    private arranger: ArrangerService,
     private renderer: Renderer2,
-    private arrangerService: ArrangerService,
-    private storeService: StoreService,
+    private store: StoreService,
   ) {
     // whenever app state changes, re-render markup for this component
-    this.storeService.appState$.subscribe(state => {
+    this.store.appState$.subscribe(state => {
+
       this.alerts = [];
-
       this.hasData = !isEmpty(state.form.file.data);
-
       if (!this.preview) return;
 
       let root = this.preview.nativeElement;
-      for (let child of Array.from(root.children)) {
+      // root.textContent = '';
+      for (let child of root.children) {
         this.renderer.removeChild(root, child);
       }
 
       if (this.hasData && state.markup) {
         this.renderer.appendChild(
-          this.preview.nativeElement,
-          this.arrangerService.renderElement(state.markup)
+          root, this.arranger.createElement(state.markup)
         );
       }
 
@@ -57,7 +56,7 @@ export class PreviewComponent {
 
   downloadPreview() {
     if (this.preview && this.hasData) {
-      const originalFilename = this.storeService.appState.form.file.filename;
+      const originalFilename = this.store.appState.form.file.filename;
       const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
       const html = (<HTMLElement> this.preview.nativeElement).innerHTML;
       saveAs(htmlDocx.asBlob(html), filename);

@@ -7,5 +7,5 @@
 <p
   *ngIf="hasData && hasEmailColumn"
   style="max-height: 500px">
-  <span>{{ emails.join('; ') }}</span>
+  <a href="mailto:{{emails}}">{{ emails }}</a>
 </p>

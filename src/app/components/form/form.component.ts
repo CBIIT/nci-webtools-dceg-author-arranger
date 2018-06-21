@@ -6,6 +6,7 @@ import { StoreService } from '../../services/store/store.service';
 import { createFormObject } from '../../services/createFormObject';
 import { merge, isEqual } from 'lodash';
 import { ArrangerService } from '../../services/arranger/arranger.service';
+import { debounceTime, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'author-arranger-form',
@@ -31,13 +32,20 @@ export class FormComponent {
       this.storeService.appState.form
     ) as FormGroup;
 
+    console.log(this.formGroup, this.formGroup.value);
+
     // used to determine if file data has changed
     let previousData = (<AppState["form"]> this.formGroup.value).file.data;
 
     // update store whenever form value changes
-    this.formGroup.valueChanges.subscribe(async (form: AppState["form"]) => {
+    this.formGroup.valueChanges.pipe(
+      filter(e => !e.isTrusted),
+      debounceTime(150)
+    ).subscribe(async (form: AppState["form"]) => {
       // arrange() will take the current state and return a new app state
       // if file data did not change, then preserve author order
+      const loadingTimeout = setTimeout(() => this.loading = true, 250);
+
       const currentData = form.file.data;
       const preserveOrder = isEqual(currentData, previousData);
       if (!preserveOrder)
@@ -51,6 +59,10 @@ export class FormComponent {
       );
 
       this.storeService.patchState(newState);
+
+      clearTimeout(loadingTimeout);
+      this.loading = false;
+
     });
 
     this.formGroup.get('file.files')
@@ -80,6 +92,8 @@ export class FormComponent {
         this.loading = false;
       }
     });
+
+    this.formGroup.updateValueAndValidity();
   }
 
   async getFileData(files: FileList): Promise<Partial<AppState["form"]["file"]>> {
@@ -169,7 +183,7 @@ export class FormComponent {
         let control = [
           ...(<FormArray>this.formGroup.get('author.fields')).controls,
           ...(<FormArray>this.formGroup.get('affiliation.fields')).controls,
-          this.formGroup.get('email.field')
+          ...(<FormArray>this.formGroup.get('email.fields')).controls,
         ].find((item: FormGroup) => item.value.name == header);
 
         control && control.patchValue({column});

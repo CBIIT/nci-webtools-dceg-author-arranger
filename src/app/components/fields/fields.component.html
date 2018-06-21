@@ -3,7 +3,7 @@
 <form [dragula]="formName" [dragulaOptions]="dragOptions">
   <div
     class="list-group-item d-flex p-0"
-    *ngFor="let field of formArray"
+    *ngFor="let field of formArray.controls"
     [attr.data-name]="field.value.name">
 
     <div
@@ -14,11 +14,12 @@
     </div>
 
     <div class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1">
+
       <select
         style="min-width: 150px; max-width: 150px; padding-right: 0;"
         class="form-control form-control-sm w-sm-inherit"
         [attr.id]="field.value.name + '-' + field.value.column"
-        [formControl]="field">
+        [formControl]="field.controls.column">
         <option [ngValue]="null">
           {{ field.value.name }} &larr; No data
         </option>
@@ -29,6 +30,7 @@
           {{ field.value.name }} &larr; {{ column }}
         </option>
       </select>
+
       <label class="sr-only" [attr.for]="field.value.name + '-' + field.value.column">
         The {{ field.value.name }} field is mapped to column {{ field.value.column + 1 }}.
       </label>

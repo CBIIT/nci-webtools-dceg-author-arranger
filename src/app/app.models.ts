@@ -13,8 +13,8 @@ export interface FormParameters {
     file: {
         filename: string | null,
         files: FileList | File[] | null,
-        data: string[][],
-        headers: string[],
+        data: string[][] | null,
+        headers: string[] | null,
     };
 
     author: {
@@ -51,6 +51,7 @@ export interface Author {
         Last?: string;
         Degree?: string;
         Other?: string;
+        Email?: string;
     };
 }
 
@@ -58,11 +59,6 @@ export interface Affiliation {
     id: number;
     rowId: number;
     name: string;
-};
-
-export interface ArrangedOutput {
-    authors: Author[];
-    affiliations: Affiliation[];
 }
 
 export interface MarkupElement {

@@ -60,6 +60,10 @@ a {
     opacity: 0.75;
 }
 
+.overflow-auto {
+    overflow: auto;
+}
+
 .pointer-events-none {
     pointer-events: none;
 }

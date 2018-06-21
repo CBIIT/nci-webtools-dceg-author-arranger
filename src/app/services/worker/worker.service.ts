@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class WorkerService {
 
   getWorker(fn: Function): Worker {
+    // console.log(fn.toString());
     return new Worker(URL.createObjectURL(new Blob([`(${fn})()`])));
   }
 

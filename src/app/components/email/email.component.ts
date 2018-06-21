@@ -9,7 +9,7 @@ import { get, isNil, isEmpty } from 'lodash';
 })
 export class EmailComponent {
 
-  emails: string[];
+  emails: string;
 
   hasData: boolean = false;
 
@@ -31,6 +31,6 @@ export class EmailComponent {
     // check for both undefined and null
     this.hasEmailColumn = isNil(emailColumn);
     this.hasData = !isEmpty(fileData);
-    this.emails = state.emails;
+    this.emails = state.emails.join('; ');
   }
 }

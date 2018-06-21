@@ -3,23 +3,21 @@ import { AppState } from '../../app.models';
 import { cloneDeep, merge, get as getFromPath } from 'lodash';
 import { Subject } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
 
-  public appState$: Subject<AppState> = Subject.create();
-
-  private _appState: AppState = this.initialAppState;
+  public appState$: Subject<AppState> = new Subject();
+  public subscribe = this.appState$.subscribe.bind(this.appState$);
 
   private _initialAppState: AppState = {
     form: {
       file: {
         filename: '',
         files: null,
-        data: [],
-        headers: [],
+        data: null,
+        headers: null,
       },
 
       author: {
@@ -172,10 +170,13 @@ export class StoreService {
 
     authors: [],
     affiliations: [],
+    duplicateAuthors: false,
 
     markup: {tagName: 'span'},
     emails: [],
   };
+
+  private _appState: AppState = this.initialAppState;
 
   get(path: any) {
     return cloneDeep(getFromPath(this._appState, path));
@@ -190,9 +191,9 @@ export class StoreService {
   }
 
   patchState(partialState: Partial<AppState>) {
-    // mutates appState, avoid copying for performance reasons
     merge(this._appState, partialState);
-    this.appState$.next(this._appState);
+    this.appState$.next(this.appState);
+    console.log(this._appState);
   }
 
 }

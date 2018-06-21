@@ -90,7 +90,7 @@
             [formArray]="formGroup.get('email.fields')"
             [fileHeaders]="formGroup.value.file.headers"
             formName="email.fields">
-            <div class="d-flex flex-wrap small py-1 w-lt-lg-100">
+            <div class="d-flex flex-wrap py-1 w-lt-lg-100">
               <label class="m-0 mx-1 d-flex align-items-center">
                 <input class="mr-1" type="checkbox" checked disabled>Add Semicolon
               </label>
@@ -302,7 +302,7 @@
     </div>
 
     <div class="col-lg-6">
-      <author-arranger-preview [config]="formGroup.value"></author-arranger-preview>
+      <author-arranger-preview></author-arranger-preview>
     </div>
 
   </div>
