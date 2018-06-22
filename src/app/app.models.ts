@@ -81,6 +81,22 @@ export interface AppState {
 
     markup: MarkupElement;
     emails: string[];
+
+    loading: boolean;
+    loadingMessage: string;
+}
+
+export interface AppState2 {
+    form: FormParameters;
+
+    authors: Author[];
+    affiliations: Affiliation[];
+
+    markup: MarkupElement;
+
+    authorOrder: number[];
+    emails: string[];
+
 }
 
 export interface Worksheet {

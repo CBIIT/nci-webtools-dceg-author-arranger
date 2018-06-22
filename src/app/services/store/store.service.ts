@@ -174,6 +174,9 @@ export class StoreService {
 
     markup: {tagName: 'span'},
     emails: [],
+
+    loading: false,
+    loadingMessage: 'Loading...',
   };
 
   private _appState: AppState = this.initialAppState;

@@ -21,6 +21,8 @@ export class PreviewComponent {
 
   selectedTab = 'preview';
 
+  loading: boolean = false;
+
   constructor(
     private arranger: ArrangerService,
     private renderer: Renderer2,
@@ -32,6 +34,7 @@ export class PreviewComponent {
       this.alerts = [];
       this.hasData = !isEmpty(state.form.file.data);
       if (!this.preview) return;
+      // this.store.patchState({loading: true});
 
       let root = this.preview.nativeElement;
       // root.textContent = '';
@@ -51,6 +54,8 @@ export class PreviewComponent {
           message: 'Duplicate author names have been found.'
         }];
       }
+
+      // this.store.patchState({loading: false});
     });
   }
 

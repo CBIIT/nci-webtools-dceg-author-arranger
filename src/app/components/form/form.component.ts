@@ -26,7 +26,7 @@ export class FormComponent {
   constructor(
     private arrangerService: ArrangerService,
     private fileService: FileService,
-    private storeService: StoreService) {
+    public storeService: StoreService) {
 
     this.formGroup = createFormObject(
       this.storeService.appState.form
@@ -44,8 +44,8 @@ export class FormComponent {
     ).subscribe(async (form: AppState["form"]) => {
       // arrange() will take the current state and return a new app state
       // if file data did not change, then preserve author order
-      const loadingTimeout = setTimeout(() => this.loading = true, 250);
-
+      // this.loading = true;
+      this.storeService.patchState({loading: true});
       const currentData = form.file.data;
       const preserveOrder = isEqual(currentData, previousData);
       if (!preserveOrder)
@@ -59,10 +59,6 @@ export class FormComponent {
       );
 
       this.storeService.patchState(newState);
-
-      clearTimeout(loadingTimeout);
-      this.loading = false;
-
     });
 
     this.formGroup.get('file.files')
@@ -93,7 +89,7 @@ export class FormComponent {
       }
     });
 
-    this.formGroup.updateValueAndValidity();
+    // this.formGroup.updateValueAndValidity();
   }
 
   async getFileData(files: FileList): Promise<Partial<AppState["form"]["file"]>> {
@@ -233,11 +229,9 @@ export class FormComponent {
 
     } catch(e) {
       console.log(e);
+      this.loading = false;
       if (e.type && e.message && e.constructor != ErrorEvent)
         this.alerts.push(e);
-
-    } finally {
-      this.loading = false;
     }
   }
 }

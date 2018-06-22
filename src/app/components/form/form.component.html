@@ -1,6 +1,6 @@
-<div *ngIf="loading" class="fade-opacity p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+<div *ngIf="storeService.get('loading')" class="fade-opacity p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
   <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
-  <span>Loading File</span>
+  <span>{{ storeService.get('loadingMessage') }}</span>
 </div>
 
 <form [formGroup]="formGroup">
