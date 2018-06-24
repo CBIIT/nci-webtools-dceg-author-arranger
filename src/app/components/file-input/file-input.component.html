@@ -1,0 +1,70 @@
+<div *ngIf="loading" class="fade-opacity p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+  <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+  <span>Loading File</span>
+</div>
+
+<div class="card shadow-lg mb-4 border-0">
+  <div class="card-header d-flex justify-content-between align-items-center flex-wrap py-0 bg-primary text-light">
+    <h1 style="font-size: 1.1rem" class="card-title m-0 d-inline-block">Upload Author Information</h1>
+  </div>
+
+  <div class="card-body">
+    <p *ngFor="let alert of alerts; let i = index" class="small">
+      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
+        {{ alert.message }}
+      </ngb-alert>
+    </p>
+
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <figure class="mb-3 my-md-0">
+          <img class="mw-100" style="max-height: 80px" src="assets/images/logos/author-arranger-logo.png" alt="Author Arranger Logo">
+          <figcaption>Conquer journal title pages in seconds</figcaption>
+        </figure>
+      </div>
+
+      <div class="col-md-8 d-flex align-items-center">
+        <label for="file-name" class="sr-only form-label font-weight-bold d-block">
+          Upload Author Information file:
+        </label>
+
+        <div class="d-flex flex-wrap align-items-center flex-grow-1">
+          <div class="input-group w-inherit flex-grow-1 mr-3" (click)="reset(); inputfile.value = ''; inputfile.click()">
+            <label for="file-input" class="sr-only">
+              File Input
+            </label>
+            <input
+              type="file"
+              class="sr-only"
+              id="file-input"
+              name="file-input"
+              accept=".xlsx, .xls, .csv, .dsv, .tsv, .txt"
+              (change)="updateFiles($event.target.files)"
+              #inputfile>
+
+            <input
+              class="form-control c-pointer rounded-left"
+              placeholder="Select a file (xls, xlsx, csv, txt)"
+              id="file-name"
+              name="file-name"
+              [readonly]="true"
+              [value]="filename">
+
+            <div class="input-group-append">
+              <button class="btn btn-primary">
+                Browse
+              </button>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap">
+            <a class="mr-4" href="assets/files/AuthorArranger Template.xlsx">Download Template</a>
+            <a href="javascript:;" (click)="loadSample()">Load Sample</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

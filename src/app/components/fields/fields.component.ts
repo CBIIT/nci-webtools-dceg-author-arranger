@@ -18,6 +18,9 @@ export class FieldsComponent {
   @Input()
   formName: string;
 
+  @Input()
+  draggable: boolean = true;
+
   dragOptions = {
     invalid: (el, handle) =>
       handle.getAttribute('drag-handle') === null,

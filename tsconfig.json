@@ -14,7 +14,7 @@
     ],
     "lib": [
       "es2017",
-      "dom",
+      "dom"
     ],
     "paths": {
       "dragula": ["node_modules/dragula/dist/dragula.min.js"]

@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'author-arranger-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  navbarCollapsed: boolean = true;
+export class NavbarComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
 }

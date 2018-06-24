@@ -20,7 +20,7 @@ else if (typeof initial === 'object' && initial !== null)
             ...acc,
             [key]: createFormObject(initial[key])
         }), {}));
-    
+
     // otherwise, return a FormControl
     return new FormControl(initial);
 }

@@ -1,19 +1,25 @@
-import { Component, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, Renderer2, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { StoreService } from '../../services/store/store.service';
 import { saveAs } from 'file-saver';
 import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
-import { isEmpty } from 'lodash';
+import { AppState } from '../../app.models';
+import { isEmpty, isEqual } from 'lodash'
 
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css'],
 })
-export class PreviewComponent {
+export class PreviewComponent implements OnChanges {
+
+  @Input()
+  state: Partial<AppState>
 
   @ViewChild('preview')
   preview: ElementRef;
+
+  @Output()
+  reorder: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   alerts: {type: string, message: string}[] = [];
 
@@ -25,48 +31,53 @@ export class PreviewComponent {
 
   constructor(
     private arranger: ArrangerService,
-    private renderer: Renderer2,
-    private store: StoreService,
-  ) {
-    // whenever app state changes, re-render markup for this component
-    this.store.appState$.subscribe(state => {
+    private renderer: Renderer2
+  ) {}
 
-      this.alerts = [];
-      this.hasData = !isEmpty(state.form.file.data);
-      if (!this.preview) return;
-      // this.store.patchState({loading: true});
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.state) {
+      const { previousValue, currentValue } = changes.state;
+      if (currentValue && previousValue && !isEqual(previousValue.markup, currentValue.markup) )
+        this.update();
+    }
 
-      let root = this.preview.nativeElement;
-      // root.textContent = '';
-      for (let child of root.children) {
-        this.renderer.removeChild(root, child);
-      }
-
-      if (this.hasData && state.markup) {
-        this.renderer.appendChild(
-          root, this.arranger.createElement(state.markup)
-        );
-      }
-
-      if (state.duplicateAuthors) {
-        this.alerts = [{
-          type: 'warning',
-          message: 'Duplicate author names have been found.'
-        }];
-      }
-
-      // this.store.patchState({loading: false});
-    });
   }
 
   downloadPreview() {
     if (this.preview && this.hasData) {
-      const originalFilename = this.store.appState.form.file.filename;
+      const originalFilename = this.state.file.filename;
       const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
       const html = (<HTMLElement> this.preview.nativeElement).innerHTML;
       saveAs(htmlDocx.asBlob(html), filename);
     }
   }
+
+  update() {
+    this.alerts = [];
+    this.hasData = !isEmpty(this.state.file.data);
+    if (!this.preview) return;
+    // this.store.patchState({loading: true});
+    let root = this.preview.nativeElement;
+    // root.textContent = '';
+    for (let child of root.children) {
+      this.renderer.removeChild(root, child);
+    }
+
+    if (this.hasData && this.state.markup) {
+      const asyncUpdate = this.state.file.data.length > 100;
+      this.renderer.appendChild(
+        root, this.arranger.createElement(this.state.markup, asyncUpdate)
+      );
+    }
+
+    if (this.state.duplicateAuthors) {
+      this.alerts = [{
+        type: 'warning',
+        message: 'Duplicate author names have been found.'
+      }];
+    }
+  }
+
 
   /*
 

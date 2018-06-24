@@ -1,0 +1,21 @@
+
+<div class="mb-4">
+  <author-arranger-file-input
+    (on-change)="merge({file: $event});">
+  </author-arranger-file-input>
+</div>
+
+<div class="row">
+  <div class="col col-lg-6">
+    <author-arranger-form #form
+      (on-change)="merge({format: $event}); arrange();"
+      [fileHeaders]="state.file.headers">
+    </author-arranger-form>
+  </div>
+  <div class="col col-lg-6">
+    <author-arranger-preview
+      [state]="state"
+      (reorder)="reorder($event);"
+    ></author-arranger-preview>
+  </div>
+</div>

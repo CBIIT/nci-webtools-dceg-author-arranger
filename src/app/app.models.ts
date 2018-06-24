@@ -1,30 +1,52 @@
+export const DEFAULT_HEADERS = [
+    'Title',
+    'First',
+    'Middle',
+    'Last',
+    'Degree',
+    'Other',
+    'Email',
+    'Department',
+    'Division',
+    'Institute',
+    'Street',
+    'City',
+    'State',
+    'Postal Code',
+    'Country'
+];
+
+export type DeepPartial < T > = {
+    [P in keyof T]?: DeepPartial < T[P] >;
+};
+
+export interface FileInfo {
+    filename : string | null;
+    data : string[][];
+    headers : string[];
+}
+
 export interface FieldFormat {
-    name: string;
-    column: number | null;
-    index: number;
+    name : string;
+    column : number | null;
+    index : number;
     abbreviate?: boolean;
     addPeriod?: boolean;
     addComma?: boolean;
     removeSpace?: boolean;
     disabled?: boolean;
-}
+};
 
-export interface FormParameters {
-    file: {
-        filename: string | null,
-        files: FileList | File[] | null,
-        data: string[][] | null,
-        headers: string[] | null,
-    };
+export interface Format {
 
-    author: {
+    author : {
         fields: FieldFormat[];
         separator: string;
         customSeparator: string;
         labelPosition: string;
     };
 
-    affiliation: {
+    affiliation : {
         fields: FieldFormat[];
         separator: string;
         customSeparator: string;
@@ -32,19 +54,20 @@ export interface FormParameters {
         labelStyle: string;
     };
 
-    email: {
+    email : {
         fields: FieldFormat[];
     };
 }
 
 export interface Author {
-    id: number;
-    rowId: number;
-    name: string;
-    affiliations: number[];
-    duplicate: boolean;
-    removed: boolean;
-    fields: {
+    id : number;
+    rowId : number;
+    name : string;
+    affiliationIds : number[];
+    affiliationRowIds: number[];
+    duplicate : boolean;
+    removed : boolean;
+    fields?: {
         Title?: string;
         First?: string;
         Middle?: string;
@@ -56,47 +79,187 @@ export interface Author {
 }
 
 export interface Affiliation {
-    id: number;
-    rowId: number;
-    name: string;
-}
+    id : number;
+    rowId : number;
+    name : string;
+    authorRowIds : number[];
+    removed : boolean;
+    fields?: {
+        Department?: string;
+        Division?: string;
+        Institute?: string;
+        Street?: string;
+        City?: string;
+        State?: string;
+        'Postal Code' ?: string;
+        Country?: string;
+    };
+};
 
 export interface MarkupElement {
-    tagName: string;
-    attributes?: {[key: string]: string | null};
+    tagName : string;
+    attributes?: {
+        [key : string]: string | null
+    };
     text?: string;
     children?: MarkupElement[];
-}
+};
 
 export interface AppState {
-    form: FormParameters;
+    file : FileInfo;
+    format : Format;
 
-    rowIds: [number, number][];
-    rowOrder: number[];
-    preserveOrder: boolean;
+    rowIds : [number, number][];
 
-    authors: Author[];
-    affiliations: Affiliation[];
+    authors : Author[];
+    authorOrder : number[];
     duplicateAuthors: boolean;
 
-    markup: MarkupElement;
+    affiliations : Affiliation[]
     emails: string[];
+    markup : MarkupElement;
+};
 
-    loading: boolean;
-    loadingMessage: string;
-}
+export const INITIAL_APP_STATE: AppState = {
+    file: {
+        filename: null,
+        data: null,
+        headers: null
+    },
 
-export interface AppState2 {
-    form: FormParameters;
+    format: {
+        author: {
+            fields: [
+                {
+                    name: 'Title',
+                    column: null,
+                    addPeriod: true,
+                    disabled: false,
+                    index: 0
+                }, {
+                    name: 'First',
+                    column: null,
+                    abbreviate: false,
+                    addPeriod: false,
+                    removeSpace: false,
+                    disabled: false,
+                    index: 1
+                }, {
+                    name: 'Middle',
+                    column: null,
+                    abbreviate: false,
+                    addPeriod: false,
+                    removeSpace: false,
+                    disabled: false,
+                    index: 2
+                }, {
+                    name: 'Last',
+                    column: null,
+                    abbreviate: false,
+                    addPeriod: false,
+                    disabled: false,
+                    index: 3
+                }, {
+                    name: 'Degree',
+                    column: null,
+                    addComma: false,
+                    addPeriod: false,
+                    disabled: false,
+                    index: 4
+                }, {
+                    name: 'Other',
+                    column: null,
+                    addComma: false,
+                    addPeriod: false,
+                    disabled: false,
+                    index: 5
+                }
+            ],
+            separator: 'comma',
+            customSeparator: '',
+            labelPosition: 'superscript'
+        },
 
-    authors: Author[];
-    affiliations: Affiliation[];
+        affiliation: {
+            fields: [
+                {
+                    name: 'Department',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 0
+                }, {
+                    name: 'Division',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 1
+                }, {
+                    name: 'Institute',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 2
+                }, {
+                    name: 'Street',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 3
+                }, {
+                    name: 'City',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 4
+                }, {
+                    name: 'State',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 5
+                }, {
+                    name: 'Postal Code',
+                    column: null,
+                    addComma: true,
+                    addPeriod: false,
+                    index: 6
+                }, {
+                    name: 'Country',
+                    column: null,
+                    addComma: false,
+                    addPeriod: false,
+                    index: 7
+                }
+            ],
+            separator: 'comma',
+            customSeparator: '',
+            labelPosition: 'superscript',
+            labelStyle: 'numbers'
+        },
 
-    markup: MarkupElement;
+        email: {
+            fields: [
+                {
+                    name: 'Email',
+                    column: null,
+                    index: 0
+                }
+            ]
+        }
+    },
+    rowIds: [],
+    authorOrder: [],
 
-    authorOrder: number[];
-    emails: string[];
+    authors: [],
+    duplicateAuthors: false,
+    affiliations: [],
 
+    emails: [],
+
+    markup: {
+        tagName: 'span'
+    }
 }
 
 export interface Worksheet {

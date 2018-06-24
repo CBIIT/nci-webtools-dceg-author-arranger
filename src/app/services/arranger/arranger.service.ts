@@ -24,7 +24,13 @@ export class ArrangerService {
     );
   }
 
-  createElement(markup: MarkupElement) {
+  reorder(appState: AppState): Promise<Partial<AppState>> {
+    return this.workerService.callMethod<Partial<AppState>>(
+      this.worker, 'reorder', appState
+    );
+  }
+
+  createElement(markup: MarkupElement, async: boolean = false) {
     const r = this.renderer;
     const htmlElement = r.createElement(markup.tagName);
 
@@ -37,8 +43,15 @@ export class ArrangerService {
         r.setAttribute(htmlElement, key, value)
     }
 
-    for (const child of markup.children || [])
-      r.appendChild(htmlElement, this.createElement(child));
+    for (const child of markup.children || []) {
+      if (async)
+        setTimeout(() =>
+          r.appendChild(htmlElement, this.createElement(child)), 0
+        );
+
+      else
+        r.appendChild(htmlElement, this.createElement(child));
+    }
 
     return htmlElement;
   }

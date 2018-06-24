@@ -1,32 +1,18 @@
-
-
 <form [dragula]="formName" [dragulaOptions]="dragOptions">
-  <div
-    class="list-group-item d-flex p-0"
-    *ngFor="let field of formArray.controls"
-    [attr.data-name]="field.value.name">
+  <div class="list-group-item d-flex p-0" *ngFor="let field of formArray.controls" [attr.data-name]="field.value.name">
 
-    <div
-      class="d-flex align-items-center p-2 bg-white rounded-left border-right c-move flex-shrink-0"
-      drag-handle="true"
-      style="overflow: hidden;">
+    <div class="d-flex align-items-center p-2 bg-white rounded-left border-right flex-shrink-0" [class.c-move]="draggable" [attr.drag-handle]="draggable ? 'true' : null" style="overflow: hidden;">
       <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
     </div>
 
     <div class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1">
 
-      <select
-        style="min-width: 150px; max-width: 150px; padding-right: 0;"
-        class="form-control form-control-sm w-sm-inherit"
-        [attr.id]="field.value.name + '-' + field.value.column"
+      <select style="min-width: 150px; max-width: 150px; padding-right: 0;" class="form-control form-control-sm w-sm-inherit" [attr.id]="field.value.name + '-' + field.value.column"
         [formControl]="field.controls.column">
         <option [ngValue]="null">
           {{ field.value.name }} &larr; No data
         </option>
-        <option
-          *ngFor="let column of fileHeaders; index as columnIndex;"
-          [ngValue]="columnIndex"
-          [attr.selected]="field.value.column == columnIndex || null">
+        <option *ngFor="let column of fileHeaders; index as columnIndex;" [ngValue]="columnIndex" [attr.selected]="field.value.column == columnIndex || null">
           {{ field.value.name }} &larr; {{ column }}
         </option>
       </select>
@@ -36,44 +22,20 @@
       </label>
 
       <div class="d-flex flex-wrap small py-1 w-lt-lg-100">
-        <label
-          class="m-0 mx-1 d-flex align-items-center"
-          *ngIf="field.controls.removeSpace && field.value.abbreviate">
-          <input
-            class="mr-1"
-            type="checkbox"
-            [formControl]="field.controls.removeSpace">
-            Remove Space
+        <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace"> Remove Space
         </label>
 
-        <label
-          class="m-0 mx-1 d-flex align-items-center"
-          *ngIf="field.controls.abbreviate">
-          <input
-            class="mr-1"
-            type="checkbox"
-            [formControl]="field.controls.abbreviate">
-            Abbreviate
+        <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate"> Abbreviate
         </label>
 
-        <label
-          class="m-0 mx-1 d-flex align-items-center"
-          *ngIf="field.controls.addComma">
-          <input
-            class="mr-1"
-            type="checkbox"
-            [formControl]="field.controls.addComma">
-            Add Comma
+        <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma"> Add Comma
         </label>
 
-        <label
-          class="m-0 mx-1 d-flex align-items-center"
-          *ngIf="field.controls.addPeriod">
-          <input
-            class="mr-1"
-            type="checkbox"
-            [formControl]="field.controls.addPeriod">
-            Add Period
+        <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod"> Add Period
         </label>
 
         <!-- custom content here -->
