@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { StoreService } from '../../services/store/store.service';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { FileInfo, AppState, INITIAL_APP_STATE, DeepPartial, Author } from '../../app.models';
-import { cloneDeep, merge as mergeDeep } from 'lodash';
+import { AppState, INITIAL_APP_STATE, DeepPartial, Author } from '../../app.models';
+import { cloneDeep } from 'lodash';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'author-arranger-home',
@@ -19,7 +19,8 @@ export class HomeComponent implements OnInit {
 
   merge(newState: DeepPartial<AppState>) {
     this.state = Object.assign({}, this.state, newState);
-    console.log('merged', this.state);
+    if (environment.production)
+      this.log(this.state);
   }
 
   async arrange() {
@@ -33,8 +34,8 @@ export class HomeComponent implements OnInit {
     this.merge(newState);
   }
 
-  log(event: any) {
-    console.log('logged', cloneDeep(event));
+  log(event) {
+    console.log(cloneDeep(event));
   }
 
 }

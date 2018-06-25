@@ -67,6 +67,7 @@ export interface Author {
     affiliationRowIds: number[];
     duplicate : boolean;
     removed : boolean;
+    row: string[],
     fields?: {
         Title?: string;
         First?: string;
@@ -84,6 +85,7 @@ export interface Affiliation {
     name : string;
     authorRowIds : number[];
     removed : boolean;
+    row: string[],
     fields?: {
         Department?: string;
         Division?: string;
@@ -112,7 +114,7 @@ export interface AppState {
     rowIds : [number, number][];
 
     authors : Author[];
-    authorOrder : number[];
+    preserveOrder: boolean;
     duplicateAuthors: boolean;
 
     affiliations : Affiliation[]
@@ -249,7 +251,7 @@ export const INITIAL_APP_STATE: AppState = {
         }
     },
     rowIds: [],
-    authorOrder: [],
+    preserveOrder: false,
 
     authors: [],
     duplicateAuthors: false,

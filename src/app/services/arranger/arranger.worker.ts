@@ -15,9 +15,17 @@ export function arrangerWorker() {
 
   function arrange(appState : AppState) : Partial < AppState > {
       // arrange authors and update state
-      const newState = arrangeAuthors(appState);
-      for (let key in newState)
-        appState[key] = newState[key];
+
+      if (!appState.preserveOrder) {
+        const newState = arrangeAuthors(appState);
+        for (let key in newState)
+            appState[key] = newState[key];
+        appState.preserveOrder = true;
+      } else {
+        const newState = formatFields(appState);
+        for (let key in newState)
+            appState[key] = newState[key];
+      }
 
       // generate markup, emails and update state
       appState.markup = getMarkup(appState);
@@ -75,13 +83,6 @@ export function arrangerWorker() {
     return appState;
   }
 
-  function getRowOrder(authorOrder, rowIds) {
-    let rowOrder = [];
-    let orderedRows = rowIds.map((row, index) => [index, ...row]);
-
-
-  }
-
   function getEmails(appState : AppState) : string[] {
       return appState
           .authors
@@ -89,28 +90,73 @@ export function arrangerWorker() {
           .map(({name, fields}) => `${(fields.First + ' ' + fields.Last).trim() || name} <${fields.Email}>`)
   }
 
+  function formatFields(appState : AppState) : Partial < AppState > {
+
+    const format = appState.format;
+    const authorFields: FieldFormat[] = format.author.fields.sort((a, b) => a.index - b.index);
+    const affiliationFields: FieldFormat[] = format.affiliation.fields.sort((a, b) => a.index - b.index);
+
+    const authors = appState.authors;
+    const affiliations = appState.affiliations;
+
+    const fieldFormatter = (text : string, format : FieldFormat) => {
+      if (!text || text.trim().length === 0 || format.disabled || format.column === null)
+          text = '';
+
+      // format text only if it is not empty
+      if (text.length > 0) {
+
+          // ensure text contains a max of one consecutive space
+          text = text
+              .replace(/\s+/g, ' ')
+              .replace(/;/g, ',')
+              .trim();
+
+          if (format.abbreviate)
+              text = text[0];
+
+          if (format.addPeriod)
+              text += '.';
+
+          if (format.addComma)
+              text += ',';
+          }
+
+      // append a space unless format.removeSpace is checked
+      if (!format.abbreviate || (format.abbreviate && !format.removeSpace))
+          text += ' ';
+
+      return (text);
+    };
+
+    for (let author of authors) {
+      const authorText = authorFields.map(field => fieldFormatter(author.row[field.column], field))
+        .join('')
+        .trim();
+      author.name = normalizeSpaces(authorText);
+    }
+
+
+    for (let affiliation of affiliations) {
+      const affiliationText = affiliationFields.map(field => fieldFormatter(affiliation.row[field.column], field))
+      .join('')
+      .trim();
+      affiliation.name = normalizeSpaces(affiliationText);
+    }
+
+    return { authors, affiliations }
+  }
+
   function arrangeAuthors(appState : AppState) : Partial < AppState > {
       const format = appState.format;
-      const fileData = appState.file.data || [];
-      const preserveOrder = false;
-      const authorOrder = appState.authorOrder;
-      const oldRowIds = appState.rowIds || [];
-      const oldAuthors = appState.authors;
-      const oldAffiliations = appState.affiliations;
+      const rows = appState.file.data || [];
 
-      let rowOrder = [];
-
-      if (_.isEmpty(rowOrder))
-          rowOrder = _.range(fileData.length);
-
-      const authors: Author[] = [];
-      const affiliations: Affiliation[] = [];
+      const authors: Author[] =  [];
+      const affiliations: Affiliation[] =  [];
 
       const authorFields: FieldFormat[] = format.author.fields.sort((a, b) => a.index - b.index);
       const affiliationFields: FieldFormat[] = format.affiliation.fields.sort((a, b) => a.index - b.index);
       const emailColumn: number = format.email.fields[0].column;
-
-      const rows = rowOrder.map(i => fileData[i]);
 
       // contains an array of [authorId, affiliationId] pairs which correspond to the
       // row of the input file in which they first appear
@@ -166,6 +212,7 @@ export function arrangerWorker() {
                   id: authors.length + 1,
                   rowId: authorRowId,
                   name: normalizeSpaces(authorText),
+                  row: row,
                   affiliationIds: [],
                   affiliationRowIds: [],
                   duplicate: false,
@@ -182,17 +229,22 @@ export function arrangerWorker() {
               affiliations.push({
                 id: affiliations.length + 1,
                 rowId: affiliationRowId,
+                row: row,
                 authorRowIds: [],
                 name: normalizeSpaces(affiliationText),
                 removed: false
               });
 
-
           const currentAuthor = _(authors).find(author => author.rowId === authorRowId);
           const currentAffiliation = _(affiliations).find(e => e.rowId === affiliationRowId)
 
-          currentAuthor.affiliationIds.push(currentAffiliation.id);
-          currentAuthor.affiliationRowIds.push(currentAffiliation.rowId);
+        if (!_(currentAuthor.affiliationIds).find(currentAffiliation.id))
+            currentAuthor.affiliationIds.push(currentAffiliation.id);
+
+        if (!_(currentAuthor.affiliationRowIds).find(currentAffiliation.rowId))
+            currentAuthor.affiliationRowIds.push(currentAffiliation.rowId);
+
+        if (!_(currentAffiliation.authorRowIds).find(authorRowId))
           currentAffiliation.authorRowIds.push(authorRowId);
 
           const duplicates = authors.filter(author => author.name === authorText)
@@ -202,7 +254,7 @@ export function arrangerWorker() {
           }
       });
 
-      return {authors, affiliations, rowIds, duplicateAuthors};
+      return {authors, affiliations, rowIds, duplicateAuthors };
   }
 
   function getMarkup(appState : AppState) : MarkupElement {
