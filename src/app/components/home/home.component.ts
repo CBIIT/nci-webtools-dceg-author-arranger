@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
 
   merge(newState: DeepPartial<AppState>) {
     this.state = Object.assign({}, this.state, newState);
-    if (environment.production)
+    if (!environment.production)
       this.log(this.state);
   }
 

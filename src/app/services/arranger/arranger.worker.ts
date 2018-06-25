@@ -95,6 +95,7 @@ export function arrangerWorker() {
     const format = appState.format;
     const authorFields: FieldFormat[] = format.author.fields.sort((a, b) => a.index - b.index);
     const affiliationFields: FieldFormat[] = format.affiliation.fields.sort((a, b) => a.index - b.index);
+    const emailColumn: number = format.email.fields[0].column;
 
     const authors = appState.authors;
     const affiliations = appState.affiliations;
@@ -134,6 +135,11 @@ export function arrangerWorker() {
         .join('')
         .trim();
       author.name = normalizeSpaces(authorText);
+
+      author.fields = authorFields.reduce((acc, {name, column}) =>
+        _.merge(acc, {[name]: author.row[column]}),
+        {Email: author.row[emailColumn]}
+      )
     }
 
 
