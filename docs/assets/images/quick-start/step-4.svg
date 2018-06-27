@@ -1,0 +1,43 @@
+
+<svg width="300" height="300" viewBox="-10 -10 270 340"
+    xmlns="http://www.w3.org/2000/svg">
+
+    <style>
+    text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        fill: #555;
+    }
+    </style>
+
+    <text font-size="25" x="25" y="75" font-weight="bold">
+      Title Page
+    </text>
+
+    <text font-size="20" x="25" y="125">
+      G Tobias<tspan font-size="15" baseline-shift="super">1</tspan>
+    </text>
+
+    <text font-size="20" x="25" y="150">
+      B Park<tspan font-size="15" baseline-shift="super">2</tspan>
+    </text>
+
+    <text font-size="20" x="25" y="175">
+      K Chen<tspan font-size="15" baseline-shift="super">2</tspan>
+    </text>
+
+    <text font-size="20" x="25" y="200">
+      M Machiela<tspan font-size="15" baseline-shift="super">1</tspan>
+    </text>
+
+    <text font-size="20" x="25" y="250">
+        <tspan font-size="15" baseline-shift="super">1</tspan>DCEG, NCI
+    </text>
+
+    <text font-size="20" x="25" y="275">
+        <tspan font-size="15" baseline-shift="super">2</tspan>CBIIT, NCI
+    </text>
+
+    <path fill="none" stroke="#2a71a5" stroke-width="10" d="M10 10 h 120 l 100 100 v 200 h -220 v -305" />
+
+    <path fill="#2a71a5" stroke="#2a71a5" d="M128 12 v 100 h 100" />
+</svg>
