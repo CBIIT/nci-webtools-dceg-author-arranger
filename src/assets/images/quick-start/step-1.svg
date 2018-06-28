@@ -1,0 +1,155 @@
+
+<svg width="300" height="300" viewBox="0 0 365 230"
+    xmlns="http://www.w3.org/2000/svg">
+
+    <style>
+        text {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+    </style>
+
+    <g transform="translate(30, 0)">
+        <rect fill="#7da7d9" width="305" height="220" stroke="none" />
+        <rect fill="#2a71a5" width="305" height="40" />
+
+        <g transform="translate(0, 29)">
+            <text dx="5" fill="white" font-size="21">First</text>
+            <text dx="80" fill="white" font-size="21">Last</text>
+            <text dx="155" fill="white" font-size="21">Div.</text>
+            <text dx="230" fill="white" font-size="21">Inst.</text>
+        </g>
+
+        <g transform="translate(0, 45)">
+            <g transform="translate(5, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Geoff</text>
+            </g>
+
+            <g transform="translate(80, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Tobias</text>
+            </g>
+
+            <g transform="translate(155, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">DCEG</text>
+            </g>
+
+
+            <g transform="translate(230, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">NCI</text>
+            </g>
+
+        </g>
+
+
+        <g transform="translate(0, 80)">
+            <g transform="translate(5, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Kai-Ling</text>
+            </g>
+
+            <g transform="translate(80, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Chen</text>
+            </g>
+
+            <g transform="translate(155, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">CBIIT</text>
+            </g>
+
+
+            <g transform="translate(230, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">NCI</text>
+            </g>
+
+        </g>
+
+        <g transform="translate(0, 115)">
+            <g transform="translate(5, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Brian</text>
+            </g>
+
+            <g transform="translate(80, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Park</text>
+            </g>
+
+            <g transform="translate(155, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">CBIIT</text>
+            </g>
+
+
+            <g transform="translate(230, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">NCI</text>
+            </g>
+
+        </g>
+
+
+        <g transform="translate(0, 150)">
+            <g transform="translate(5, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Mitch</text>
+            </g>
+
+            <g transform="translate(80, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Machiela</text>
+            </g>
+
+            <g transform="translate(155, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">DCEG</text>
+            </g>
+
+
+            <g transform="translate(230, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">NCI</text>
+            </g>
+
+        </g>
+
+
+
+        <g transform="translate(0, 185)">
+            <g transform="translate(5, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Sue</text>
+            </g>
+
+            <g transform="translate(80, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">Pan</text>
+            </g>
+
+            <g transform="translate(155, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">DCEG</text>
+            </g>
+
+
+            <g transform="translate(230, 0)">
+                <rect fill="white" width="70" height="30" />
+                <text dy="21" dx="3">NCI</text>
+            </g>
+
+        </g>
+
+    </g>
+
+    <g transform="translate(315, 210)">
+        <circle r="30" fill="#13c93e" />
+        <path d="m -15 2 v 10 h 30 v -10" fill="none" stroke="white" stroke-width="4" />
+        <rect fill="white" stroke="none" width="6" height="14" x="-3" y="-10" />
+        <path fill="white" stroke="white" d="m 0 -16 l 8 10 h -16 z" />
+    </g>
+
+</svg>

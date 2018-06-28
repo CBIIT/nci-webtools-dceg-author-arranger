@@ -14,27 +14,27 @@
     </text>
 
     <text font-size="20" x="25" y="125">
-      G Tobias<tspan font-size="15" baseline-shift="super">1</tspan>
+      G Tobias<tspan font-size="15" dy="-7">1</tspan>
     </text>
 
     <text font-size="20" x="25" y="150">
-      B Park<tspan font-size="15" baseline-shift="super">2</tspan>
+      B Park<tspan font-size="15" dy="-7">2</tspan>
     </text>
 
     <text font-size="20" x="25" y="175">
-      K Chen<tspan font-size="15" baseline-shift="super">2</tspan>
+      K Chen<tspan font-size="15" dy="-7">2</tspan>
     </text>
 
     <text font-size="20" x="25" y="200">
-      M Machiela<tspan font-size="15" baseline-shift="super">1</tspan>
+      M Machiela<tspan font-size="15" dy="-7">1</tspan>
     </text>
 
     <text font-size="20" x="25" y="250">
-        <tspan font-size="15" baseline-shift="super">1</tspan>DCEG, NCI
+        <tspan font-size="15" dy="-7">1</tspan><tspan dy="7">DCEG, NCI</tspan>
     </text>
 
     <text font-size="20" x="25" y="275">
-        <tspan font-size="15" baseline-shift="super">2</tspan>CBIIT, NCI
+        <tspan font-size="15" dy="-7">2</tspan><tspan dy="7">CBIIT, NCI</tspan>
     </text>
 
     <path fill="none" stroke="#2a71a5" stroke-width="10" d="M10 10 h 120 l 100 100 v 200 h -220 v -305" />
