@@ -63,7 +63,7 @@
             <text x="12" y="8" font-size="9" fill="#555">Superscript</text>
         </g>
 
-        <g transform="translate(80, 90)">
+        <g transform="translate(81, 90)">
             <rect fill="#777" stroke="#777" width="10" height="10" />
             <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
             <text x="12" y="8" font-size="9" fill="#555">Newline</text>
