@@ -34,7 +34,7 @@ export class WebToolComponent implements OnInit {
     } catch(e) {
       console.log(e);
     } finally {
-      clearTimeout(loadingTimeout):
+      clearTimeout(loadingTimeout);
       this.loading = false;
     }
   }
@@ -49,7 +49,7 @@ export class WebToolComponent implements OnInit {
     } catch(e) {
       console.log(e);
     } finally {
-      clearTimeout(loadingTimeout):
+      clearTimeout(loadingTimeout);
       this.loading = false;
     }
   }
