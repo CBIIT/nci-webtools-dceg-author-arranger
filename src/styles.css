@@ -11,6 +11,11 @@ a {
   color: #22313F;
 }
 
+.alert.alert-info-light {
+  background-color: #fafafc;
+  border-color: #d0ecf1;
+}
+
 
 .bg-light {
   background-color: #f2f2f2 !important;
