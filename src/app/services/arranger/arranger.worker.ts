@@ -10,24 +10,21 @@ import {
 export function arrangerWorker() {
 
   self['importScripts']('https://unpkg.com/lodash@4.17.10/lodash.min.js');
-
+  self['arrange'] = arrange;
+  self['reorder'] = reorder;
   let _ = self['_'];
 
-  function arrange(appState : AppState) : Partial < AppState > {
-      // arrange authors and update state
+  addEventListener('message', event => {
+      const {method, messageId, parameters} = event.data;
+      postMessage({
+          messageId: messageId,
+          result: self[method](parameters)
+      }, undefined);
+  });
 
-      if (!appState.preserveOrder) {
-        const newState = arrangeAuthors(appState);
-        for (let key in newState)
-            appState[key] = newState[key];
-        appState.preserveOrder = true;
-      } else {
-        const newState = formatFields(appState);
-        for (let key in newState)
-            appState[key] = newState[key];
-      }
-
-      // generate markup, emails and update state
+  function arrange(appState : AppState) : Partial <AppState> {
+      // update state, generate markup and emails
+      _.assign(appState, arrangeAuthors(appState));
       appState.markup = getMarkup(appState);
       appState.emails = getEmails(appState);
 
@@ -36,7 +33,6 @@ export function arrangerWorker() {
 
   function reorder(appState: AppState): Partial <AppState> {
     const affiliations = appState.affiliations;
-
 
     // reindex authors
     for (let i = 0; i < appState.authors.length; i ++) {
@@ -137,11 +133,10 @@ export function arrangerWorker() {
       author.name = normalizeSpaces(authorText);
 
       author.fields = authorFields.reduce((acc, {name, column}) =>
-        _.merge(acc, {[name]: author.row[column]}),
-        {Email: author.row[emailColumn]}
+        _.merge(acc, {[name]: author.row[column] || ''}),
+        {Email: author.row[emailColumn] || ''}
       )
     }
-
 
     for (let affiliation of affiliations) {
       const affiliationText = affiliationFields.map(field => fieldFormatter(affiliation.row[field.column], field))
@@ -156,13 +151,15 @@ export function arrangerWorker() {
   function arrangeAuthors(appState : AppState) : Partial < AppState > {
       const format = appState.format;
       const rows = appState.file.data || [];
-
-      const authors: Author[] =  [];
-      const affiliations: Affiliation[] =  [];
+      let preserveOrder = appState.preserveOrder;
+      let authorRowOrder = (appState.authors || []).map(author => author.rowId);
 
       const authorFields: FieldFormat[] = format.author.fields.sort((a, b) => a.index - b.index);
       const affiliationFields: FieldFormat[] = format.affiliation.fields.sort((a, b) => a.index - b.index);
       const emailColumn: number = format.email.fields[0].column;
+
+      let authors: Author[] =  [];
+      let affiliations: Affiliation[] =  [];
 
       // contains an array of [authorId, affiliationId] pairs which correspond to the
       // row of the input file in which they first appear
@@ -217,7 +214,7 @@ export function arrangerWorker() {
               authors.push({
                   id: authors.length + 1,
                   rowId: authorRowId,
-                  name: normalizeSpaces(authorText),
+                  name: normalizeSpaces(authorText) || '(No author data provided)',
                   row: row,
                   affiliationIds: [],
                   affiliationRowIds: [],
@@ -226,8 +223,8 @@ export function arrangerWorker() {
 
                   // map author fields
                   fields: authorFields.reduce((acc, {name, column}) =>
-                      _.merge(acc, {[name]: row[column]}),
-                      {Email: row[emailColumn]}
+                      _.merge(acc, {[name]: row[column] || ''}),
+                      {Email: row[emailColumn] || ''}
                   )
               });
 
@@ -237,20 +234,20 @@ export function arrangerWorker() {
                 rowId: affiliationRowId,
                 row: row,
                 authorRowIds: [],
-                name: normalizeSpaces(affiliationText),
+                name: normalizeSpaces(affiliationText) || '(No affiliation data provided)',
                 removed: false
               });
 
           const currentAuthor = _(authors).find(author => author.rowId === authorRowId);
           const currentAffiliation = _(affiliations).find(e => e.rowId === affiliationRowId)
 
-        if (!_(currentAuthor.affiliationIds).find(currentAffiliation.id))
+        if (!_(currentAuthor.affiliationIds).includes(currentAffiliation.id))
             currentAuthor.affiliationIds.push(currentAffiliation.id);
 
-        if (!_(currentAuthor.affiliationRowIds).find(currentAffiliation.rowId))
+        if (!_(currentAuthor.affiliationRowIds).includes(currentAffiliation.rowId))
             currentAuthor.affiliationRowIds.push(currentAffiliation.rowId);
 
-        if (!_(currentAffiliation.authorRowIds).find(authorRowId))
+        if (!_(currentAffiliation.authorRowIds).includes(authorRowId))
           currentAffiliation.authorRowIds.push(authorRowId);
 
           const duplicates = authors.filter(author => author.name === authorText)
@@ -260,7 +257,18 @@ export function arrangerWorker() {
           }
       });
 
-      return {authors, affiliations, rowIds, duplicateAuthors };
+      let newState = _.assign(appState, { authors, affiliations, rowIds, duplicateAuthors, preserveOrder: true });
+
+      if (preserveOrder) {
+        let newAuthors = authorRowOrder.map(rowId =>
+          _(authors).find(a => a.rowId === rowId)
+        );
+
+        newState.authors = newAuthors;
+        _.assign(newState, reorder(newState));
+      }
+
+      return newState;
   }
 
   function getMarkup(appState : AppState) : MarkupElement {
@@ -504,18 +512,6 @@ export function arrangerWorker() {
 
       return str;
   }
-
-  self['arrange'] = arrange;
-  self['reorder'] = reorder;
-
-  addEventListener('message', event => {
-      const {method, messageId, parameters} = event.data;
-
-      postMessage({
-          messageId: messageId,
-          result: self[method](parameters)
-      }, undefined);
-  });
 
   postMessage('initialized', undefined);
 }

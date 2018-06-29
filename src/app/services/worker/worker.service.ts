@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class WorkerService {
 
   getWorker(fn: Function): Worker {
-    // console.log(fn.toString());
+    if (!environment.production)
+      console.log(fn.toString());
     return new Worker(URL.createObjectURL(new Blob([`(${fn})()`])));
   }
 

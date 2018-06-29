@@ -13,6 +13,8 @@ export class WebToolComponent implements OnInit {
 
   state: AppState = cloneDeep(INITIAL_APP_STATE);
 
+  loading: boolean = false;
+
   constructor(private arranger: ArrangerService) { }
 
   ngOnInit() { }
@@ -24,14 +26,32 @@ export class WebToolComponent implements OnInit {
   }
 
   async arrange() {
-    const newState = await this.arranger.arrange(this.state);
-    this.merge(newState);
+    const loadingTimeout = setTimeout(() => this.loading = true, 150);
+
+    try {
+      const newState = await this.arranger.arrange(this.state);
+      this.merge(newState);
+    } catch(e) {
+      console.log(e);
+    } finally {
+      clearTimeout(loadingTimeout):
+      this.loading = false;
+    }
   }
 
   async reorder(authors: Author[]) {
-    this.merge({authors});
-    const newState = await this.arranger.reorder(this.state);
-    this.merge(newState);
+    const loadingTimeout = setTimeout(() => this.loading = true, 150);
+    try {
+      this.loading = true;
+      this.merge({authors});
+      const newState = await this.arranger.reorder(this.state);
+      this.merge(newState);
+    } catch(e) {
+      console.log(e);
+    } finally {
+      clearTimeout(loadingTimeout):
+      this.loading = false;
+    }
   }
 
   log(event) {
