@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuickStartComponent } from './quick-start.component';
+import { UserGuideComponent } from './user-guide.component';
 
-describe('QuickStartComponent', () => {
-  let component: QuickStartComponent;
-  let fixture: ComponentFixture<QuickStartComponent>;
+describe('UserGuideComponent', () => {
+  let component: UserGuideComponent;
+  let fixture: ComponentFixture<UserGuideComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuickStartComponent ]
+      declarations: [ UserGuideComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickStartComponent);
+    fixture = TestBed.createComponent(UserGuideComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

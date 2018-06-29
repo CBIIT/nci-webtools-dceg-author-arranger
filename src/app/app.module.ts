@@ -12,9 +12,6 @@ import { WorkerService } from './services/worker/worker.service';
 import { StoreService } from './services/store/store.service';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { QuickStartComponent } from './components/quick-start/quick-start.component';
-import { AboutComponent } from './components/about/about.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
@@ -23,13 +20,13 @@ import { EmailsComponent } from './components/emails/emails.component';
 import { FileValueAccessorDirective } from './directives/file-value-accessor/file-value-accessor.directive';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FieldsComponent } from './components/fields/fields.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { UserGuideComponent } from './components/user-guide/user-guide.component';
+import { WebToolComponent } from './components/web-tool/web-tool.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    QuickStartComponent,
-    AboutComponent,
     FileInputComponent,
     FormComponent,
     PreviewComponent,
@@ -37,7 +34,10 @@ import { FieldsComponent } from './components/fields/fields.component';
     EmailsComponent,
     FileValueAccessorDirective,
     NavbarComponent,
-    FieldsComponent
+    FieldsComponent,
+    WelcomeComponent,
+    UserGuideComponent,
+    WebToolComponent
   ],
   imports: [
     BrowserModule,

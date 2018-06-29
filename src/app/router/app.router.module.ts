@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './CustomReuseStrategy';
-import { HomeComponent } from '../components/home/home.component';
-import { QuickStartComponent } from '../components/quick-start/quick-start.component';
-import { AboutComponent } from '../components/about/about.component';
+import { WelcomeComponent } from '../components/welcome/welcome.component';
+import { WebToolComponent } from '../components/web-tool/web-tool.component';
+import { UserGuideComponent } from '../components/user-guide/user-guide.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    component: WelcomeComponent,
     data: {title: 'AuthorArranger'}
   },
 
   {
-    path: 'quick-start',
-    component: QuickStartComponent,
-    data: {title: 'AuthorArranger QuickStart'}
+    path: 'web-tool',
+    component: WebToolComponent,
+    data: {title: 'AuthorArranger Tool'}
   },
 
   {
-    path: 'about',
-    component: AboutComponent,
-    data: {title: 'About AuthorArranger'}
+    path: 'user-guide',
+    component: UserGuideComponent,
+    data: {title: 'AuthorArranger User Guide'}
   },
 
   {

@@ -5,11 +5,11 @@ import { cloneDeep } from 'lodash';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'author-arranger-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'author-arranger-web-tool',
+  templateUrl: './web-tool.component.html',
+  styleUrls: ['./web-tool.component.css']
 })
-export class HomeComponent implements OnInit {
+export class WebToolComponent implements OnInit {
 
   state: AppState = cloneDeep(INITIAL_APP_STATE);
 
