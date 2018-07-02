@@ -35,12 +35,19 @@
       </a>
     </div>
   </header>
-  <author-arranger-root class="d-flex flex-column flex-grow-1" style="min-width: 320px">
-    <div id="main" class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
-      <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
-      <span aria-role="alert" class="text-dark">Loading...</span>
-    </div>
+  <author-arranger-root class="d-flex flex-column flex-grow-1" style="min-width: 320px" aria-live="assertive">
   </author-arranger-root>
+
+  <div id="main" class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+    <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+    <span aria-role="alert" class="text-dark">Loading...</span>
+  </div>
+
+  <script>
+    document.querySelector('author-arranger-root').appendChild(
+      document.getElementById('main')
+    );
+  </script>
 
   <!-- End Google Analytics Snippet -->
   <script defer="">
@@ -56,4 +63,4 @@
   <!-- DCEG analytics code -->
   <script src="//static.cancer.gov/webanalytics/wa_dceg_pageload.js"></script>
 
-<script type="text/javascript" src="runtime.6afe30102d8fe7337431.js"></script><script type="text/javascript" src="polyfills.f12a57a02171569945d3.js"></script><script type="text/javascript" src="main.08b107bf5ea71f161eba.js"></script></body></html>
+<script type="text/javascript" src="runtime.6afe30102d8fe7337431.js"></script><script type="text/javascript" src="polyfills.f12a57a02171569945d3.js"></script><script type="text/javascript" src="main.d419f5b243e461b951cd.js"></script></body></html>
