@@ -1,23 +1,25 @@
-<!DOCTYPE html><html lang="en"><head>
+<!doctype html>
+<html lang="en">
+<head>
   <meta charset="utf-8">
   <title>AuthorArranger: Conquer journal title pages in seconds</title>
   <base href="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta name="description" content="AuthorArranger is a free web tool designed to help authors of scientific manuscripts create correctly formatted title pages for submission in a fraction of the time it takes to create the pages manually. Try our easy-to-use tool.">
-  <meta property="og:description" content="AuthorArranger is a free web tool designed to help authors of scientific manuscripts create correctly formatted title pages for submission in a fraction of the time it takes to create the pages manually. Try our easy-to-use tool.">
-  <meta property="og:site_name" content="AuthorArranger: Conquer journal title pages in seconds">
-  <meta property="og:url" content="https://authorarranger.nci.nih.gov/">
-  <meta name="keywords" content="journal title page, author affiliations, manuscript submission, automatic formatting, research manuscript">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <meta name="description" content="AuthorArranger is a free web tool designed to help authors of scientific manuscripts create correctly formatted title pages for submission in a fraction of the time it takes to create the pages manually. Try our easy-to-use tool." />
+  <meta property="og:description" content="AuthorArranger is a free web tool designed to help authors of scientific manuscripts create correctly formatted title pages for submission in a fraction of the time it takes to create the pages manually. Try our easy-to-use tool." />
+  <meta property="og:site_name" content="AuthorArranger: Conquer journal title pages in seconds" />
+  <meta property="og:url" content="https://authorarranger.nci.nih.gov/" />
+  <meta name="keywords" content="journal title page, author affiliations, manuscript submission, automatic formatting, research manuscript" />
 
   <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.1.1/dist/css/bootstrap.min.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <!-- Adobe DAP Snippet -->
-  <script defer="" src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
+  <script defer src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
 
   <!-- Google Analytics Snippet -->
-  <script async="" defer="" src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-10"></script>
+  <script async defer src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-10"></script>
 <link rel="stylesheet" href="styles.ad5acea44a675fba30cb.css"></head>
 
 <body class="bg-light d-flex flex-column h-100">
@@ -30,7 +32,205 @@
       </a>
     </div>
   </header>
-  <author-arranger-root class="d-flex flex-column flex-grow-1" style="min-width: 320px" aria-live="assertive">
+  <author-arranger-root class="d-flex flex-column flex-grow-1" style="min-width: 320px" aria-live="polite">
+
+    <div class="p-fixed fixed-top h-100 w-100 d-flex align-items-center justify-content-center flex-column bg-white opacity-75">
+      <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+      <span aria-role="alert" class="text-dark">Loading...</span>
+    </div>
+
+    <nav class="navbar navbar-expand-sm navbar-dark shadow-sm bg-primary text-light py-0">
+      <div class="container">
+
+        <!-- <a class="navbar-brand" title="Conquer journal title pages in seconds" [routerLink]="['/']">
+          <h1 class="h5 font-weight-normal d-inline m-0">Author&zwj;Arranger</h1>
+        </a> -->
+
+        <ul class="navbar-nav">
+          <li class="nav-item mr-4">
+            <a
+              href="/"
+              class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
+              Home
+            </a>
+          </li>
+
+          <li class="nav-item mr-4">
+            <a
+              href="/#web-tool"
+              class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
+              AuthorArranger
+            </a>
+          </li>
+
+          <li class="nav-item mr-4">
+            <a
+              href="/#user-guide"
+              class="nav-link bg-transparent text-light h5 font-weight-normal m-0">
+              User Guide
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container py-4 flex-grow-1" id="main">
+      <div class="card shadow-lg mb-4 mb-lg-0  border-0">
+        <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary text-light">
+          <h1 style="font-size: 1.1rem" class="card-title m-0">Welcome to AuthorArranger</h1>
+        </div>
+        <div class="card-body">
+          <h2 class="h3 text-center">AuthorArranger</h2>
+          <h3 class="h5 text-center">Conquer journal title pages in seconds</h3>
+
+          <p>
+            AuthorArranger is a free web tool designed to help authors of research manuscripts automatically generate correctly formatted title pages for manuscript journal submission in a fraction of the time it takes to create the pages manually. Whether your manuscript has 20 authors or 200, AuthorArranger can save you time and resources by helping you conquer journal title pages in seconds.
+          </p>
+
+          <p>
+            Simply upload a spreadsheet containing author details ordered by author contribution, or download AuthorArranger’s easy-to-follow spreadsheet template and populate it with author and affiliation details. Either way, once your author information is uploaded AuthorArranger will allow you to make format choices based on the submission rules of the journal. When finished, you get a downloadable and formatted document that has all your authors and affiliations arranged for journal submission.
+          </p>
+
+          <p>
+            Follow our QuickStart guide below, or jump right into the
+            <a href="/#web-tool">AuthorArranger Tool</a>.
+          </p>
+
+          <div class="row no-gutters text-center">
+            <div class="my-3 col-xl">
+              <img class="img-fluid my-2" src="assets/images/quick-start/step-1.svg" alt="Upload table displays sample author and affiliations in column order: First name, Last name, Division, Institute. Note that affiliations in the template spreadsheet can be changed to whatever fits your organization.">
+              <div>
+                <strong>Step 1.</strong> Upload Author and affiliation details.</div>
+              <small>
+                (Download <a href="assets/files/AuthorArranger Template.xlsx">AuthorArranger template</a>)
+              </small>
+            </div>
+
+            <div class="my-3 col-xl">
+              <img class="img-fluid my-2" src="assets/images/quick-start/step-2.svg" alt="Author Format table gives the user a sample of the available format choices. For the first name, user may choose to abbreviate and/or add period, for the last name user may choose to abbreviate and/or add period). User may also choose to superscript or go to a new line. Next, the Affiliation format table gives the user a sample of the available choices. For the Division, the user may choose to add a comma and/or add period. For the Institute, the user may choose to add a comma and/or add period. User may also choose to superscript, go to new line, add numbers (such as in a list).">
+              <div>
+                <strong>Step 2.</strong> Configure author and affiliation formatting options.
+              </div>
+              <small>
+                (The Preview pane shows live changes)
+              </small>
+            </div>
+
+            <div class="my-3 col-xl">
+              <img class="img-fluid my-2" src="assets/images/quick-start/step-3.svg" alt="The Reorder table displays a column of author names, each with an X to the right of the name. User has the option of changing authors places in the list by clicking and dragging up or down, and removing an author by choosing the X next to the author’s name.">
+              <div>
+                <strong>Step 3.</strong> Reorder or remove authors.
+              </div>
+              <small>
+                (See Reorder tab on Preview Pane)
+              </small>
+            </div>
+
+            <div class="my-3 col-xl">
+              <img class="img-fluid my-2" src="assets/images/quick-start/step-4.svg" alt="Sample Title page displays author names in order, using the following formats: First initial, last name, superscript affiliation number. Underneath it lists the author affiliations (in this instance, division and institute) in numeric order.">
+              <div>
+                <strong>Step 4.</strong> Copy or download generated title page.
+              </div>
+              <small>
+                (Title page conquered!)
+              </small>
+            </div>
+
+            <div class="my-3 col-xl">
+              <img class="img-fluid my-2" src="assets/images/quick-start/step-5.svg" alt="Envelope icon and explanation that the tool gives the user the ability to generate an email list for contacting the entire list of authors (email tab is accessible on the AuthorArranger tool page, in the preview pane).">
+              <div>
+                <strong>Step 5. </strong>
+                <i>(Optional)</i>
+                Generate email list for contacting authors.
+              </div>
+              <small>(See Email tab on Preview Pane)</small>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <aside class="my-4">
+        <div class="my-4 alert alert-info-light text-dark shadow-lg">
+          <p>
+            AuthorArranger was created by
+            <a href="https://dceg.cancer.gov/about/staff-directory/biographies/K-N/machiela-mitchell" target="_blank">Mitchell Machiela</a> and Geoffrey Tobias in collaboration with the <a href="https://cbiit.cancer.gov/" target="_blank">NCI Center for Biomedical Informatics and Information (CBIIT)</a>. Support for AuthorArranger comes from the 2018 DCEG Informatic Tool Challenge.
+          </p>
+
+          <p class="mb-1">
+            Please acknowledge AuthorArranger in your manuscript’s acknowledgement section: “Support for title page creation and format was provided by AuthorArranger, a tool developed at the <a href="https://www.cancer.gov/">National Cancer Institute</a>.” Feel free to share widely with colleagues! <a href="mailto:NCIAuthorArrangerWebAdmin@mail.nih.gov">Email us with questions or feedback</a> about AuthorArranger or to report technical problems.
+          </p>
+        </div>
+
+        <div class="my-4 alert alert-info shadow-lg">
+          This site is currently under Section 508 review. In the interim, should you require any accessibility assistance with any
+          content, please contact us at
+          <a href="mailto:NCIAuthorArrangerWebAdmin@mail.nih.gov?subject=AuthorArranger%20Accessibility">NCI&shy;Author&shy;Arranger&shy;Web&shy;Admin&shy;@mail.nih.gov</a>. Thank you!
+        </div>
+      </aside>
+    </main>
+
+    <footer class="text-left text-md-center pt-4 pb-4 bg-primary text-light flex-none">
+      <div class="container">
+        <ul class="list-inline  text-light">
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.cancer.gov/">Home</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_top" href="mailto:NCIAuthorArrangerWebAdmin@mail.nih.gov?subject=AuthorArranger%20Support">Support</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.cancer.gov/global/web/policies">Policies</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.cancer.gov/global/web/policies/accessibility">Accessibility</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://cancer.gov/global/viewing-files">Viewing Files</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.cancer.gov/global/web/policies/foia">FOIA</a>
+          </li>
+        </ul>
+        <ul class="list-inline">
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.hhs.gov/">U.S. Department of Health and Human Services</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.nih.gov">National Institutes of Health</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://www.cancer.gov/">National Cancer Institute</a>
+          </li>
+          <li class="pb-1 d-none d-md-inline">|</li>
+          <li class="pb-1 d-block d-md-inline">
+            <a class=" text-light m-1" target="_blank" href="https://usa.gov">USA.gov</a>
+          </li>
+        </ul>
+        <div>
+          NIH ... Turning Discovery Into Health
+          <sup>&reg;</sup>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+
+
+
+
+
+
+
   </author-arranger-root>
   <!--
 
@@ -51,7 +251,7 @@
 -->
 
   <!-- End Google Analytics Snippet -->
-  <script defer="">
+  <script defer>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -59,9 +259,9 @@
   </script>
 
   <!-- End Adobe DAP Snippet -->
-  <script defer="">(function _pb(){window._satellite !== undefined ? _satellite.pageBottom() : _pb, 1000})()</script>
+  <script defer>(function _pb(){window._satellite !== undefined ? _satellite.pageBottom() : _pb, 1000})()</script>
 
   <!-- DCEG analytics code -->
   <script src="//static.cancer.gov/webanalytics/wa_dceg_pageload.js"></script>
-
-<script type="text/javascript" src="runtime.6afe30102d8fe7337431.js"></script><script type="text/javascript" src="polyfills.f12a57a02171569945d3.js"></script><script type="text/javascript" src="main.1bf3d7620b67e573ddf3.js"></script></body></html>
+<script type="text/javascript" src="runtime.a66f828dca56eeb90e02.js"></script><script type="text/javascript" src="polyfills.82c7675d5957233e08ec.js"></script><script type="text/javascript" src="main.1e2a6352d0156f27a635.js"></script></body>
+</html>
