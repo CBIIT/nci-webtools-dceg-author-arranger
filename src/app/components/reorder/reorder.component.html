@@ -1,12 +1,18 @@
 <div
-data-name="reorder"
-dragula="authors"
-[dragulaOptions]="dragOptions"
-[dragulaModel]="authors"
-class="mb-3 p-2 d-flex flex-wrap">
+  #container
+  data-name="reorder"
+  dragula="authors"
+  [dragulaOptions]="dragOptions"
+  [dragulaModel]="authors"
+  class="mb-3 p-2 d-flex flex-wrap">
 
-<ng-container *ngFor="let author of authors">
-  <div [hidden]="author.removed || author.name?.length == 0" [attr.data-id]="author.id">
+<ng-container >
+  <div
+    *ngFor="let author of authors"
+    tabIndex="0"
+    (keyup)="handleKeyboardEvent($event)"
+    [hidden]="author.removed || author.name?.length == 0"
+    [attr.data-id]="author.id">
 
     <div
       class="border d-flex rounded m-1 p-0 shadow-sm"
@@ -39,14 +45,20 @@ class="mb-3 p-2 d-flex flex-wrap">
 <div class="bg-light rounded border mb-4">
 <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
 <div
+  #removed
   data-name="removed"
   dragula="authors"
   [dragulaOptions]="dragOptions"
   [dragulaModel]="authors"
   style="min-height: 100px"
   class="d-flex flex-wrap p-2">
-  <ng-container *ngFor="let author of authors">
-    <div [hidden]="!author.removed || author.name?.length == 0" [attr.data-id]="author.id">
+  <ng-container >
+    <div
+      tabindex="0"
+      *ngFor="let author of authors"
+      [hidden]="!author.removed || author.name?.length == 0"
+      (keyup)="handleKeyboardEvent($event)"
+      [attr.data-id]="author.id">
       <div
         class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
         placement="top"

@@ -1,0 +1,7 @@
+.select-group-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+}
+
+.select-group-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+}
