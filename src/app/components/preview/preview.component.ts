@@ -1,11 +1,7 @@
 import { Component, Renderer2, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { saveAs } from 'file-saver';
-import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
-import * as entities from 'html-entities';
 import { AppState } from '../../app.models';
 import { isEmpty, isEqual } from 'lodash';
-import { encode } from 'punycode';
 
 @Component({
   selector: 'author-arranger-preview',
@@ -48,22 +44,10 @@ export class PreviewComponent implements OnChanges {
 
   downloadPreview() {
     if (this.preview && this.hasData) {
-      const originalFilename = this.state.file.filename;
-      const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
-      const html = (<HTMLElement> this.preview.nativeElement).innerHTML;
-
-      // first, decode to normalize html (avoid double-encoding)
-      const decodedHtml = entities.AllHtmlEntities.decode(html);
-
-      // escape entities, but ensure that brackets are preserved
-      const encodedHtml = entities.AllHtmlEntities.encodeNonUTF(decodedHtml)
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>');
-
-      const htmlDoc = `<!DOCTYPE html><html><head></head>
-        <body>${encodedHtml}</body></html>`
-
-      saveAs(htmlDocx.asBlob(htmlDoc), filename);
+      this.arranger.downloadPreview(
+        this.state.file.filename,
+        this.preview.nativeElement as HTMLElement
+      );
     }
   }
 

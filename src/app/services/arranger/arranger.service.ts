@@ -2,6 +2,9 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MarkupElement, AppState } from 'src/app/app.models';
 import { WorkerService } from '../worker/worker.service';
 import { arrangerWorker } from './arranger.worker';
+import { saveAs } from 'file-saver';
+import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
+import * as entities from 'html-entities';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +19,24 @@ export class ArrangerService {
     private workerService: WorkerService) {
     this.worker = this.workerService.getWorker(arrangerWorker);
     this.renderer = rendererFactory.createRenderer(null, null);
+  }
+
+  downloadPreview(originalFilename: string, element: HTMLElement) {
+    const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
+    const html = element.innerHTML;
+
+    // first, decode to normalize html (avoid double-encoding)
+    const decodedHtml = entities.AllHtmlEntities.decode(html);
+
+    // escape entities, but ensure that brackets are preserved
+    const encodedHtml = entities.AllHtmlEntities.encodeNonUTF(decodedHtml)
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+
+    const htmlDoc = `<!DOCTYPE html><html><head></head>
+      <body>${encodedHtml}</body></html>`
+
+    saveAs(htmlDocx.asBlob(htmlDoc), filename);
   }
 
   arrange(appState: AppState): Promise<Partial<AppState>> {
