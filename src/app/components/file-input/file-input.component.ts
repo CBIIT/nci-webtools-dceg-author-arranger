@@ -136,7 +136,7 @@ export class FileInputComponent implements OnInit {
       if (!this.fileService.initialized) {
         throw({
           type: 'danger',
-          message: 'The files service is initializing. Please try again in a few moments.'
+          message: 'The AuthorArranger service is initializing. Please try again in a few moments.'
         });
       }
 

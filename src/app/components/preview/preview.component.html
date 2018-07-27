@@ -44,7 +44,12 @@
       </author-arranger-reorder>
     </p>
 
-    <p [hidden]="selectedTab != 'email'" style="max-height: 500px">{{ state.emails.join('; ') || 'No emails are available.' }}</p>
+    <p [hidden]="selectedTab != 'email'" style="max-height: 500px">
+      <span *ngIf="state.emails?.length" class="mb-1 ml-2" style="font-weight: 500;">
+          Copy and paste email addresses to contact authors
+        </span>
+      {{ state.emails.join('; ') || 'No emails are available.' }}
+    </p>
   </div>
 
   <div [hidden]="hasData" class="card-body overflow-auto mh-100 h-100 d-flex-center font-weight-light h5">

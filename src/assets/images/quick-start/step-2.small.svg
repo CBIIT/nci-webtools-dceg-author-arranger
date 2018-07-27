@@ -1,0 +1,144 @@
+<svg width="300" height="300" viewBox="0 0 200 230"
+    xmlns="http://www.w3.org/2000/svg">
+
+    <style>
+        text {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+    </style>
+
+    <rect fill="#7da7d9" y="25" width="200" height="205" />
+
+    <g transform="translate(0, 0)">
+        <rect fill="#2a71a5" width="200" height="25" />
+
+        <rect fill="white" width="190" height="80" y="30" x="5" />
+        <text font-size="16" x="10" y="19" fill="#eee">
+      Author Format
+        </text>
+
+        <g transform="translate(9, 35)">
+            <rect fill="white" width="180" height="20" stroke="#888" stroke-width="1" />
+            <path fill="none" d="M20 0 v 20" stroke="#888" />
+            <path fill="none" d="M5 5 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 10 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 15 h 10" stroke="#aaa" />
+            <text x="25" y="14" font-size="12" fill="#555">First</text>
+
+            <g transform="translate(55, 5)">
+                <rect fill="#777" stroke="#777" width="10" height="10" />
+                <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+                <text x="12" y="8" font-size="9" fill="#555">Abbreviate</text>
+            </g>
+
+            <g transform="translate(120, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+                <text x="12" y="8" font-size="9" fill="#555">Add Period</text>
+            </g>
+        </g>
+
+        <g transform="translate(9, 60)">
+            <rect fill="white" width="180" height="20" stroke="#888" stroke-width="1" />
+            <path fill="none" d="M20 0 v 20" stroke="#888" />
+            <path fill="none" d="M5 5 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 10 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 15 h 10" stroke="#aaa" />
+            <text x="25" y="14" font-size="12" fill="#555">Last</text>
+
+            <g transform="translate(55, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <text x="12" y="8" font-size="9" fill="#555">Abbreviate</text>
+            </g>
+
+            <g transform="translate(120, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <text x="12" y="8" font-size="9" fill="#555">Add Period</text>
+            </g>
+        </g>
+
+        <g transform="translate(9, 90)">
+            <rect fill="#777" stroke="#777" width="10" height="10" />
+            <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+            <text x="12" y="8" font-size="9" fill="#555">Superscript</text>
+        </g>
+
+        <g transform="translate(81, 90)">
+            <rect fill="#777" stroke="#777" width="10" height="10" />
+            <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+            <text x="12" y="8" font-size="9" fill="#555">Newline</text>
+        </g>
+    </g>
+
+
+
+
+    <g transform="translate(0, 115)">
+        <rect fill="#2a71a5" width="200" height="25" />
+
+        <rect fill="white" width="190" height="80" y="30" x="5" />
+        <text font-size="16" x="10" y="19" fill="#eee">
+      Affiliation Format
+        </text>
+
+        <g transform="translate(9, 35)">
+            <rect fill="white" width="180" height="20" stroke="#888" stroke-width="1" />
+            <path fill="none" d="M20 0 v 20" stroke="#888" />
+            <path fill="none" d="M5 5 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 10 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 15 h 10" stroke="#aaa" />
+            <text x="25" y="14" font-size="12" fill="#555">Division</text>
+
+            <g transform="translate(72, 5)">
+                <rect fill="#777" stroke="#777" width="10" height="10" />
+                <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+                <text x="12" y="8" font-size="9" fill="#555">Comma</text>
+            </g>
+
+            <g transform="translate(120, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+                <text x="12" y="8" font-size="9" fill="#555">Add Period</text>
+            </g>
+        </g>
+
+        <g transform="translate(9, 60)">
+            <rect fill="white" width="180" height="20" stroke="#888" stroke-width="1" />
+            <path fill="none" d="M20 0 v 20" stroke="#888" />
+            <path fill="none" d="M5 5 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 10 h 10" stroke="#aaa" />
+            <path fill="none" d="M5 15 h 10" stroke="#aaa" />
+            <text x="25" y="14" font-size="12" fill="#555">Institute</text>
+
+            <g transform="translate(72, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <text x="12" y="8" font-size="9" fill="#555">Comma</text>
+            </g>
+
+            <g transform="translate(120, 5)">
+                <rect fill="white" stroke="#777" width="10" height="10" />
+                <text x="12" y="8" font-size="9" fill="#555">Add Period</text>
+            </g>
+        </g>
+
+        <g transform="translate(9, 90)">
+            <rect fill="#777" stroke="#777" width="10" height="10" />
+            <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+            <text x="12" y="8" font-size="9" fill="#555">Superscript</text>
+        </g>
+
+        <g transform="translate(81, 90)">
+            <rect fill="#777" stroke="#777" width="10" height="10" />
+            <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+            <text x="12" y="8" font-size="9" fill="#555">Newline</text>
+        </g>
+
+        <g transform="translate(140, 90)">
+            <rect fill="#777" stroke="#777" width="10" height="10" />
+            <path fill="none" stroke="white" stroke-width="1" d="m 1 5 l 3 3 l 5 -7 " />
+            <text x="12" y="8" font-size="9" fill="#555">Numbers</text>
+        </g>
+
+    </g>
+
+</svg>
