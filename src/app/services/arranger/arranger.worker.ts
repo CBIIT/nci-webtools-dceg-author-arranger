@@ -138,7 +138,6 @@ export function arrangerWorker() {
               // ensure text contains a max of one consecutive space
               text = text
                   .replace(/\s+/g, ' ')
-                  .replace(/;/g, ',')
                   .trim();
 
               if (format.abbreviate)
