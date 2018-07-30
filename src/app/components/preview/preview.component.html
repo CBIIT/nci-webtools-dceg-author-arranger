@@ -1,4 +1,4 @@
-<div class="card rounded shadow-lg h-100  border-0" style="min-height: 400px">
+<div class="card rounded shadow-lg h-100 border-0" style="min-height: 400px">
 
   <label class="sr-only" id="preview-tab-label">
     Use this control to select whether to preview or reorder the output.
@@ -44,11 +44,13 @@
       </author-arranger-reorder>
     </p>
 
-    <p [hidden]="selectedTab != 'email'" style="max-height: 500px">
-      <span *ngIf="state.emails?.length" class="mb-1 ml-2" style="font-weight: 500;">
+    <p [hidden]="selectedTab != 'email'" class="ml-2" style="max-height: 500px">
+      <span *ngIf="state.emails?.length" class="mb-2 d-block" style="font-weight: 500;">
           Copy and paste email addresses to contact authors
-        </span>
-      {{ state.emails.join('; ') || 'No emails are available.' }}
+      </span>
+      <span class="d-block">
+        {{ state.emails.join('; ') || 'No emails are available.' }}
+      </span>
     </p>
   </div>
 

@@ -1,0 +1,10 @@
+.responsive-height-800 {
+  max-height: 800px;
+}
+
+@media (max-width: 1199.98px) {
+  .responsive-height-800 {
+    max-height: inherit;
+    margin-bottom: 0.5rem;
+  }
+}
