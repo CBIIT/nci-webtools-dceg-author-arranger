@@ -189,48 +189,56 @@ export const INITIAL_APP_STATE: AppState = {
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 0
                 }, {
                     name: 'Division',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 1
                 }, {
                     name: 'Institute',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 2
                 }, {
                     name: 'Street',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 3
                 }, {
                     name: 'City',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 4
                 }, {
                     name: 'State',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 5
                 }, {
                     name: 'Postal Code',
                     column: null,
                     addComma: true,
                     addPeriod: false,
+                    disabled: false,
                     index: 6
                 }, {
                     name: 'Country',
                     column: null,
                     addComma: false,
                     addPeriod: false,
+                    disabled: false,
                     index: 7
                 }
             ],

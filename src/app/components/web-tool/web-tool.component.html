@@ -7,12 +7,10 @@
 
 <div class="row">
   <div class="col col-lg-6">
-    <div class="responsive-height-800" style="overflow: auto;">
-        <author-arranger-form
-        (on-change)="merge({format: $event}); arrange();"
-        [fileHeaders]="state.file.headers">
-      </author-arranger-form>
-    </div>
+    <author-arranger-form
+      (on-change)="merge({format: $event}); arrange();"
+      [fileHeaders]="state.file.headers">
+    </author-arranger-form>
   </div>
   <div class="col col-lg-6">
     <author-arranger-preview

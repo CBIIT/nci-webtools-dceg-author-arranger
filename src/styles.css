@@ -25,6 +25,10 @@ a {
   background-color: #2a71a5 !important;
 }
 
+.bg-primary-light, .btn-primary-light {
+  background-color: #2e7bb2 !important;
+}
+
 .bg-primary-dark {
   background-color: #336E7B !important;
 }
@@ -86,6 +90,10 @@ a {
 
 .w-inherit {
   width: inherit !important;
+}
+
+.text-muted-light {
+  color: #ddd;
 }
 
 @media (min-width: 1500px) {

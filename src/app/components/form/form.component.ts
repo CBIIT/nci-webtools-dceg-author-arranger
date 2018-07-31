@@ -20,13 +20,15 @@ export class FormComponent implements OnInit, OnChanges {
 
   alerts: {type: string, message: string}[] = [];
 
+  selectedTab: string = 'author-format';
+
   formGroup: FormGroup = createFormObject(
     cloneDeep(INITIAL_APP_STATE.format)
   ) as FormGroup;
 
   ngOnInit() {
     this.formGroup.valueChanges
-      .pipe(debounceTime(200))
+      .pipe(debounceTime(100))
       .subscribe(value => this.change.emit(value));
   }
 
