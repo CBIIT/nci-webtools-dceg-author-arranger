@@ -32,7 +32,7 @@
 
           [formControl]="field.controls.column">
           <option [ngValue]="null">
-            Select Column
+            {{ field.controls.column.value === null ? 'Select Column' : 'No Column' }}
           </option>
           <option *ngFor="let column of fileHeaders; index as columnIndex;" [ngValue]="columnIndex" [attr.selected]="field.value.column == columnIndex || null">
             {{ column }}

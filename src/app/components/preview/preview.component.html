@@ -46,7 +46,7 @@
 
     <p [hidden]="selectedTab != 'email'" class="ml-2" style="max-height: 500px">
       <span *ngIf="state.emails?.length" class="mb-2 d-block" style="font-weight: 500;">
-          Copy and paste email addresses to contact authors
+          Copy and paste email addresses to contact authors.
       </span>
       <span class="d-block">
         {{ state.emails.join('; ') || 'No emails are available.' }}
