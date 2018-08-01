@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { INITIAL_APP_STATE } from '../../app.models';
+import { FormArray, FormGroup } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
 import { range as rangeFn } from 'lodash';
 
@@ -76,6 +77,18 @@ export class FieldsComponent {
     this.formArray.controls = this.formArray.controls.map((control, index, controls) =>
       controls.find(c => c.value.index === index)
     )
+  }
+
+  reset(field: FormGroup) {
+    const defaultFields = [
+      ...INITIAL_APP_STATE.format.author.fields,
+      ...INITIAL_APP_STATE.format.affiliation.fields,
+    ];
+
+    const defaultValue = defaultFields
+      .find(e => e.name === field.value.name);
+
+    field.reset(defaultValue);
   }
 
 
