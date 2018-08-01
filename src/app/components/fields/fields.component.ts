@@ -83,6 +83,7 @@ export class FieldsComponent {
     const defaultFields = [
       ...INITIAL_APP_STATE.format.author.fields,
       ...INITIAL_APP_STATE.format.affiliation.fields,
+      ...INITIAL_APP_STATE.format.email.fields,
     ];
 
     const defaultValue = defaultFields
