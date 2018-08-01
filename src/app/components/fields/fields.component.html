@@ -1,44 +1,27 @@
 <form [dragula]="formName" [dragulaOptions]="dragOptions" #container>
-  <div class="list-group-item d-flex p-0" *ngFor="let field of formArray.controls" [attr.data-name]="field.value.name" (keyup)="handleKeyboardEvent($event)"
-    tabindex="0">
+  <div class="list-group-item d-flex p-0" *ngFor="let field of formArray.controls" [attr.data-name]="field.value.name" (keyup)="handleKeyboardEvent($event)" tabindex="0">
 
-    <div class="d-flex align-items-center p-2 bg-white rounded-left border-right flex-shrink-0" [class.c-move]="draggable" [attr.drag-handle]="draggable ? 'true' : null"
-      style="overflow: hidden;">
+    <div class="d-flex align-items-center p-2 bg-white rounded-left border-right flex-shrink-0" [class.c-move]="draggable" [attr.drag-handle]="draggable ? 'true' : null" style="overflow: hidden;">
       <img [src]="draggable
           ? 'assets/icons/bars.svg'
           : 'assets/icons/bars.no-arrows.svg'
         " alt="draggable icon" class="pointer-events-none">
     </div>
 
-    <div 
-      [class.disabled-overlay]="field.value.disabled"
-      class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1 position-relative">
+    <div [class.disabled-overlay]="field.value.disabled" class="d-flex p-2 align-items-center justify-content-between flex-wrap flex-grow-1 position-relative">
 
       <div class="d-flex align-items-center p-relative">
-        <span 
-          class="mr-1" 
-          style="min-width: 90px">
+        <span class="mr-1" style="min-width: 90px">
           {{ field.value.name }}
         </span>
 
         <div class="d-flex">
-          <select style="min-width: 115px; max-width: 115px; padding-right: 0; padding-left: 5px;" 
-            class="form-control form-control-sm w-sm-inherit" 
-            [attr.id]="field.value.name + '-' + field.value.column"
-            readonly [formControl]="field.controls.column">
-            <option [ngValue]="null">
-              {{ field.controls.column.value === null ? 'Select Column' : 'No Column' }}
-            </option>
+          <select style="min-width: 115px; max-width: 115px; padding-right: 0; padding-left: 5px;" class="form-control form-control-sm w-sm-inherit" [attr.id]="field.value.name + '-' + field.value.column" readonly [formControl]="field.controls.column">
+            <option [ngValue]="null">(None)</option>
             <option *ngFor="let column of fileHeaders; index as columnIndex;" [ngValue]="columnIndex" [attr.selected]="field.value.column == columnIndex || null">
               {{ column }}
             </option>
           </select>
-          <!-- <button 
-            title="Deselect column"
-            class="btn btn-sm bg-white select-group-right border" 
-            (click)="field.controls.column.patchValue(null)">
-            &times;
-          </button> -->
         </div>
       </div>
 
@@ -46,31 +29,21 @@
         The {{ field.value.name }} field is mapped to column {{ field.value.column + 1 }}.
       </label>
 
-      <div class="d-flex flex-wrap small py-1 w-lt-lg-100"
-        [class.text-muted]="field.controls.column.value === null"
-        >
+      <div class="d-flex flex-wrap small py-1 w-lt-lg-100" [class.text-muted]="field.controls.column.value === null">
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace"
-          [attr.disabled]="field.controls.column.value === null || null"
-        > Remove Space
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace" [attr.disabled]="field.controls.column.value === null || null"> Remove Space
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate"
-          [attr.disabled]="field.controls.column.value === null || null"
-          > Abbreviate
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate" [attr.disabled]="field.controls.column.value === null || null"> Abbreviate
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma"
-          [attr.disabled]="field.controls.column.value === null || null"
-          > Add Comma
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma" [attr.disabled]="field.controls.column.value === null || null"> Add Comma
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod"
-          [attr.disabled]="field.controls.column.value === null || null"
-          > Add Period
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod" [attr.disabled]="field.controls.column.value === null || null"> Add Period
         </label>
 
         <!-- custom content here -->
@@ -78,11 +51,7 @@
       </div>
     </div>
 
-    <div 
-      title="Deselect column"
-      class="d-flex align-items-center p-2 bg-white rounded-right border-left flex-shrink-0 c-pointer" 
-      style="overflow: hidden;"
-      (click)="field.patchValue({column: null})">
+    <div title="Deselect column" class="d-flex align-items-center p-2 bg-white rounded-right border-left flex-shrink-0 c-pointer" style="overflow: hidden;" (click)="field.patchValue({column: null})">
       &times;
     </div>
 
