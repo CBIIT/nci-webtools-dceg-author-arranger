@@ -34,7 +34,7 @@ export class ArrangerService {
       .replace(/&gt;/g, '>');
 
     const htmlDoc = `<!DOCTYPE html><html><head></head>
-      <body>${encodedHtml}</body></html>`
+      <body>${html}</body></html>`
 
     saveAs(htmlDocx.asBlob(htmlDoc), filename);
   }
