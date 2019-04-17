@@ -31,10 +31,11 @@ export class ArrangerService {
     // escape entities, but ensure that brackets are preserved
     const encodedHtml = entities.AllHtmlEntities.encodeNonUTF(decodedHtml)
       .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>');
+      .replace(/&gt;/g, '>')
+      .replace(/&apos;/g, "'");
 
     const htmlDoc = `<!DOCTYPE html><html><head></head>
-      <body>${html}</body></html>`
+      <body>${encodedHtml}</body></html>`
 
     saveAs(htmlDocx.asBlob(htmlDoc), filename);
   }
