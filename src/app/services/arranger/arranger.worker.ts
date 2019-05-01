@@ -164,13 +164,21 @@ export function arrangerWorker() {
           const authorRow = rows[authorRowId];
           const affiliationRow = rows[affiliationRowId];
 
-          const authorText = authorFields.map(field => fieldFormatter(authorRow[field.column], field))
-              .join('')
-              .trim();
+          const authorText = authorFields
+            .map(field => fieldFormatter(authorRow[field.column], field))
+            .join('')
+            .trim()
+            .replace(/\.{2,}/g, '.')
+            .replace(/,{2,}/g, ',')
+            .replace(/,$/g, '');
 
-          const affiliationText = affiliationFields.map(field => fieldFormatter(affiliationRow[field.column], field))
-              .join('')
-              .trim();
+          const affiliationText = affiliationFields
+            .map(field => fieldFormatter(affiliationRow[field.column], field))
+            .join('')
+            .trim()
+            .replace(/\.{2,}/g, '.')
+            .replace(/,{2,}/g, ',')
+            .replace(/,$/g, '');
 
           if (!_(authors).find(e => e.rowId === authorRowId))
               authors.push({
