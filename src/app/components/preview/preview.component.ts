@@ -31,8 +31,6 @@ export class PreviewComponent implements OnChanges {
 
   selectedTab = 'preview';
 
-  lastScrollOffset = 0;
-
   constructor(
     private arranger: ArrangerService,
     private renderer: Renderer2
@@ -79,7 +77,7 @@ export class PreviewComponent implements OnChanges {
         );
       }
       panelElement.scrollTop = lastScrollTop;
-    }, 100);
+    }, 10);
 
 
     if (this.state.duplicateAuthors) {
@@ -90,8 +88,4 @@ export class PreviewComponent implements OnChanges {
     }
   }
 
-  handleScroll(event) {
-
-    console.log(this.panel.nativeElement.scrollTop);
-  }
 }
