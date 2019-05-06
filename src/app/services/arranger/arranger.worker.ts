@@ -70,7 +70,7 @@ export function arrangerWorker() {
     // remove affiliations only when all references to them are removed
     affiliations.forEach(e => e.removed = true);
     for (let author of appState.authors) {
-      let affiliationRowIds = author.affiliationRowIds;
+      let affiliationRowIds = author.affiliationRowIds || [];
       let authorAffiliations = affiliationRowIds.map(rowId => _(affiliations).find(e => e.rowId === rowId))
       authorAffiliations.forEach(e => !author.removed ? e.removed = false : null);
     }
@@ -90,6 +90,7 @@ export function arrangerWorker() {
         .forEach((e, i) => {
           for (let authorRowId of e.authorRowIds) {
             let author = _(appState.authors).find(a => a.rowId == authorRowId);
+            if (!author) return;
             let index = author.affiliationRowIds.indexOf(e.rowId);
             if (index > -1)
               author.affiliationIds[index] = i + 1;

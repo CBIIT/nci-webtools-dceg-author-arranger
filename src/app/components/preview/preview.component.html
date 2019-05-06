@@ -24,19 +24,19 @@
     </a>
   </div>
 
-  <div [hidden]="!hasData" class="card-body overflow-auto mh-100 h-100 p-relative">
+  <div *ngIf="loading" class="p-absolute h-100 w-100 d-flex-center flex-column bg-white"
+  style="position: absolute; top: 0; left: 0; opacity: 0.8; background-color: white; z-index: 9999;">
+    <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
+    <span>Generating Preview</span>
+  </div>
+
+  <div [hidden]="!hasData" class="card-body overflow-auto mh-100 h-100 p-relative" #panel>
 
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
       <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
       </ngb-alert>
     </p>
-
-    <div *ngIf="loading" class="fade-opacity p-absolute h-100 w-100 d-flex-center flex-column bg-white">
-      <img class="spin" src="assets/icons/spinner-third.svg" alt="Loading indicator">
-      <span>Generating Preview</span>
-    </div>
-
     <p [hidden]="selectedTab != 'preview'" style="max-height: 500px" #preview></p>
 
     <p [hidden]="selectedTab != 'reorder'" style="max-height: 500px">

@@ -19,25 +19,29 @@ export class PreviewComponent implements OnChanges {
   @ViewChild('preview')
   preview: ElementRef;
 
+  @ViewChild('panel')
+  panel: ElementRef;
+
   @Output()
   reorder: EventEmitter<number[]> = new EventEmitter<number[]>();
 
-  alerts: {type: string, message: string}[] = [];
+  alerts: { type: string, message: string }[] = [];
 
   hasData = false;
 
   selectedTab = 'preview';
 
+  lastScrollOffset = 0;
 
   constructor(
     private arranger: ArrangerService,
     private renderer: Renderer2
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.state) {
       const { previousValue, currentValue } = changes.state;
-      if (currentValue && previousValue && !isEqual(previousValue.markup, currentValue.markup) )
+      if (currentValue && previousValue && !isEqual(previousValue.markup, currentValue.markup))
         this.update();
     }
   }
@@ -51,23 +55,32 @@ export class PreviewComponent implements OnChanges {
     }
   }
 
-  update() {
+  async update() {
+    let panelElement = this.panel.nativeElement;
+    let lastScrollTop = panelElement.scrollTop;
+
     this.alerts = [];
     this.hasData = !isEmpty(this.state.file.data);
     if (!this.preview) return;
     // this.store.patchState({loading: true});
     let root = this.preview.nativeElement;
     // root.textContent = '';
-    for (let child of root.children) {
-      this.renderer.removeChild(root, child);
-    }
 
-    if (this.hasData && this.state.markup) {
-      const asyncUpdate = this.state.file.data.length > 100;
-      this.renderer.appendChild(
-        root, this.arranger.createElement(this.state.markup, asyncUpdate)
-      );
-    }
+
+    setTimeout(_ => {
+      for (let child of root.children) {
+        this.renderer.removeChild(root, child);
+      }
+
+      if (this.hasData && this.state.markup) {
+        //      const asyncUpdate = this.state.file.data.length > 100;
+        this.renderer.appendChild(
+          root, this.arranger.createElement(this.state.markup, false)
+        );
+      }
+      panelElement.scrollTop = lastScrollTop;
+    }, 100);
+
 
     if (this.state.duplicateAuthors) {
       this.alerts = [{
@@ -75,5 +88,10 @@ export class PreviewComponent implements OnChanges {
         message: 'Duplicate author names have been found.'
       }];
     }
+  }
+
+  handleScroll(event) {
+
+    console.log(this.panel.nativeElement.scrollTop);
   }
 }
