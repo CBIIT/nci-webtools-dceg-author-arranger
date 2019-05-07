@@ -53,8 +53,14 @@ export class FormComponent implements OnInit, OnChanges {
 
     controls.forEach(control => {
       const name = control.value.name;
-      const column = headers.indexOf(name);
-      if (column != -1) {
+      let column = headers.indexOf(name);
+
+      if (column == -1) {
+        // if a direct match was not found, attempt to find a column which includes the header name
+        // column = headers.findIndex(header => RegExp(name, 'i').test(header));
+      }
+
+      if (column >= 0) {
         control.patchValue({column});
       }
     });
