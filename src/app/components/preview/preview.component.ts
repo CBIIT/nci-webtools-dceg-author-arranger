@@ -39,6 +39,8 @@ export class PreviewComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.state) {
       const { previousValue, currentValue } = changes.state;
+
+      this.hasData = !isEmpty(currentValue.file.data);
       if (currentValue && previousValue && !isEqual(previousValue.markup, currentValue.markup))
         this.update();
     }
@@ -59,17 +61,19 @@ export class PreviewComponent implements OnChanges {
 
     this.alerts = [];
     this.hasData = !isEmpty(this.state.file.data);
+
     if (!this.preview) return;
-    // this.store.patchState({loading: true});
+
     let root = this.preview.nativeElement;
+
+    for (let child of root.children) {
+      this.renderer.removeChild(root, child);
+    }
+
+    // this.store.patchState({loading: true});
     // root.textContent = '';
 
-
     setTimeout(_ => {
-      for (let child of root.children) {
-        this.renderer.removeChild(root, child);
-      }
-
       if (this.hasData && this.state.markup) {
         //      const asyncUpdate = this.state.file.data.length > 100;
         this.renderer.appendChild(
@@ -78,7 +82,6 @@ export class PreviewComponent implements OnChanges {
       }
       panelElement.scrollTop = lastScrollTop;
     }, 10);
-
 
     if (this.state.duplicateAuthors) {
       this.alerts = [{

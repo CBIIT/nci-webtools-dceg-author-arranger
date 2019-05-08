@@ -30,7 +30,7 @@
     <span>Generating Preview</span>
   </div>
 
-  <div [hidden]="!hasData" class="card-body overflow-auto mh-100 h-100 p-relative" #panel>
+  <div [hidden]="!hasData || state.authors.length == 0" class="card-body overflow-auto mh-100 h-100 p-relative" #panel>
 
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
       <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
@@ -54,7 +54,12 @@
     </p>
   </div>
 
-  <div [hidden]="hasData" class="card-body overflow-auto mh-100 h-100 d-flex-center font-weight-light h5">
+  <div *ngIf="!hasData" class="card-body overflow-auto mh-100 h-100 d-flex-center font-weight-light h5">
     <p style="max-height: 500px; margin: 0;">Please upload a file to view authors.</p>
   </div>
+
+  <div *ngIf="hasData && state.authors.length == 0" class="card-body overflow-auto mh-100 h-100 d-flex-center font-weight-light h5">
+    <p style="max-height: 500px; margin: 0;">Please map at least one author field to its corresponding column in the input file.</p>
+  </div>
+
 </div>

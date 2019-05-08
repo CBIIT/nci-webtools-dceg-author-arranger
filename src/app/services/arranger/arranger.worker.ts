@@ -170,6 +170,10 @@ export function arrangerWorker() {
             const authorRow = rows[authorRowId];
             const affiliationRow = rows[affiliationRowId];
 
+            if (!authorRow || !affiliationRow) {
+                return;
+            }
+
             // fetch relevant fields from the row, and put them in the same order as the ui
             const mappedAuthorRow = authorFields.map(field => authorRow[field.column]);
             const mappedAffiliationRow = affiliationFields.map(field => affiliationRow[field.column]);
