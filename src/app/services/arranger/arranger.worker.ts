@@ -304,6 +304,8 @@ export function arrangerWorker() {
         const authorFields: FieldFormat[] = format.author.fields.sort((a, b) => a.index - b.index);
         const affiliationFields: FieldFormat[] = format.affiliation.fields.sort((a, b) => a.index - b.index);
 
+        const hasAffiliations = affiliationFields.filter(a => a.column !== null).length > 0;
+
         const tagNames = {
             inline: 'span',
             superscript: 'sup',
@@ -353,12 +355,16 @@ export function arrangerWorker() {
                                 ? 'bg-warning'
                                 : null
                         }
-                    }, {
-                            tagName: tagNames[format.author.labelPosition],
-                            text: affiliationIds
-                                .map(labelFormatter)
-                                .join(',')
-                        });
+                    });
+
+                if (hasAffiliations) {
+                    authorsMarkup.children.push({
+                        tagName: tagNames[format.author.labelPosition],
+                        text: affiliationIds
+                            .map(labelFormatter)
+                            .join(',')
+                    })
+                }
 
                 if (index < data.length - 1) {
                     let separator = separators[format.author.separator] || format.author.customSeparator;
@@ -375,39 +381,41 @@ export function arrangerWorker() {
                 }
             });
 
-        affiliations
-            .filter(affiliation => !affiliation.removed)
-            .forEach(({ name, id }, index, affiliations) => {
-                let text = name.trim();
-                let labelText = labelFormatter(id);
+        if (hasAffiliations) {
+            affiliations
+                .filter(affiliation => !affiliation.removed)
+                .forEach(({ name, id }, index, affiliations) => {
+                    let text = name.trim();
+                    let labelText = labelFormatter(id);
 
-                if (format.affiliation.labelPosition === 'inline')
-                    labelText += ' ';
-
-                affiliationsMarkup
-                    .children
-                    .push({
-                        tagName: tagNames[format.affiliation.labelPosition],
-                        text: labelText
-                    }, {
-                            tagName: 'span',
-                            text: text
-                        })
-
-                if (index < affiliations.length - 1) {
-                    let separator = separators[format.affiliation.separator] || format.affiliation.customSeparator;
+                    if (format.affiliation.labelPosition === 'inline')
+                        labelText += ' ';
 
                     affiliationsMarkup
                         .children
                         .push({
-                            tagName: 'span',
-                            text: separator + ' '
-                        });
+                            tagName: tagNames[format.affiliation.labelPosition],
+                            text: labelText
+                        }, {
+                                tagName: 'span',
+                                text: text
+                            })
 
-                    if (separator === '\n')
-                        affiliationsMarkup.children.push({ tagName: 'br' });
-                }
-            });
+                    if (index < affiliations.length - 1) {
+                        let separator = separators[format.affiliation.separator] || format.affiliation.customSeparator;
+
+                        affiliationsMarkup
+                            .children
+                            .push({
+                                tagName: 'span',
+                                text: separator + ' '
+                            });
+
+                        if (separator === '\n')
+                            affiliationsMarkup.children.push({ tagName: 'br' });
+                    }
+                });
+        }
 
         return markup;
     }

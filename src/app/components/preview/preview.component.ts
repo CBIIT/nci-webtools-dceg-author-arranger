@@ -39,7 +39,6 @@ export class PreviewComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.state) {
       const { previousValue, currentValue } = changes.state;
-
       this.hasData = !isEmpty(currentValue.file.data);
       if (currentValue && previousValue && !isEqual(previousValue.markup, currentValue.markup))
         this.update();
@@ -89,6 +88,14 @@ export class PreviewComponent implements OnChanges {
         message: 'Duplicate author names have been found.'
       }];
     }
+
+    if (!this.state.format.affiliation.fields.find(a => a.column !== null)) {
+      this.alerts.push({
+        type: 'warning',
+        message: 'No affiliation fields have been mapped.'
+      });
+    }
+
   }
 
 }
