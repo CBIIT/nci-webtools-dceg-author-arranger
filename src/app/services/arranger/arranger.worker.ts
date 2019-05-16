@@ -186,8 +186,7 @@ export function arrangerWorker() {
                     return fieldFormatter(authorRow[field.column], field, isLast);
                 })
                 .join('')
-                .trim()
-                .replace(/,{2,}/g, ',');
+                .trim();
 
             // determine the text that should be shown for the affiliation
             const affiliationText = affiliationFields
@@ -196,8 +195,7 @@ export function arrangerWorker() {
                     return fieldFormatter(affiliationRow[field.column], field, isLast);
                 })
                 .join('')
-                .trim()
-                .replace(/,{2,}/g, ',');
+                .trim();
 
             // if the author does not exist yet, push it onto the list of authors
             if (!_(authors).find(e => e.rowId === authorRowId))
