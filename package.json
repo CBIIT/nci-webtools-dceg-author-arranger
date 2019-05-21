@@ -22,6 +22,7 @@
     "@angular/router": "^6.0.0",
     "@ng-bootstrap/ng-bootstrap": "^2.1.2",
     "core-js": "^2.5.4",
+    "docx": "^4.7.1",
     "file-saver": "^1.3.8",
     "html-docx-js": "^0.3.1",
     "html-entities": "^1.2.1",

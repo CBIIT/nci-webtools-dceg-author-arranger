@@ -47,10 +47,16 @@ export class PreviewComponent implements OnChanges {
 
   downloadPreview() {
     if (this.preview && this.hasData) {
+      this.arranger.downloadDocument(
+        this.state.file.filename,
+        this.state.markup
+      );
+/*
       this.arranger.downloadPreview(
         this.state.file.filename,
         this.preview.nativeElement as HTMLElement
       );
+      */
     }
   }
 

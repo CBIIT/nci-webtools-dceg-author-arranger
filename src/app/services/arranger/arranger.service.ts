@@ -3,8 +3,7 @@ import { MarkupElement, AppState } from 'src/app/app.models';
 import { WorkerService } from '../worker/worker.service';
 import { arrangerWorker } from './arranger.worker';
 import { saveAs } from 'file-saver';
-import * as htmlDocx from 'html-docx-js/dist/html-docx.js';
-import * as entities from 'html-entities';
+import * as docx from 'docx';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +17,53 @@ export class ArrangerService {
     private rendererFactory: RendererFactory2,
     private workerService: WorkerService) {
     this.worker = this.workerService.getWorker(arrangerWorker);
-    this.renderer = rendererFactory.createRenderer(null, null);
+    this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
+  async downloadDocument(originalFilename: string, markup: MarkupElement) {
+    const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
+    const doc = new docx.Document();
+    const authors = markup.children[0].children;
+    const affiliations = markup.children[1].children;
+
+    if (!authors.length && !affiliations.length) return;
+
+    console.log(markup);
+
+    this.addParagraph(doc, authors);
+    if (affiliations)
+      this.addParagraph(doc, affiliations);
+
+    const packer = new docx.Packer();
+    saveAs(await packer.toBlob(doc), filename);
+  }
+
+  addParagraph(doc: docx.File, elements: MarkupElement[]) {
+    let paragraph = new docx.Paragraph();
+
+    elements.forEach(el => {
+      let { tagName, text, attributes, children } = el;
+
+      if (text && text.toString().trim().length == 0) return;
+      let textRun = new docx.TextRun(text);
+      if (tagName == 'sup')
+        textRun = textRun.superScript();
+      if (tagName == 'sub')
+        textRun = textRun.subScript();
+      if (tagName == 'br') {
+        doc.addParagraph(paragraph);
+        paragraph = new docx.Paragraph();
+        doc.addParagraph(paragraph);
+      }
+
+      if (text)
+        paragraph.addRun(textRun);
+    })
+
+    doc.addParagraph(paragraph);
+    doc.addParagraph(new docx.Paragraph());
+  }
+/*
   downloadPreview(originalFilename: string, element: HTMLElement) {
     const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
     const html = element.innerHTML;
@@ -35,10 +78,12 @@ export class ArrangerService {
       .replace(/&apos;/g, "'");
 
     const htmlDoc = `<!DOCTYPE html><html><head></head>
-      <body>${encodedHtml}</body></html>`
+      <body>${html}</body></html>`
+    console.log(html);
 
     saveAs(htmlDocx.asBlob(htmlDoc), filename);
   }
+  */
 
   arrange(appState: AppState): Promise<Partial<AppState>> {
     return this.workerService.callMethod<Partial<AppState>>(
