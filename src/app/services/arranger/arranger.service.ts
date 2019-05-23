@@ -50,11 +50,8 @@ export class ArrangerService {
         textRun = textRun.superScript();
       if (tagName == 'sub')
         textRun = textRun.subScript();
-      if (tagName == 'br') {
-        doc.addParagraph(paragraph);
-        paragraph = new docx.Paragraph();
-        doc.addParagraph(paragraph);
-      }
+      if (tagName == 'br')
+        paragraph.addRun(new docx.Run().break());
 
       if (text)
         paragraph.addRun(textRun);
