@@ -50,7 +50,6 @@ export function arrangerWorker() {
             appState.authors[i].id = i;
         }
 
-
         // update duplicates
         appState.duplicateAuthors = false;
         appState.authors.forEach(author => {
@@ -242,6 +241,7 @@ export function arrangerWorker() {
                 withoutKey(e.fields, 'Email'),
                 withoutKey(currentAuthor.fields, 'Email')
             ))
+
             if (duplicates.length > 1) {
                 duplicates.forEach(author => author.duplicate = true);
                 duplicateAuthors = true;
@@ -257,7 +257,11 @@ export function arrangerWorker() {
         if (preserveOrder) {
             authors.sort((a, b) => {
                 const aIndex = _(oldAuthors).findIndex(e => e.rowId == a.rowId);
+                if (aIndex != -1) authors[aIndex].removed = oldAuthors[aIndex].removed;
+
                 const bIndex = _(oldAuthors).findIndex(e => e.rowId == b.rowId);
+                if (bIndex != -1) authors[bIndex].removed = oldAuthors[bIndex].removed;
+
                 return aIndex != -1 && bIndex != -1
                     ? aIndex - bIndex
                     : 0;

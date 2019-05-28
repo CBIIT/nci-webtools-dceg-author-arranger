@@ -28,17 +28,17 @@ export class ArrangerService {
 
     if (!authors.length && !affiliations.length) return;
 
-    console.log(markup);
-
-    this.addParagraph(doc, authors);
-    if (affiliations)
-      this.addParagraph(doc, affiliations);
+    doc.addParagraph(this.getParagraph(authors));
+    if (affiliations) {
+      doc.addParagraph(new docx.Paragraph());
+      doc.addParagraph(this.getParagraph(affiliations));
+    }
 
     const packer = new docx.Packer();
     saveAs(await packer.toBlob(doc), filename);
   }
 
-  addParagraph(doc: docx.File, elements: MarkupElement[]) {
+  getParagraph(elements: MarkupElement[]) {
     let paragraph = new docx.Paragraph();
 
     elements.forEach(el => {
@@ -52,13 +52,11 @@ export class ArrangerService {
         textRun = textRun.subScript();
       if (tagName == 'br')
         paragraph.addRun(new docx.Run().break());
-
       if (text)
         paragraph.addRun(textRun);
     })
 
-    doc.addParagraph(paragraph);
-    doc.addParagraph(new docx.Paragraph());
+    return paragraph;
   }
 
   arrange(appState: AppState): Promise<Partial<AppState>> {
