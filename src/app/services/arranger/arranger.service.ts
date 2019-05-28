@@ -45,7 +45,7 @@ export class ArrangerService {
       let { tagName, text, attributes, children } = el;
 
       if (text && text.toString().trim().length == 0) return;
-      let textRun = new docx.TextRun(text);
+      let textRun = new docx.TextRun(text).size(24);
       if (tagName == 'sup')
         textRun = textRun.superScript();
       if (tagName == 'sub')
@@ -60,27 +60,6 @@ export class ArrangerService {
     doc.addParagraph(paragraph);
     doc.addParagraph(new docx.Paragraph());
   }
-/*
-  downloadPreview(originalFilename: string, element: HTMLElement) {
-    const filename = originalFilename.replace(/\.[^/\\.]+$/, '.docx');
-    const html = element.innerHTML;
-
-    // first, decode to normalize html (avoid double-encoding)
-    const decodedHtml = entities.AllHtmlEntities.decode(html);
-
-    // escape entities, but ensure that brackets are preserved
-    const encodedHtml = entities.AllHtmlEntities.encodeNonUTF(decodedHtml)
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&apos;/g, "'");
-
-    const htmlDoc = `<!DOCTYPE html><html><head></head>
-      <body>${html}</body></html>`
-    console.log(html);
-
-    saveAs(htmlDocx.asBlob(htmlDoc), filename);
-  }
-  */
 
   arrange(appState: AppState): Promise<Partial<AppState>> {
     return this.workerService.callMethod<Partial<AppState>>(
