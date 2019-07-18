@@ -143,6 +143,7 @@ export const INITIAL_APP_STATE: AppState = {
                     column: null,
                     abbreviate: false,
                     addPeriod: false,
+                    addComma: false,
                     removeSpace: false,
                     disabled: false,
                     index: 1
