@@ -28,7 +28,8 @@
     "html-entities": "^1.2.1",
     "lodash": "^4.17.10",
     "ng2-dragula": "^1.5.0",
-    "rxjs": "^6.0.0",
+    "rxjs": "~6.3.0",
+    "rxjs-compat": "~6.3.0",
     "xlsx": "^0.13.1",
     "zone.js": "^0.8.26"
   },
