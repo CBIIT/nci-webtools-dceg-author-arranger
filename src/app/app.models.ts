@@ -4,6 +4,7 @@ export const DEFAULT_HEADERS = [
     'Middle',
     'Last',
     'Degree',
+    'ORCID',
     'Other',
     'Email',
     'Department',
@@ -76,6 +77,7 @@ export interface Author {
         Degree?: string;
         Other?: string;
         Email?: string;
+        ORCID?: string;
     };
 }
 
@@ -171,12 +173,19 @@ export const INITIAL_APP_STATE: AppState = {
                     disabled: false,
                     index: 4
                 }, {
-                    name: 'Other',
+                    name: 'ORCID',
                     column: null,
                     addComma: false,
                     addPeriod: false,
                     disabled: false,
                     index: 5
+                }, {
+                    name: 'Other',
+                    column: null,
+                    addComma: false,
+                    addPeriod: false,
+                    disabled: false,
+                    index: 6
                 }
             ],
             separator: 'comma',
