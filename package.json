@@ -2,6 +2,7 @@
   "name": "author-arranger",
   "version": "0.0.0",
   "scripts": {
+    "prebuild": "echo IMPORTANT: Please ensure NODE_OPTIONS = --openssl-legacy-provider",
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build --prod",
