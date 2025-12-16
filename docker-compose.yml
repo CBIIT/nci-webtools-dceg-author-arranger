@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend.dockerfile
+    ports:
+      - "4200:80"
+    container_name: author-arranger-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
