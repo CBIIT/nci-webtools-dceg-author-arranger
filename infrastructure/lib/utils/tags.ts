@@ -17,6 +17,6 @@ export function createTags(config: TagsConfig): Record<string, string> {
       day: '2-digit', 
       year: 'numeric'
     }),
-    ResourceName: `${config.tier}-fhhpb-${config.resourceName}`
+    ResourceName: `${config.tier}-authorarranger-${config.resourceName}`
   };
 }
