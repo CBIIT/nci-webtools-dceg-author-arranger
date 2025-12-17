@@ -1,0 +1,87 @@
+name: Deploy Frontend
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Environment to deploy to"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.tier }}
+    env:
+      TIER: ${{ inputs.tier }}
+      AWS_REGION: us-east-1
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      NODE_OPTIONS: --openssl-legacy-provider
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular application
+        run: npm run build
+
+      - name: Deploy to S3
+        run: |
+          echo "Deploying to S3..."
+          aws s3 sync docs/ s3://author-arranger-website-${{ env.TIER }} --delete
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
+            --stack-name "${{ env.TIER }}-author-arranger-website" \
+            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
+            --output text)
+
+          if [ -z "$DISTRIBUTION_ID" ] || [ "$DISTRIBUTION_ID" = "None" ]; then
+            echo "CloudFront Distribution ID not found. Redeploy CloudFront stack to get the output."
+            exit 1
+          fi
+
+          echo "Invalidating CloudFront cache..."
+          aws cloudfront create-invalidation \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --paths "/*" \
+            --output table \
+            --query "Invalidation.{Status:Status,CreateTime:CreateTime}" 2>/dev/null
+
+          if [ $? -eq 0 ]; then
+            echo "CloudFront cache invalidation successful"
+          else
+            echo "CloudFront cache invalidation failed"
+            exit 1
+          fi
+
+      - name: Deployment Summary
+        run: |
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
+            --stack-name "${{ env.TIER }}-author-arranger-website" \
+            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
+            --output text)
+          
+          CLOUDFRONT_URL=$(aws cloudfront get-distribution \
+            --id "$DISTRIBUTION_ID" \
+            --query "Distribution.DomainName" \
+            --output text)
+          
+          echo "Frontend deployment complete!"
+          echo "Environment: ${{ env.TIER }}"
+          echo "S3 Bucket: author-arranger-website-${{ env.TIER }}"
+          echo "CloudFront URL: https://$CLOUDFRONT_URL"
+          echo "Custom Domain: https://authorarranger-${{ env.TIER }}.nci.nih.gov"
