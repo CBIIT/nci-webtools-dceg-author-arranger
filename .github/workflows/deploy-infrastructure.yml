@@ -47,14 +47,6 @@ jobs:
           cd infrastructure
           npx cdk bootstrap --region ${{ env.AWS_REGION }}
 
-      - name: Deploy Foundation Stacks
-        run: |
-          cd infrastructure
-          echo "Deploying foundation infrastructure for ${{ env.TIER }} environment..."
-          npx cdk deploy \
-            AuthorArrangerDataStack-${{ env.TIER }} \
-            --require-approval never
-
       - name: Build Angular application
         run: |
           echo "Building Angular application for ${{ env.TIER }} environment..."

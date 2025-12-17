@@ -15,12 +15,7 @@ This project uses AWS CDK (Cloud Development Kit) with TypeScript to deploy the 
 
 ### Stacks
 
-1. **AuthorArrangerDataStack** (`{TIER}-author-arranger-s3-data`)
-   - S3 bucket: `nci-cbiit-author-arranger-data-{tier}`
-   - Purpose: Application data storage
-   - Features: Versioning, encryption, lifecycle policies
-
-2. **AuthorArrangerStack** (`{TIER}-author-arranger-website`)
+1. **AuthorArrangerStack** (`{TIER}-author-arranger-website`)
    - S3 bucket: `author-arranger-website-{tier}`
    - CloudFront distribution
    - Origin Access Identity for secure S3 access
@@ -167,7 +162,6 @@ The first deployment will automatically bootstrap CDK in your AWS account/region
 
 This will:
 - Bootstrap CDK (if needed)
-- Create data S3 bucket
 - Build Angular application
 - Create website S3 bucket
 - Create CloudFront distribution
