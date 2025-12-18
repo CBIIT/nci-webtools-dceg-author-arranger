@@ -13,6 +13,10 @@ on:
           - stage
           - prod
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
@@ -20,14 +24,19 @@ jobs:
     env:
       TIER: ${{ inputs.tier }}
       AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       SSL_CERTIFICATE_ARN: ${{ secrets.SSL_CERTIFICATE_ARN }}
       NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
+          role-session-name: ${{ env.TIER }}-authorarranger-deploy-${{ github.ref_name }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
