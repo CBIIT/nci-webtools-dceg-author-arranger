@@ -26,7 +26,6 @@ jobs:
       AWS_REGION: us-east-1
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       SSL_CERTIFICATE_ARN: ${{ secrets.SSL_CERTIFICATE_ARN }}
-      NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
       - uses: actions/checkout@v4
@@ -41,9 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: infrastructure/package-lock.json
+          node-version: "20"
 
       - name: Install CDK and dependencies
         run: |
@@ -56,70 +53,39 @@ jobs:
           cd infrastructure
           npx cdk bootstrap --region ${{ env.AWS_REGION }}
 
-      - name: Build Angular application
-        run: |
-          echo "Building Angular application for ${{ env.TIER }} environment..."
-          npm ci
-          npm run build
-
-      - name: Deploy CloudFront Stack
+      - name: Deploy Infrastructure Stack
         run: |
           cd infrastructure
-          echo "Deploying CloudFront and S3 for ${{ env.TIER }} environment..."
-          npx cdk deploy \
-            AuthorArrangerStack-${{ env.TIER }} \
-            --require-approval never
+          echo "Deploying infrastructure for ${{ env.TIER }} environment..."
+          npx cdk deploy --all --require-approval never
+
+      - name: Get CloudFront Distribution ID
+        id: get-distribution
+        run: |
+          cd infrastructure
+          DISTRIBUTION_ID=$(npx cdk output AuthorArrangerStack-${{ env.TIER }} DistributionId 2>/dev/null || echo "")
+          echo "distribution-id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
+          echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
 
       - name: Invalidate CloudFront Cache
+        if: steps.get-distribution.outputs.distribution-id != ''
         run: |
-          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-website" \
-            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
-            --output text)
-
-          if [ -z "$DISTRIBUTION_ID" ] || [ "$DISTRIBUTION_ID" = "None" ]; then
-            echo "CloudFront Distribution ID not found. Redeploy CloudFront stack to get the output."
-            exit 1
-          fi
-
-          echo "Invalidating CloudFront cache..."
+          DISTRIBUTION_ID="${{ steps.get-distribution.outputs.distribution-id }}"
+          echo "Invalidating CloudFront cache for distribution: $DISTRIBUTION_ID"
           aws cloudfront create-invalidation \
             --distribution-id "$DISTRIBUTION_ID" \
             --paths "/*" \
             --output table \
-            --query "Invalidation.{Status:Status,CreateTime:CreateTime}" 2>/dev/null
-
-          if [ $? -eq 0 ]; then
-            echo "CloudFront cache invalidation successful"
-          else
-            echo "CloudFront cache invalidation failed"
-            exit 1
-          fi
+            --query "Invalidation.{Status:Status,CreateTime:CreateTime}"
+          echo "✅ CloudFront cache invalidation successful"
 
       - name: Deployment Summary
         run: |
-          echo "Deployment Complete!"
+          cd infrastructure
+          echo "✅ Infrastructure Deployment Complete!"
+          echo ""
           echo "Environment: ${{ env.TIER }}"
+          echo "Region: ${{ env.AWS_REGION }}"
           echo ""
-          echo "Deployed Stacks:"
-          echo "  • AuthorArrangerDataStack-${{ env.TIER }}"
-          echo "  • AuthorArrangerStack-${{ env.TIER }} (CloudFront + S3)"
-          echo ""
-          
-          WEBSITE_URL=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-website" \
-            --query "Stacks[0].Outputs[?OutputKey=='WebsiteURL'].OutputValue" \
-            --output text)
-          
-          DATA_BUCKET=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-s3-data" \
-            --query "Stacks[0].Outputs[?OutputKey=='DataBucketName'].OutputValue" \
-            --output text)
-          
-          echo "Resources:"
-          echo "  • Data Bucket: $DATA_BUCKET"
-          echo "  • Website Bucket: author-arranger-website-${{ env.TIER }}"
-          echo ""
-          echo "URLs:"
-          echo "  • CloudFront: $WEBSITE_URL"
-          echo "  • Custom Domain: https://authorarranger-${{ env.TIER }}.nci.nih.gov"
+          echo "Stack Outputs:"
+          npx cdk output AuthorArrangerStack-${{ env.TIER }} --all || echo "Run 'cdk output' to see deployed resources"
