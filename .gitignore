@@ -38,3 +38,8 @@ testem.log
 .DS_Store
 Thumbs.db
 package-lock.json
+
+# Local secrets and test files
+.secrets
+test-workflow.sh
+deploy.local.yml
