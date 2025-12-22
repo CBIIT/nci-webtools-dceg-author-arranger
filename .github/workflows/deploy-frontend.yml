@@ -46,53 +46,22 @@ jobs:
         run: npm ci
 
       - name: Build Angular application
-        run: npm run build
-
-      - name: Deploy to S3
         run: |
-          echo "Deploying to S3..."
-          aws s3 sync docs/ s3://author-arranger-website-${{ env.TIER }} --delete
-
-      - name: Invalidate CloudFront Cache
-        run: |
-          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-website" \
-            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
-            --output text)
-
-          if [ -z "$DISTRIBUTION_ID" ] || [ "$DISTRIBUTION_ID" = "None" ]; then
-            echo "CloudFront Distribution ID not found. Redeploy CloudFront stack to get the output."
-            exit 1
-          fi
-
-          echo "Invalidating CloudFront cache..."
-          aws cloudfront create-invalidation \
-            --distribution-id "$DISTRIBUTION_ID" \
-            --paths "/*" \
-            --output table \
-            --query "Invalidation.{Status:Status,CreateTime:CreateTime}" 2>/dev/null
-
-          if [ $? -eq 0 ]; then
-            echo "CloudFront cache invalidation successful"
+          echo "Building Angular application for ${{ env.TIER }} environment..."
+          npm run build -- --configuration production
+          echo "Build completed. Checking output..."
+          if [ -d "docs" ]; then
+            echo "docs/ directory exists"
+            ls -la docs/ | head -20
           else
-            echo "CloudFront cache invalidation failed"
+            echo "ERROR: docs/ directory not found!"
             exit 1
           fi
 
-      - name: Deployment Summary
+      - name: Deploy via CDK
         run: |
-          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-website" \
-            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
-            --output text)
-          
-          CLOUDFRONT_URL=$(aws cloudfront get-distribution \
-            --id "$DISTRIBUTION_ID" \
-            --query "Distribution.DomainName" \
-            --output text)
-          
-          echo "Frontend deployment complete!"
-          echo "Environment: ${{ env.TIER }}"
-          echo "S3 Bucket: author-arranger-website-${{ env.TIER }}"
-          echo "CloudFront URL: https://$CLOUDFRONT_URL"
-          echo "Custom Domain: https://authorarranger-${{ env.TIER }}.nci.nih.gov"
+          echo "Deploying infrastructure and frontend via CDK..."
+          cd infrastructure
+          npm ci
+          export TIER="${{ env.TIER }}"
+          npx cdk deploy --all --require-approval never
