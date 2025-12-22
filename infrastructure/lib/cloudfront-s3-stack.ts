@@ -4,6 +4,8 @@ import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import * as route53targets from "aws-cdk-lib/aws-route53-targets";
 import { Construct } from "constructs";
 import { createTags } from "./utils/tags";
 
@@ -89,6 +91,24 @@ export class CloudFrontS3Stack extends cdk.Stack {
       distribution: this.distribution,
       distributionPaths: ["/*"],
     });
+
+    // Create Route53 DNS record if certificate is provided
+    if (certificate) {
+      // Look up the hosted zone for nci.nih.gov
+      const hostedZone = route53.HostedZone.fromLookup(this, "NciHostedZone", {
+        domainName: "nci.nih.gov",
+      });
+
+      // Create ALIAS record pointing to CloudFront
+      new route53.ARecord(this, "DnsRecord", {
+        zone: hostedZone,
+        recordName: `authorarranger-${tier}`,
+        target: route53.RecordTarget.fromAlias(
+          new route53targets.CloudFrontTarget(this.distribution)
+        ),
+        comment: `DNS record for Author Arranger ${tier} environment`,
+      });
+    }
 
     // Stack outputs
     new cdk.CfnOutput(this, "WebsiteURL", {
