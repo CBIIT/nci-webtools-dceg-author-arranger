@@ -41,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: infrastructure/package-lock.json
 
@@ -98,28 +98,11 @@ jobs:
 
       - name: Deployment Summary
         run: |
-          echo "Deployment Complete!"
+          cd infrastructure
+          echo "Infrastructure Deployment Complete!"
+          echo ""
           echo "Environment: ${{ env.TIER }}"
+          echo "Region: ${{ env.AWS_REGION }}"
           echo ""
-          echo "Deployed Stacks:"
-          echo "  • AuthorArrangerDataStack-${{ env.TIER }}"
-          echo "  • AuthorArrangerStack-${{ env.TIER }} (CloudFront + S3)"
-          echo ""
-          
-          WEBSITE_URL=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-website" \
-            --query "Stacks[0].Outputs[?OutputKey=='WebsiteURL'].OutputValue" \
-            --output text)
-          
-          DATA_BUCKET=$(aws cloudformation describe-stacks \
-            --stack-name "${{ env.TIER }}-author-arranger-s3-data" \
-            --query "Stacks[0].Outputs[?OutputKey=='DataBucketName'].OutputValue" \
-            --output text)
-          
-          echo "Resources:"
-          echo "  • Data Bucket: $DATA_BUCKET"
-          echo "  • Website Bucket: author-arranger-website-${{ env.TIER }}"
-          echo ""
-          echo "URLs:"
-          echo "  • CloudFront: $WEBSITE_URL"
-          echo "  • Custom Domain: https://authorarranger-${{ env.TIER }}.nci.nih.gov"
+          echo "Stack Outputs:"
+          npx cdk output AuthorArrangerStack-${{ env.TIER }} --all 2>/dev/null || echo "Stack outputs not available yet"

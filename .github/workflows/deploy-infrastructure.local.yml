@@ -1,0 +1,88 @@
+name: Deploy Infrastructure (Local)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Deployment tier'
+        required: true
+        default: 'dev'
+
+jobs:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -q awscliv2.zip
+          sudo ./aws/install --update
+          aws --version
+
+      - name: Configure AWS credentials
+        run: |
+          export AWS_PAGER=""
+          echo "AWS credentials are provided via environment variables"
+          echo "Testing AWS access..."
+          aws sts get-caller-identity
+
+      - name: Install Node.js 20 via nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install node
+          nvm use node
+          node --version
+          npm --version
+
+      - name: Install infrastructure dependencies
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          cd infrastructure
+          npm install
+
+      - name: Run infrastructure tests
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          cd infrastructure
+          npm test
+
+      - name: CDK Synth (validate templates)
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          export AWS_PAGER=""
+          export TIER="${{ github.event.inputs.tier }}"
+          cd infrastructure
+          echo "Synthesizing CDK templates for tier: $TIER"
+          echo "AWS Account: $AWS_ACCOUNT_ID"
+          npx cdk synth --all
+
+      - name: CDK Diff (show changes)
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          export AWS_PAGER=""
+          export TIER="${{ github.event.inputs.tier }}"
+          cd infrastructure
+          npx cdk diff || true
+
+      - name: Deploy infrastructure (dry-run style)
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          echo "Would deploy to tier: ${{ github.event.inputs.tier }}"
+          echo "Skipping actual deployment in local test"
+          echo "✅ Infrastructure validation complete"
