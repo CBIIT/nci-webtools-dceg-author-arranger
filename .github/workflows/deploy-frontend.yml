@@ -46,6 +46,8 @@ jobs:
         run: npm ci
 
       - name: Build Angular application
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           echo "Building Angular application for ${{ env.TIER }} environment..."
           npm run build -- --configuration production
