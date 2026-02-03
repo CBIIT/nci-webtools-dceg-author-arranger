@@ -4,8 +4,8 @@
   "scripts": {
     "prebuild": "echo IMPORTANT: Please ensure NODE_OPTIONS = --openssl-legacy-provider",
     "ng": "ng",
-    "start": "ng serve --open",
-    "build": "ng build --prod",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --open",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --prod",
     "test": "ng test",
     "lint": "ng lint author-arranger",
     "e2e": "ng e2e"
