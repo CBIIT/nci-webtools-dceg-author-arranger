@@ -31,7 +31,7 @@ export class CloudFrontS3Stack extends cdk.Stack {
 
     // Create S3 bucket for hosting frontend files
     this.bucket = new s3.Bucket(this, "FrontendBucket", {
-      bucketName: `author-arranger-website-${tier}`,
+      bucketName: `nci-cbiit-author-arranger-website-${tier}`,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: cdk.RemovalPolicy.DESTROY, // For development - change for production
       autoDeleteObjects: true, // For development - change for production
