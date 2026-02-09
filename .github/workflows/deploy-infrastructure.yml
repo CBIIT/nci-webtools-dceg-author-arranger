@@ -45,11 +45,6 @@ jobs:
           cd infrastructure
           npm ci
 
-      - name: CDK Bootstrap
-        run: |
-          cd infrastructure
-          npx cdk bootstrap --region ${{ env.AWS_REGION }}
-
       - name: Build Angular application
         run: |
           echo "Building Angular application for ${{ env.TIER }} environment..."
