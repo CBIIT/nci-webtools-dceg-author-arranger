@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   deploy-infrastructure:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     environment: ${{ inputs.tier }}
     env:
