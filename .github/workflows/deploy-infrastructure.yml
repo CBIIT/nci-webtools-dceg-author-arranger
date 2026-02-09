@@ -39,13 +39,6 @@ jobs:
           role-session-name: ${{ env.TIER }}-authorarranger-deploy-${{ github.ref_name }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: infrastructure/package-lock.json
-
       - name: Install CDK and dependencies
         run: |
           npm install -g aws-cdk
