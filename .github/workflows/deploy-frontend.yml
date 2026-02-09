@@ -53,7 +53,7 @@ jobs:
       - name: Deploy to S3
         run: |
           echo "Deploying to S3..."
-          aws s3 sync docs/ s3://author-arranger-website-${{ env.TIER }} --delete
+          aws s3 sync docs/ s3://nci-cbiit-author-arranger-website-${{ env.TIER }} --delete
 
       - name: Invalidate CloudFront Cache
         run: |
@@ -95,6 +95,6 @@ jobs:
           
           echo "Frontend deployment complete!"
           echo "Environment: ${{ env.TIER }}"
-          echo "S3 Bucket: author-arranger-website-${{ env.TIER }}"
+          echo "S3 Bucket: nci-cbiit-author-arranger-website-${{ env.TIER }}"
           echo "CloudFront URL: https://$CLOUDFRONT_URL"
           echo "Custom Domain: https://authorarranger-${{ env.TIER }}.nci.nih.gov"
