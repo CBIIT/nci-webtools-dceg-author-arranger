@@ -29,10 +29,10 @@ jobs:
       NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: "actions/checkout@v6.0.1"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.0
+        uses: aws-actions/configure-aws-credentials@v5.1.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/power-user-github-actions-cicd
           role-session-name: ${{ env.TIER }}-authorarranger-frontend-${{ github.ref_name }}
