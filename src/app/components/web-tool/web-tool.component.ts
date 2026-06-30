@@ -31,6 +31,12 @@ export class WebToolComponent implements OnInit {
     try {
       const newState = await this.arranger.arrange(this.state);
       this.merge(newState);
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'arrange', {
+          author_count: (this.state.authors || []).length,
+          affiliation_count: (this.state.affiliations || []).length
+        });
+      }
     } catch(e) {
       console.log(e);
     } finally {
