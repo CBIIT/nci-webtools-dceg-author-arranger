@@ -51,6 +51,9 @@ export class PreviewComponent implements OnChanges {
         this.state.file.filename,
         this.state.markup
       );
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'download_document', {});
+      }
 /*
       this.arranger.downloadPreview(
         this.state.file.filename,
