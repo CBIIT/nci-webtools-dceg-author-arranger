@@ -49,7 +49,7 @@ export function fileWorker() {
 
         postMessage({
             messageId: messageId,
-            result: self[method](parameters)
+            result: (self as any)[method](parameters)
         }, undefined);
     });
 
