@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 import { AppState, INITIAL_APP_STATE, DeepPartial, Author } from '../../app.models';
 import { cloneDeep } from 'lodash';
@@ -16,12 +16,15 @@ export class WebToolComponent implements OnInit {
 
   loading: boolean = false;
 
-  constructor(private arranger: ArrangerService) { }
+  constructor(private arranger: ArrangerService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() { }
 
   merge(newState: DeepPartial<AppState>) {
     this.state = Object.assign({}, this.state, newState);
+    // state updates often arrive from web-worker responses, outside any
+    // change-detection trigger — mark the view dirty so they render
+    this.cdr.markForCheck();
     if (!environment.production)
       this.log(this.state);
   }
