@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { FileService } from '../../services/file/file.service';
 import { FileInfo, DEFAULT_HEADERS } from '../../app.models';
@@ -20,7 +20,7 @@ export class FileInputComponent implements OnInit {
 
   loading: boolean = false;
 
-  constructor(private fileService: FileService) { }
+  constructor(private fileService: FileService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {}
 
@@ -114,6 +114,8 @@ export class FileInputComponent implements OnInit {
       }
     } finally {
       this.loading = false;
+      // async file parsing completes outside change-detection triggers
+      this.cdr.markForCheck();
     }
   }
 
@@ -157,6 +159,8 @@ export class FileInputComponent implements OnInit {
         this.alerts.push(e);
     } finally {
       this.loading = false;
+      // async file parsing completes outside change-detection triggers
+      this.cdr.markForCheck();
     }
   }
 
