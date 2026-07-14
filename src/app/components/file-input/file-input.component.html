@@ -10,12 +10,9 @@
 
   <div class="card-body">
     <p *ngFor="let alert of alerts; let i = index" class="small">
-      <span class="alert alert-dismissible d-block" [ngClass]="'alert-' + alert.type" role="alert">
+      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
-        <button type="button" class="close" aria-label="Close" (click)="alerts.splice(i, 1)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </span>
+      </ngb-alert>
     </p>
 
     <div class="row">

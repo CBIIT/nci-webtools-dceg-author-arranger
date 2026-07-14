@@ -7,8 +7,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'author-arranger-web-tool',
   templateUrl: './web-tool.component.html',
-  styleUrls: ['./web-tool.component.css'],
-  standalone: false,
+  styleUrls: ['./web-tool.component.css']
 })
 export class WebToolComponent implements OnInit {
 

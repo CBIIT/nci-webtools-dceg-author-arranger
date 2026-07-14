@@ -6,8 +6,7 @@ import { FileInfo, DEFAULT_HEADERS } from '../../app.models';
 @Component({
   selector: 'author-arranger-file-input',
   templateUrl: './file-input.component.html',
-  styleUrls: ['./file-input.component.css'],
-  standalone: false,
+  styleUrls: ['./file-input.component.css']
 })
 export class FileInputComponent implements OnInit {
 

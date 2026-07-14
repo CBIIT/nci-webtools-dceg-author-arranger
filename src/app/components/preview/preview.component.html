@@ -5,17 +5,17 @@
   </label>
 
   <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary rounded-top text-light">
-    <div class="btn-group btn-group-toggle" role="radiogroup">
-      <label class="btn btn-light" [class.active]="selectedTab === 'preview'">
-        <input class="sr-only" type="radio" name="preview-tab" value="preview" [(ngModel)]="selectedTab" aria-labelledby="preview-tab-label">
+    <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
+      <label ngbButtonLabel class="btn-light ">
+        <input ngbButton type="radio" value="preview" aria-labelledby="preview-tab-label">
         <h2 class="m-0" style="font-size: 1.1rem">Preview</h2>
       </label>
-      <label class="btn btn-light" [class.active]="selectedTab === 'reorder'">
-        <input class="sr-only" type="radio" name="preview-tab" value="reorder" [(ngModel)]="selectedTab" aria-labelledby="preview-tab-label">
+      <label ngbButtonLabel class="btn-light">
+        <input ngbButton type="radio" value="reorder" aria-labelledby="preview-tab-label">
         <h2 class="m-0" style="font-size: 1.1rem">Reorder</h2>
       </label>
-      <label class="btn btn-light" [class.active]="selectedTab === 'email'">
-        <input class="sr-only" type="radio" name="preview-tab" value="email" [(ngModel)]="selectedTab" aria-labelledby="preview-tab-label">
+      <label ngbButtonLabel class="btn-light ">
+        <input ngbButton type="radio" value="email" aria-labelledby="preview-tab-label">
         <h2 class="m-0" style="font-size: 1.1rem">Email</h2>
       </label>
     </div>
@@ -33,12 +33,9 @@
   <div [hidden]="!hasData || state.authors.length == 0" class="card-body overflow-auto mh-100 h-100 p-relative" #panel>
 
     <p *ngFor="let alert of alerts; let i = index" class="small mt-3">
-      <span class="alert alert-dismissible d-block" [ngClass]="'alert-' + alert.type" role="alert">
+      <ngb-alert [type]="alert.type" (close)="alerts.splice(i, 1)">
         {{ alert.message }}
-        <button type="button" class="close" aria-label="Close" (click)="alerts.splice(i, 1)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </span>
+      </ngb-alert>
     </p>
     <p [hidden]="selectedTab != 'preview'" style="max-height: 500px" #preview></p>
 

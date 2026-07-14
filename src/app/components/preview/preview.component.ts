@@ -1,13 +1,12 @@
 import { Component, Renderer2, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { AppState, Author } from '../../app.models';
+import { AppState } from '../../app.models';
 import { isEmpty, isEqual } from 'lodash';
 
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css'],
-  standalone: false,
 })
 export class PreviewComponent implements OnChanges {
 
@@ -24,7 +23,7 @@ export class PreviewComponent implements OnChanges {
   panel: ElementRef;
 
   @Output()
-  reorder: EventEmitter<Author[]> = new EventEmitter<Author[]>();
+  reorder: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   alerts: { type: string, message: string }[] = [];
 

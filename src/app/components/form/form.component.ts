@@ -8,8 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'author-arranger-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css'],
-  standalone: false,
+  styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit, OnChanges {
 

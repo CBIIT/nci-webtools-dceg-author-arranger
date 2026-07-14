@@ -4,8 +4,7 @@ import { Router, NavigationEnd } from '@angular/router';
 @Component({
   selector: 'author-arranger-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  standalone: false,
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   constructor(private router: Router) {

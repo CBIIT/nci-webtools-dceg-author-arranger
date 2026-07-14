@@ -9,10 +9,8 @@ export function createFormObject(initial : any) : AbstractControl {
             .filter(Array.isArray)
             .some(isFn);
 
-        if (hasValidators) {
-            const [value, validators, asyncValidators] = initial;
-            return new FormControl(value, validators, asyncValidators);
-        }
+        if (hasValidators)
+            return new FormControl(...initial);
         else
             return new FormArray(initial.map(val => createFormObject(val)))// return a FormGroup for objects;
         }
