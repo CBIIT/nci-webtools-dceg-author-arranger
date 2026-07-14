@@ -1,4 +1,4 @@
-import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
 
 import { AppModule } from './app/app.module';
@@ -8,10 +8,5 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowser().bootstrapModule(AppModule, {
-  // Angular 22 defaults NgModule apps to zoneless change detection;
-  // this app's state updates are driven by web-worker responses and
-  // relies on zone.js-based change detection.
-  applicationProviders: [provideZoneChangeDetection()],
-})
+platformBrowser().bootstrapModule(AppModule)
   .catch(err => console.error(err));
