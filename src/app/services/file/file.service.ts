@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 import { FullProperties } from 'xlsx';
 import { Worksheet } from '../../app.models';
 import { WorkerService } from '../worker/worker.service';
@@ -32,7 +33,7 @@ export class FileService {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
       reader.onerror = e => {
         reader.abort();
         reject(e);
@@ -43,7 +44,7 @@ export class FileService {
   }
 
   readRemoteFile(url: string): Promise<ArrayBuffer> {
-    return this.http.get(url, {responseType: 'arraybuffer'}).toPromise();
+    return lastValueFrom(this.http.get(url, {responseType: 'arraybuffer'}));
   }
 
   getProperties(data: ArrayBuffer): Promise<FullProperties> {

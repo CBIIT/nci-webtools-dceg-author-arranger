@@ -5,13 +5,13 @@
     </label>
   
     <div class="card-header d-flex justify-content-between align-items-center py-0 bg-primary rounded-top text-light">
-      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="selectedTab">
-        <label ngbButtonLabel class="btn-light ">
-          <input ngbButton type="radio" value="author-format" aria-labelledby="format-tab-label">
+      <div class="btn-group btn-group-toggle" role="radiogroup">
+        <label class="btn btn-light" [class.active]="selectedTab === 'author-format'">
+          <input class="sr-only" type="radio" name="format-tab" value="author-format" [(ngModel)]="selectedTab" aria-labelledby="format-tab-label">
           <h2 class="m-0" style="font-size: 1.1rem">Author Format</h2>
         </label>
-        <label ngbButtonLabel class="btn-light">
-          <input ngbButton type="radio" value="affiliation-format" aria-labelledby="format-tab-label">
+        <label class="btn btn-light" [class.active]="selectedTab === 'affiliation-format'">
+          <input class="sr-only" type="radio" name="format-tab" value="affiliation-format" [(ngModel)]="selectedTab" aria-labelledby="format-tab-label">
           <h2 class="m-0" style="font-size: 1.1rem">Affiliation Format</h2>
         </label>
       </div>

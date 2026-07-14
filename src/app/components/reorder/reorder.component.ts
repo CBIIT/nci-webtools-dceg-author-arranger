@@ -1,13 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { DragulaService } from 'ng2-dragula';
+import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Author } from '../../app.models';
 
 @Component({
   selector: 'author-arranger-reorder',
   templateUrl: './reorder.component.html',
-  styleUrls: ['./reorder.component.css']
+  styleUrls: ['./reorder.component.css'],
+  standalone: false,
 })
-export class ReorderComponent implements OnInit {
+export class ReorderComponent implements OnChanges {
 
   @Input()
   authors: Author[] = [];
@@ -15,96 +16,78 @@ export class ReorderComponent implements OnInit {
   @Output('on-change')
   change: EventEmitter<Author[]> = new EventEmitter<Author[]>();
 
-  @ViewChild('container')
-  container: ElementRef;
+  /** Authors shown in the active (reorderable) list, in output order. */
+  activeAuthors: Author[] = [];
 
-  @ViewChild('removed')
-  removedContainer: ElementRef;
+  /** Authors moved to the "Removed Authors" list. */
+  removedAuthors: Author[] = [];
 
-  dragOptions = {
-    direction: 'horizontal',
-    copy: false,
-    copySortSource: true,
-    invalid: (el, handle) => handle.getAttribute('drag-handle') === null,
+  ngOnChanges() {
+    this.activeAuthors = this.authors.filter(author => !author.removed && author.name?.length > 0);
+    this.removedAuthors = this.authors.filter(author => author.removed && author.name?.length > 0);
   }
 
-  constructor(private dragula: DragulaService) { }
-
-  ngOnInit() {
-
-    this.dragula.drop.subscribe((value: [string, HTMLElement, HTMLElement, HTMLElement]) => {
-      const [
-        containerName,
-        element,
-        target,
-        source
-      ] = value;
-
-      if (containerName !== 'authors')
-        return;
-
-      const targetName = target.getAttribute('data-name');
-      const authorId = element.getAttribute('data-id');
-      const author = this.authors.find(author => author.id == +authorId);
-      author.removed = targetName === 'removed';
-
-      if (target != source)
-        source.appendChild(element);
-
-      this.change.emit(this.authors);
-    });
+  drop(event: CdkDragDrop<Author[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+    this.emitChange();
   }
 
+  toggleRemoved(author: Author) {
+    if (author.removed) {
+      this.removedAuthors = this.removedAuthors.filter(a => a !== author);
+      this.activeAuthors = [...this.activeAuthors, author];
+    } else {
+      this.activeAuthors = this.activeAuthors.filter(a => a !== author);
+      this.removedAuthors = [...this.removedAuthors, author];
+    }
+    this.emitChange();
+  }
 
-  handleKeyboardEvent(event) {
-    if (!this.container) return;
-
-    const el = event.target as HTMLDivElement;
-    const containerEl = el.parentElement;
+  handleKeyboardEvent(event: KeyboardEvent, author: Author) {
+    const list = author.removed ? this.removedAuthors : this.activeAuthors;
+    const index = list.indexOf(author);
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-      const nextSibling = el.nextSibling;
-      console.log(nextSibling);
-      if (nextSibling && nextSibling.constructor === HTMLDivElement) {
-        containerEl.insertBefore(nextSibling, el);
-        setTimeout(e => el.focus(), 0);
-        this.reindexAuthors();
+      if (index >= 0 && index < list.length - 1) {
+        moveItemInArray(list, index, index + 1);
+        this.emitChange();
+        this.refocus(author);
       }
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-      const previousSibling = el.previousSibling;
-      console.log(previousSibling);
-      if (previousSibling && previousSibling.constructor === HTMLDivElement) {
-        containerEl.insertBefore(el, previousSibling);
-        setTimeout(e => el.focus(), 0);
-        this.reindexAuthors();
+      if (index > 0) {
+        moveItemInArray(list, index, index - 1);
+        this.emitChange();
+        this.refocus(author);
       }
     } else if (event.key === 'Enter' || event.key === 'Delete') {
-      const id = +el.getAttribute('data-id');
-      const author = this.authors.find(author => author.id === id)
-      author.removed = !author.removed;
-      this.reindexAuthors();
-
-      console.log(event);
+      this.toggleRemoved(author);
+      this.refocus(author);
     }
   }
 
-  reindexAuthors() {
-    if (!this.container) return;
-    const containerEl = this.container.nativeElement as HTMLDivElement;
-    const removedContainerEl = this.removedContainer.nativeElement as HTMLDivElement;
-    const children = [
-      ...Array.from(containerEl.children),
-      ...Array.from(removedContainerEl.children)
-    ];
+  /** Rebuilds the authors array from the two lists, updates flags, and notifies the parent. */
+  private emitChange() {
+    this.activeAuthors.forEach(author => author.removed = false);
+    this.removedAuthors.forEach(author => author.removed = true);
 
-    setTimeout(() => {
-      this.authors = Array.from(containerEl.children)
-      .map(child => +child.getAttribute('data-id'))
-      .map(id => this.authors.find(author => author.id === id))
-
-      this.change.emit(this.authors);
-    }, 10);
+    const nameless = this.authors.filter(author => !(author.name?.length > 0));
+    this.authors = [...this.activeAuthors, ...this.removedAuthors, ...nameless];
+    this.change.emit(this.authors);
   }
 
-
+  private refocus(author: Author) {
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id="${author.id}"]`) as HTMLElement;
+      if (el) el.focus();
+    }, 0);
+  }
 }
