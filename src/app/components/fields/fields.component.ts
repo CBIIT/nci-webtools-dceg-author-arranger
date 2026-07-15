@@ -27,6 +27,7 @@ export class FieldsComponent {
   range = rangeFn;
 
   drop(event: CdkDragDrop<unknown>) {
+    if (!this.draggable) return;
     this.moveControl(event.previousIndex, event.currentIndex);
   }
 
