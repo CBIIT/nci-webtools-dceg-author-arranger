@@ -1,25 +1,24 @@
 <p class="mb-1 ml-2" style="font-weight: 500;">Drag to reorder authors.</p>
 <div
-  #container
-  data-name="reorder"
-  dragula="authors"
-  [dragulaOptions]="dragOptions"
-  [dragulaModel]="authors"
+  cdkDropList
+  #activeList="cdkDropList"
+  cdkDropListOrientation="mixed"
+  [cdkDropListData]="activeAuthors"
+  [cdkDropListConnectedTo]="[removedList]"
+  (cdkDropListDropped)="drop($event)"
   class="mb-3 p-2 d-flex flex-wrap">
-<ng-container >
   <div
-    *ngFor="let author of authors"
+    *ngFor="let author of activeAuthors"
+    cdkDrag
     tabIndex="0"
-    (keyup)="handleKeyboardEvent($event)"
-    [hidden]="author.removed || author.name?.length == 0"
+    (keyup)="handleKeyboardEvent($event, author)"
     [attr.data-id]="author.id">
 
     <div
       class="border d-flex rounded m-1 p-0 shadow-sm"
-      placement="top"
-      [ngbTooltip]="author.name" container="body">
+      [title]="author.name">
 
-      <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+      <div cdkDragHandle class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" style="overflow: hidden;">
         <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
       </div>
 
@@ -33,38 +32,36 @@
       </div>
 
       <div
-        (click)="author.removed = !author.removed; change.emit(authors);"
+        (click)="toggleRemoved(author)"
         class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
         &times;
       </div>
     </div>
   </div>
-</ng-container>
 </div>
 
 <div class="bg-light rounded border mb-4">
 <div class="mx-2" style="font-weight: 500;">Removed Authors</div>
 <div
-  #removed
-  data-name="removed"
-  dragula="authors"
-  [dragulaOptions]="dragOptions"
-  [dragulaModel]="authors"
+  cdkDropList
+  #removedList="cdkDropList"
+  cdkDropListOrientation="mixed"
+  [cdkDropListData]="removedAuthors"
+  [cdkDropListConnectedTo]="[activeList]"
+  (cdkDropListDropped)="drop($event)"
   style="min-height: 100px"
   class="d-flex flex-wrap p-2">
-  <ng-container >
     <div
+      *ngFor="let author of removedAuthors"
+      cdkDrag
       tabindex="0"
-      *ngFor="let author of authors"
-      [hidden]="!author.removed || author.name?.length == 0"
-      (keyup)="handleKeyboardEvent($event)"
+      (keyup)="handleKeyboardEvent($event, author)"
       [attr.data-id]="author.id">
       <div
         class="border d-flex rounded m-1 p-0 flex-grow-0 shadow-sm"
-        placement="top"
-        [ngbTooltip]="author.name" container="body">
+        [title]="author.name">
 
-        <div class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" drag-handle="true" style="overflow: hidden;">
+        <div cdkDragHandle class="d-flex align-items-center py-1 px-2 bg-white rounded-left border-right c-move flex-shrink-0" style="overflow: hidden;">
           <img src="assets/icons/bars.svg" alt="draggable icon" class="pointer-events-none">
         </div>
 
@@ -73,12 +70,11 @@
         </div>
 
         <div
-          (click)="author.removed = !author.removed; change.emit(authors);"
+          (click)="toggleRemoved(author)"
           class="c-pointer py-1 px-2 border-left bg-white text-muted rounded-right">
           +
         </div>
       </div>
     </div>
-  </ng-container>
 </div>
 </div>

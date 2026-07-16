@@ -18,7 +18,7 @@ export function arrangerWorker() {
         const { method, messageId, parameters } = event.data;
         postMessage({
             messageId: messageId,
-            result: self[method](parameters)
+            result: (self as any)[method](parameters)
         }, undefined);
     });
 
@@ -95,7 +95,6 @@ export function arrangerWorker() {
                         author.affiliationIds[index] = i + 1;
                 }
                 e.id = i + 1;
-                return e;
             });
 
         appState.affiliations = newAffiliations;

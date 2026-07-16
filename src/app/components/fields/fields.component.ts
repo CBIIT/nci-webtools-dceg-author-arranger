@@ -1,13 +1,14 @@
-import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { INITIAL_APP_STATE } from '../../app.models';
 import { FormArray, FormGroup } from '@angular/forms';
-import { DragulaService } from 'ng2-dragula';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { range as rangeFn } from 'lodash';
 
 @Component({
   selector: 'author-arranger-fields',
   templateUrl: './fields.component.html',
-  styleUrls: ['./fields.component.css']
+  styleUrls: ['./fields.component.css'],
+  standalone: false,
 })
 export class FieldsComponent {
 
@@ -23,60 +24,41 @@ export class FieldsComponent {
   @Input()
   draggable: boolean = true;
 
-  @ViewChild('container')
-  container: ElementRef;;
-
-  dragOptions = {
-    invalid: (el, handle) =>
-      handle.getAttribute('drag-handle') === null,
-  }
-
   range = rangeFn;
 
-  constructor(private dragulaService: DragulaService) {
-    // set form field indexes when dragged
-    this.dragulaService.drop.subscribe(([name, el, parent]: [string, HTMLElement, HTMLElement]) => {
-      if (name !== this.formName) return;
-      this.reindexControls();
-    });
+  drop(event: CdkDragDrop<unknown>) {
+    if (!this.draggable) return;
+    this.moveControl(event.previousIndex, event.currentIndex);
   }
 
-  handleKeyboardEvent(event) {
-    if (!this.container) return;
-
-    const containerEl = this.container.nativeElement as HTMLDivElement;
-    const rowEl = event.target as HTMLDivElement;
+  handleKeyboardEvent(event: KeyboardEvent, index: number) {
+    if (!this.draggable) return;
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-      const nextSibling = rowEl.nextSibling;
-
-      if (nextSibling && nextSibling.constructor === HTMLDivElement) {
-        containerEl.insertBefore(nextSibling, rowEl);
-        this.reindexControls();
-        setTimeout(e => rowEl.focus(), 0);
+      if (index < this.formArray.controls.length - 1) {
+        this.moveControl(index, index + 1);
+        this.refocus(index + 1);
       }
-
-
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-      const previousSibling = rowEl.previousSibling;
-      if (previousSibling && previousSibling.constructor === HTMLDivElement) {
-        containerEl.insertBefore(rowEl, previousSibling);
-        this.reindexControls();
-        setTimeout(e => rowEl.focus(), 0);
+      if (index > 0) {
+        this.moveControl(index, index - 1);
+        this.refocus(index - 1);
       }
     }
   }
 
-  reindexControls() {
-    const parent = this.container.nativeElement as HTMLDivElement;
-    Array.from(parent.children)
-    .forEach((node, index) => this.formArray.controls
-      .find(control => control.value.name == node.getAttribute('data-name'))
-      .patchValue({index}));
+  private moveControl(previousIndex: number, currentIndex: number) {
+    moveItemInArray(this.formArray.controls, previousIndex, currentIndex);
+    this.formArray.controls.forEach((control, index) => control.patchValue({ index }));
+    this.formArray.updateValueAndValidity();
+  }
 
-    this.formArray.controls = this.formArray.controls.map((control, index, controls) =>
-      controls.find(c => c.value.index === index)
-    )
+  private refocus(index: number) {
+    setTimeout(() => {
+      const name = this.formArray.controls[index]?.value.name;
+      const el = document.querySelector(`[data-name="${name}"]`) as HTMLElement;
+      if (el) el.focus();
+    }, 0);
   }
 
   reset(field: FormGroup) {
@@ -91,7 +73,4 @@ export class FieldsComponent {
 
     field.reset(defaultValue);
   }
-
-
-
 }
