@@ -3,7 +3,7 @@ import { Worksheet } from '../../app.models';
 
 export function fileWorker() {
 
-    self['importScripts']('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
+    self['importScripts']('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
 
     let XLSX = self['XLSX'];
 
@@ -49,7 +49,7 @@ export function fileWorker() {
 
         postMessage({
             messageId: messageId,
-            result: self[method](parameters)
+            result: (self as any)[method](parameters)
         }, undefined);
     });
 
