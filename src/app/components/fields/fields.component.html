@@ -31,19 +31,19 @@
 
       <div class="d-flex flex-wrap small py-1 w-lt-lg-100" [class.text-muted]="field.controls.column.value === null">
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.abbreviate">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate" [attr.disabled]="field.controls.column.value === null || null"> Abbreviate
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.abbreviate" [appDomDisabled]="field.controls.column.value === null"> Abbreviate
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addComma">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma" [attr.disabled]="field.controls.column.value === null || null"> Add Comma
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addComma" [appDomDisabled]="field.controls.column.value === null"> Add Comma
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.addPeriod">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod" [attr.disabled]="field.controls.column.value === null || null"> Add Period
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.addPeriod" [appDomDisabled]="field.controls.column.value === null"> Add Period
         </label>
 
         <label class="m-0 mx-1 d-flex align-items-center" *ngIf="field.controls.removeSpace && field.value.abbreviate">
-          <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace" [attr.disabled]="field.controls.column.value === null || null"> Remove Space
+          <input class="mr-1" type="checkbox" [formControl]="field.controls.removeSpace" [appDomDisabled]="field.controls.column.value === null"> Remove Space
         </label>
         <!-- custom content here -->
         <ng-content></ng-content>

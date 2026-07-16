@@ -16,6 +16,7 @@ import { FormComponent } from './components/form/form.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { ReorderComponent } from './components/reorder/reorder.component';
 import { FileValueAccessorDirective } from './directives/file-value-accessor/file-value-accessor.directive';
+import { DomDisabledDirective } from './directives/dom-disabled/dom-disabled.directive';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FieldsComponent } from './components/fields/fields.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
@@ -30,6 +31,7 @@ import { WebToolComponent } from './components/web-tool/web-tool.component';
     PreviewComponent,
     ReorderComponent,
     FileValueAccessorDirective,
+    DomDisabledDirective,
     NavbarComponent,
     FieldsComponent,
     WelcomeComponent,
