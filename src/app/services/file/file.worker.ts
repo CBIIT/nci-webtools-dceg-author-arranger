@@ -3,7 +3,9 @@ import { Worksheet } from '../../app.models';
 
 export function fileWorker() {
 
-    self['importScripts']('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
+    // load xlsx from a same-origin asset instead of a public CDN so this
+    // worker does not depend on a third-party origin being reachable
+    self['importScripts'](self.location.origin + '/assets/vendor/xlsx/xlsx.full.min.js');
 
     let XLSX = self['XLSX'];
 
