@@ -34,7 +34,12 @@ export function fileWorker() {
                 name: name,
                 data: XLSX.utils.sheet_to_json(sheet, {
                     header: 1,
-                    blankrows: false
+                    blankrows: false,
+                    // return formatted text for every cell (instead of the
+                    // raw typed value) so numeric-looking values such as
+                    // postal codes are not coerced into JS numbers, since
+                    // all fields in this app are treated as text
+                    raw: false
                 })
             });
         }

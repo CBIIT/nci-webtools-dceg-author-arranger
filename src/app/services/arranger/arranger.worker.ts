@@ -479,7 +479,7 @@ export function arrangerWorker() {
 
     // replaces double+ spaces with single spaces
     function normalizeSpaces(value: string = '') {
-        return (value || '')
+        return String(value ?? '')
             .replace(/\s+/g, ' ')
             .trim();
     }
