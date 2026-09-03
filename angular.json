@@ -23,27 +23,7 @@
                 "input": "src/assets",
                 "output": "assets"
               },
-              "src/favicon.ico",
-              {
-                "glob": "lodash.min.js",
-                "input": "node_modules/lodash",
-                "output": "assets/vendor/lodash"
-              },
-              {
-                "glob": "LICENSE",
-                "input": "node_modules/lodash",
-                "output": "assets/vendor/lodash"
-              },
-              {
-                "glob": "xlsx.full.min.js",
-                "input": "node_modules/xlsx/dist",
-                "output": "assets/vendor/xlsx"
-              },
-              {
-                "glob": "LICENSE",
-                "input": "node_modules/xlsx/dist",
-                "output": "assets/vendor/xlsx"
-              }
+              "src/favicon.ico"
             ],
             "styles": ["src/styles.css"],
             "allowedCommonJsDependencies": ["docx", "file-saver", "lodash"],

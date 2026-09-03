@@ -9,9 +9,7 @@ import {
 
 export function arrangerWorker() {
 
-    // load lodash from a same-origin asset instead of a public CDN so this
-    // worker does not depend on a third-party origin being reachable
-    self['importScripts'](self.location.origin + '/assets/vendor/lodash/lodash.min.js');
+    self['importScripts']('https://unpkg.com/lodash@4.17.10/lodash.min.js');
     self['arrange'] = arrange;
     self['reorder'] = reorder;
     let _ = self['_'];
