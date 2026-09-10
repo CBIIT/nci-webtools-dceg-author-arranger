@@ -1,5 +1,5 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { MarkupElement, AppState } from 'src/app/app.models';
+import { MarkupElement, AppState } from '../../app.models';
 import { WorkerService } from '../worker/worker.service';
 import { arrangerWorker } from './arranger.worker';
 import { saveAs } from 'file-saver';

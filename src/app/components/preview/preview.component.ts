@@ -1,12 +1,13 @@
 import { Component, Renderer2, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
-import { AppState } from '../../app.models';
+import { AppState, Author } from '../../app.models';
 import { isEmpty, isEqual } from 'lodash';
 
 @Component({
   selector: 'author-arranger-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.css'],
+  standalone: false,
 })
 export class PreviewComponent implements OnChanges {
 
@@ -23,7 +24,7 @@ export class PreviewComponent implements OnChanges {
   panel: ElementRef;
 
   @Output()
-  reorder: EventEmitter<number[]> = new EventEmitter<number[]>();
+  reorder: EventEmitter<Author[]> = new EventEmitter<Author[]>();
 
   alerts: { type: string, message: string }[] = [];
 
@@ -51,6 +52,9 @@ export class PreviewComponent implements OnChanges {
         this.state.file.filename,
         this.state.markup
       );
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'download_document', {});
+      }
 /*
       this.arranger.downloadPreview(
         this.state.file.filename,

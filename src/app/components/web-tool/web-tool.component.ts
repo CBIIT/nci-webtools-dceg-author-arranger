@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ArrangerService } from '../../services/arranger/arranger.service';
 import { AppState, INITIAL_APP_STATE, DeepPartial, Author } from '../../app.models';
 import { cloneDeep } from 'lodash';
@@ -7,7 +7,8 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'author-arranger-web-tool',
   templateUrl: './web-tool.component.html',
-  styleUrls: ['./web-tool.component.css']
+  styleUrls: ['./web-tool.component.css'],
+  standalone: false,
 })
 export class WebToolComponent implements OnInit {
 
@@ -15,12 +16,15 @@ export class WebToolComponent implements OnInit {
 
   loading: boolean = false;
 
-  constructor(private arranger: ArrangerService) { }
+  constructor(private arranger: ArrangerService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() { }
 
   merge(newState: DeepPartial<AppState>) {
     this.state = Object.assign({}, this.state, newState);
+    // state updates often arrive from web-worker responses, outside any
+    // change-detection trigger — mark the view dirty so they render
+    this.cdr.markForCheck();
     if (!environment.production)
       this.log(this.state);
   }
@@ -31,6 +35,12 @@ export class WebToolComponent implements OnInit {
     try {
       const newState = await this.arranger.arrange(this.state);
       this.merge(newState);
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'arrange', {
+          author_count: (this.state.authors || []).length,
+          affiliation_count: (this.state.affiliations || []).length
+        });
+      }
     } catch(e) {
       console.log(e);
     } finally {

@@ -3,7 +3,7 @@ import { Worksheet } from '../../app.models';
 
 export function fileWorker() {
 
-    self['importScripts']('https://unpkg.com/xlsx@0.13.0/dist/xlsx.full.min.js');
+    self['importScripts']('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
 
     let XLSX = self['XLSX'];
 
@@ -32,7 +32,12 @@ export function fileWorker() {
                 name: name,
                 data: XLSX.utils.sheet_to_json(sheet, {
                     header: 1,
-                    blankrows: false
+                    blankrows: false,
+                    // return formatted text for every cell (instead of the
+                    // raw typed value) so numeric-looking values such as
+                    // postal codes are not coerced into JS numbers, since
+                    // all fields in this app are treated as text
+                    raw: false
                 })
             });
         }
@@ -49,7 +54,7 @@ export function fileWorker() {
 
         postMessage({
             messageId: messageId,
-            result: self[method](parameters)
+            result: (self as any)[method](parameters)
         }, undefined);
     });
 
