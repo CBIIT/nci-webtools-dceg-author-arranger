@@ -49,7 +49,6 @@ jobs:
 
       - name: Install CDK and dependencies
         run: |
-          npm install -g aws-cdk
           cd infrastructure
           npm ci
 
