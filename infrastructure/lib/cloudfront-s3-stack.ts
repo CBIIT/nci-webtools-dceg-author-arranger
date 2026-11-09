@@ -18,7 +18,7 @@ export class CloudFrontS3Stack extends cdk.Stack {
     const sslCertificateArn = process.env.SSL_CERTIFICATE_ARN;
 
     // Define custom domain and certificate if SSL certificate ARN is provided
-    const domainName = tier === "prod" ? "authorarranger.nci.nih.gov" : `authorarranger-${tier}.nci.nih.gov`;
+    const domainName = tier === "prod" ? "authorarranger.nih.gov" : `authorarranger-${tier}.nih.gov`;
     let certificate: certificatemanager.ICertificate | undefined;
 
     if (sslCertificateArn) {
