@@ -20,7 +20,7 @@ This project uses AWS CDK (Cloud Development Kit) with TypeScript to deploy the 
    - CloudFront distribution
    - Origin Access Identity for secure S3 access
    - Automatic deployment from `docs/` directory
-   - Domain: `authorarranger-{tier}.nih.gov` (prod: `authorarranger.nih.gov`)
+   - Domain: `authorarranger-{tier}.nih.gov` (prod: `authorarranger.nci.nih.gov`)
 
 ### Environment Variables
 
@@ -184,7 +184,7 @@ After successful deployment:
 - **dev**: Development environment (`authorarranger-dev.nih.gov`)
 - **qa**: Quality assurance environment (`authorarranger-qa.nih.gov`)
 - **stage**: Staging environment (`authorarranger-stage.nih.gov`)
-- **prod**: Production environment (`authorarranger.nih.gov`)
+- **prod**: Production environment (`authorarranger.nci.nih.gov`)
 
 Each environment has separate:
 - AWS CloudFormation stacks
