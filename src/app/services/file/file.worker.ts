@@ -45,6 +45,12 @@ export function fileWorker() {
         return sheets;
     };
 
+    // allowlist of methods which may be invoked via messages
+    const methods = Object.freeze({
+        getProperties: self['getProperties'],
+        getSheets: self['getSheets']
+    });
+
     addEventListener('message', event => {
         const {
             method,
@@ -52,9 +58,13 @@ export function fileWorker() {
             parameters,
         } = event.data;
 
+        if (!Object.hasOwn(methods, method)) {
+            throw new Error(`Unknown worker method: ${method}`);
+        }
+
         postMessage({
             messageId: messageId,
-            result: (self as any)[method](parameters)
+            result: methods[method](parameters)
         }, undefined);
     });
 
